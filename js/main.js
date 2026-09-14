@@ -150,6 +150,12 @@ const PERU_LOCATIONS = {
   }
 };
 
+function trackMetaEvent(eventName, parameters = {}) {
+  if (typeof window.fbq === 'function') {
+    window.fbq('track', eventName, parameters);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Galería de producto (switcher de miniaturas)
   initGallery();
@@ -214,10 +220,18 @@ function initCheckoutModal() {
   function openModal(e) {
     if (e) e.preventDefault();
     if (modalOverlay) {
+      const wasOpen = modalOverlay.classList.contains('active');
       lastTrigger = e?.currentTarget || document.activeElement;
       modalOverlay.classList.add('active');
       modalOverlay.setAttribute('aria-hidden', 'false');
       document.body.classList.add('modal-open');
+      if (!wasOpen) {
+        trackMetaEvent('InitiateCheckout', {
+          content_name: 'Climatizador de Pared 2 en 1',
+          value: 109,
+          currency: 'PEN'
+        });
+      }
       window.setTimeout(() => modalCloseBtn?.focus(), 30);
     }
   }
@@ -451,7 +465,18 @@ function initFAQAccordion() {
  */
 function initOrderFormSubmission() {
   const form = document.getElementById('drawerOrderForm');
+  const whatsappInput = document.getElementById('drawerWhatsapp');
   if (!form) return;
+
+  if (whatsappInput) {
+    whatsappInput.addEventListener('input', () => {
+      whatsappInput.value = whatsappInput.value.replace(/\D/g, '').slice(0, 9);
+      const isValid = /^9\d{8}$/.test(whatsappInput.value);
+      whatsappInput.setCustomValidity(whatsappInput.value && !isValid
+        ? 'Ingresa un número de WhatsApp de 9 dígitos que comience con 9.'
+        : '');
+    });
+  }
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -466,8 +491,8 @@ function initOrderFormSubmission() {
 
     // Validación número peruano (9 dígitos)
     const phoneDigits = celular.replace(/\D/g, '');
-    if (phoneDigits.length < 9) {
-      alert('Por favor, ingresa un número de WhatsApp válido de 9 dígitos.');
+    if (!/^9\d{8}$/.test(phoneDigits)) {
+      alert('Ingresa un número de WhatsApp válido: 9 dígitos y debe comenzar con 9.');
       document.getElementById('drawerWhatsapp').focus();
       return;
     }
@@ -498,6 +523,12 @@ function initOrderFormSubmission() {
       `Deseo confirmar la entrega de mi pedido. ¡Gracias!`;
 
     const waUrl = `https://wa.me/51912345678?text=${waText}`;
+
+    trackMetaEvent('Lead', {
+      content_name: 'Climatizador de Pared 2 en 1',
+      value: finalPrice,
+      currency: 'PEN'
+    });
 
     window.open(waUrl, '_blank');
 
