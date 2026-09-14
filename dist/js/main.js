@@ -466,17 +466,49 @@ function initFAQAccordion() {
 function initOrderFormSubmission() {
   const form = document.getElementById('drawerOrderForm');
   const whatsappInput = document.getElementById('drawerWhatsapp');
+  const whatsappError = document.getElementById('whatsappError');
   if (!form) return;
+
+  const setFieldState = (input, message = '') => {
+    const control = input.closest('.field-control');
+    const isInvalid = Boolean(message);
+    control?.classList.toggle('is-invalid', isInvalid);
+    input.setAttribute('aria-invalid', String(isInvalid));
+
+    if (input === whatsappInput && whatsappError) {
+      whatsappError.textContent = message;
+      whatsappError.hidden = !message;
+    }
+  };
 
   if (whatsappInput) {
     whatsappInput.addEventListener('input', () => {
       whatsappInput.value = whatsappInput.value.replace(/\D/g, '').slice(0, 9);
       const isValid = /^9\d{8}$/.test(whatsappInput.value);
-      whatsappInput.setCustomValidity(whatsappInput.value && !isValid
-        ? 'Ingresa un número de WhatsApp de 9 dígitos que comience con 9.'
-        : '');
+      const message = whatsappInput.value && !isValid
+        ? 'Escribe 9 dígitos y empieza con 9.'
+        : '';
+      whatsappInput.setCustomValidity(message);
+      setFieldState(whatsappInput, message);
     });
   }
+
+  form.addEventListener('invalid', (event) => {
+    const input = event.target;
+    if (!input.matches('input, select')) return;
+    const message = input === whatsappInput
+      ? (input.value ? 'Escribe 9 dígitos y empieza con 9.' : 'Ingresa tu número de WhatsApp.')
+      : 'Completa este campo para continuar.';
+    setFieldState(input, message);
+  }, true);
+
+  const clearValidField = (event) => {
+    const input = event.target;
+    if (!input.matches('input, select') || input === whatsappInput) return;
+    if (input.validity.valid) setFieldState(input);
+  };
+  form.addEventListener('input', clearValidField);
+  form.addEventListener('change', clearValidField);
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -492,7 +524,7 @@ function initOrderFormSubmission() {
     // Validación número peruano (9 dígitos)
     const phoneDigits = celular.replace(/\D/g, '');
     if (!/^9\d{8}$/.test(phoneDigits)) {
-      alert('Ingresa un número de WhatsApp válido: 9 dígitos y debe comenzar con 9.');
+      setFieldState(whatsappInput, 'Escribe 9 dígitos y empieza con 9.');
       document.getElementById('drawerWhatsapp').focus();
       return;
     }
