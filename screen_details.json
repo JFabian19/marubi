@@ -1,0 +1,431 @@
+{
+  "screenshot": {
+    "name": "projects/16706797031320798404/screens/fa7dbd7c2bcf43ea8231e416747a931f/fileEntries/screenshot",
+    "downloadUrl": "https://lh3.googleusercontent.com/aida/AEtjO1Wjy_kQ0oK09qrTbpy3jLBQ3ucLMQd77H9-hs20xIf1GOXEC-blTAMg1tQgm868XauTG4yle6rRCCa0wXfuXmzZcN5EBjfXskCpo3sjRrfUcxSm784OMCqYltDQNsGZgvL3mNskmeDgXLOjcvopPJN_-f-OpZ6PQzspctCShBkV2FPl63raMyHA1Pkfz7o3eh_lzbnDNdGlNhxklrgVWHQOHC5xtlnu4rgQI10nscjdKbx7dq6TRVV0ZukI"
+  },
+  "htmlCode": {
+    "name": "projects/16706797031320798404/screens/fa7dbd7c2bcf43ea8231e416747a931f/fileEntries/html",
+    "downloadUrl": "https://contribution.usercontent.google.com/download?c=CgthaWRhX2NvZGVmeBJyEgxzdGl0Y2hfZmlsZXMaYgosc3RpdGNoX2h0bWxfMDAwNjVkMzVlMWI0ZjRkMDAyMmQ0ZDY0NDcwNDc0MDcSCxIHEMKc0vqGHxgBkgEkCgpwcm9qZWN0X2lkEhZCFDE2NzA2Nzk3MDMxMzIwNzk4NDA0&filename=&opi=89354086",
+    "mimeType": "text/html"
+  },
+  "id": "fa7dbd7c2bcf43ea8231e416747a931f",
+  "generatedBy": "HatterAgent",
+  "width": "780",
+  "height": "8130",
+  "title": "MARUBI — Editorial Ecommerce Home (Animated Hero)",
+  "prompt": "Maintain the exact same design, layout, content, language (Spanish), images, and sections of the screen, but animate ONLY the HERO section and the trust bar below it:\n\n1. Add elegant, subtle CSS motion keyframes and styling:\n- Define an editorial easing curve: cubic-bezier(0.16, 1, 0.3, 1).\n- `@keyframes heroFadeUp`: from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); }\n- `@keyframes heroImageReveal`: from { opacity: 0; transform: translateY(18px) scale(0.985); } to { opacity: 1; transform: translateY(0) scale(1); }\n- `@keyframes subtleFloat`: 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-4px); } with 8s ease-in-out infinite loop.\n- Support `@media (prefers-reduced-motion: reduce)` disabling motion for accessibility.\n\n2. Staggered sequence for Hero elements on page load (total entrance ~1.2s):\n- Category kicker (\"EDICIÓN 2025 — INGENIERÍA Y UTILIDAD\"): delay 0.1s\n- Main Headline (\"Diseñadas para resolver. Hechas para durar.\"): delay 0.2s\n- Subtitle (\"Productos seleccionados para trabajar, arreglar y crear con confianza.\"): delay 0.35s\n- CTA group (\"Comprar ahora\" and \"Ver colección\"): delay 0.5s\n- Product image container: reveal delay 0.3s, followed by the subtleFloat micro-movement to make the hero feel alive and sophisticated without being distracting.\n- Trust bar below the hero (\"Envíos a todo el Perú\", \"Compra segura\", \"Atención por WhatsApp\"): entrance delay 0.7s.\n\n3. CTA Button micro-interactions:\n- Primary button (\"Comprar ahora\"): subtle micro-lift (-2px) and soft warm glow shadow (`box-shadow: 0 4px 14px rgba(255, 97, 38, 0.28)`) on hover/active with smooth 0.25s transition.\n- Secondary CTA (\"Ver colección\"): elegant hover transition with slight nudge on the chevron.\n\nPreserve all existing Spanish copy, layout, and sections (Header, Product catalog, Categories, Brand Manifesto Banner, and Footer) exactly as they are.",
+  "name": "projects/16706797031320798404/screens/fa7dbd7c2bcf43ea8231e416747a931f",
+  "theme": {
+    "colorMode": "LIGHT",
+    "font": "INTER",
+    "roundness": "ROUND_EIGHT",
+    "customColor": "#062c59",
+    "headlineFont": "INTER",
+    "bodyFont": "INTER",
+    "labelFont": "INTER",
+    "namedColors": {
+      "surface-tertiary": "#F0F2F5",
+      "surface": "#f9f9ff",
+      "on_primary_fixed": "#001b3d",
+      "error_container": "#ffdad6",
+      "whatsapp-green": "#25D366",
+      "surface_container_low": "#f1f3ff",
+      "on_tertiary_container": "#c9835a",
+      "on_surface_variant": "#43474f",
+      "tertiary_fixed_dim": "#ffb68d",
+      "secondary_container": "#fd5f24",
+      "surface-page": "#FFFFFF",
+      "surface_bright": "#f9f9ff",
+      "on_primary_fixed_variant": "#294775",
+      "outline": "#747780",
+      "on_primary": "#ffffff",
+      "on_secondary_fixed": "#390c00",
+      "border-subtle": "#E5E7EB",
+      "surface_tint": "#425f8e",
+      "border-strong": "#D1D5DB",
+      "surface_variant": "#dce2f7",
+      "surface-secondary": "#F7F8FA",
+      "primary": "#001737",
+      "on_secondary_fixed_variant": "#832600",
+      "tertiary_fixed": "#ffdbc9",
+      "primary_container": "#062c59",
+      "surface_dim": "#d3daef",
+      "on_secondary": "#ffffff",
+      "inverse_primary": "#aac7fd",
+      "tertiary_container": "#4d1f00",
+      "surface_container": "#e9edff",
+      "inverse_surface": "#293040",
+      "surface_container_lowest": "#ffffff",
+      "on_tertiary": "#ffffff",
+      "background": "#f9f9ff",
+      "on_tertiary_fixed_variant": "#6e3815",
+      "primary_fixed": "#d6e3ff",
+      "surface_container_highest": "#dce2f7",
+      "primary_fixed_dim": "#aac7fd",
+      "on_surface": "#141b2b",
+      "secondary_fixed": "#ffdbd0",
+      "text-primary": "#111827",
+      "secondary": "#ac3400",
+      "on_primary_container": "#7895c8",
+      "on_background": "#141b2b",
+      "surface_container_high": "#e1e8fd",
+      "navy-surface": "#F0F5FA",
+      "inverse_on_surface": "#edf0ff",
+      "text-muted": "#9CA3AF",
+      "accent-conversion-hover": "#E54F18",
+      "success": "#16A34A",
+      "outline_variant": "#c4c6d0",
+      "secondary_fixed_dim": "#ffb59d",
+      "tertiary": "#2d0f00",
+      "on_error_container": "#93000a",
+      "navy-hover": "#041F3F",
+      "error": "#ba1a1a",
+      "on_tertiary_fixed": "#331200",
+      "text-secondary": "#667085",
+      "on_error": "#ffffff",
+      "on_secondary_container": "#561600",
+      "accent-conversion-light": "#FFF3ED"
+    },
+    "colorVariant": "FIDELITY",
+    "overridePrimaryColor": "#062c59",
+    "overrideSecondaryColor": "#ff6126",
+    "overrideNeutralColor": "#111827",
+    "spacingScale": 2,
+    "typography": {
+      "price-card": {
+        "fontFamily": "Inter",
+        "fontSize": "20px",
+        "fontWeight": "700",
+        "lineHeight": "26px",
+        "letterSpacing": "-0.01em"
+      },
+      "headline-lg": {
+        "fontFamily": "Inter",
+        "fontSize": "36px",
+        "fontWeight": "700",
+        "lineHeight": "44px",
+        "letterSpacing": "-0.02em"
+      },
+      "headline-sm": {
+        "fontFamily": "Inter",
+        "fontSize": "20px",
+        "fontWeight": "600",
+        "lineHeight": "28px",
+        "letterSpacing": "-0.01em"
+      },
+      "body-md": {
+        "fontFamily": "Inter",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      },
+      "caption": {
+        "fontFamily": "Inter",
+        "fontSize": "12px",
+        "fontWeight": "400",
+        "lineHeight": "16px"
+      },
+      "price-hero": {
+        "fontFamily": "Inter",
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "36px",
+        "letterSpacing": "-0.02em"
+      },
+      "display-hero-mobile": {
+        "fontFamily": "Inter",
+        "fontSize": "32px",
+        "fontWeight": "700",
+        "lineHeight": "40px",
+        "letterSpacing": "-0.02em"
+      },
+      "body-lg": {
+        "fontFamily": "Inter",
+        "fontSize": "18px",
+        "fontWeight": "400",
+        "lineHeight": "28px"
+      },
+      "body-sm": {
+        "fontFamily": "Inter",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px"
+      },
+      "price-strikethrough": {
+        "fontFamily": "Inter",
+        "fontSize": "14px",
+        "fontWeight": "400",
+        "lineHeight": "20px",
+        "letterSpacing": "0em"
+      },
+      "headline-md": {
+        "fontFamily": "Inter",
+        "fontSize": "24px",
+        "fontWeight": "600",
+        "lineHeight": "32px",
+        "letterSpacing": "-0.015em"
+      },
+      "headline-lg-mobile": {
+        "fontFamily": "Inter",
+        "fontSize": "26px",
+        "fontWeight": "700",
+        "lineHeight": "34px",
+        "letterSpacing": "-0.015em"
+      },
+      "label-sm": {
+        "fontFamily": "Inter",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "lineHeight": "16px",
+        "letterSpacing": "0.025em"
+      },
+      "label-lg": {
+        "fontFamily": "Inter",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "lineHeight": "20px"
+      },
+      "label-md": {
+        "fontFamily": "Inter",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "lineHeight": "18px"
+      },
+      "display-hero": {
+        "fontFamily": "Inter",
+        "fontSize": "48px",
+        "fontWeight": "700",
+        "lineHeight": "56px",
+        "letterSpacing": "-0.025em"
+      }
+    },
+    "spacing": {
+      "space-xs": "0.25rem",
+      "margin-mobile": "1rem",
+      "space-md": "1rem",
+      "gutter-mobile": "0.75rem",
+      "gutter": "1rem",
+      "margin": "2rem",
+      "space-xl": "2.5rem",
+      "space-sm": "0.5rem",
+      "space-lg": "1.5rem"
+    },
+    "headlineFontFamily": "Inter",
+    "bodyFontFamily": "Inter",
+    "labelFontFamily": "Inter"
+  },
+  "deviceType": "MOBILE",
+  "screenType": "DESIGN",
+  "screenMetadata": {
+    "agentType": "PRO_AGENT",
+    "status": "COMPLETE"
+  },
+  "designSystem": {
+    "name": "assets/bbc7da83b1f6434bbf1ea2044a1877d2",
+    "designSystem": {
+      "displayName": "DTC Modern Tech & Utility",
+      "styleGuidelines": "## Brand & Style\n\nThe design system establishes a premium, minimalist Direct-to-Consumer (DTC) digital commerce experience tailored for modern Peruvian consumers. It departs deliberately from traditional, cluttered hardware store aesthetics and chaotic marketplaces, positioning everyday practical tools, home solutions, and smart gear through the elevated design sensibility of modern tech lifestyle brands like Apple and Xiaomi.\n\n### Core Attributes & Personality\n- **Confidence & Rigor:** Institutional stability conveyed through deep corporate navy, precise typography, and razor-sharp UI hierarchy.\n- **Dynamic Action & Pragmatism:** Purposeful flashes of vibrant orange reserved exclusively for high-intent conversion pathways (Add to Cart, Checkout, Promotional Badges).\n- **Frictionless Simplicity:** Mobile-first user flows engineered for social ad traffic (Meta Ads), ensuring minimal cognitive load, immediate product discovery, and rapid checkout.\n- **Tactile Modernity:** Balanced surface transitions, crisp borders, subtle elevations, and clean photography framing the physical quality of the goods.\n\n### Visual Style Movement\nThe visual aesthetic merges **Modern DTC Minimalism** with **Consumer Tech Functionalism**. It leverages expansive white space, strict component geometry with soft corners, light gray structural surfaces, and discrete, functional micro-interactions. Every element serves an explicit conversion or informational purpose: **Product → Price → Benefit → Action**.\n\n## Layout & Spacing\n\nThe layout philosophy follows a **fluid-responsive, mobile-first** structure built around clean whitespace and vertical density efficiency.\n\n### Layout Mechanics\n- **Max Content Width:** Centered on desktop with a maximum constraint between `1200px` and `1360px`, allowing generous breathing room on ultrawide viewports.\n- **Mobile Viewport Discipline:** Outer screen horizontal margins set to `16px` (`margin-mobile`), ensuring full utilization of horizontal real estate for product tiles without clipping touch targets.\n- **Grid Structure:**\n  - **Mobile (\u003c 768px):** 2-column product grid with tight `12px` (`gutter-mobile`) gaps, allowing users to evaluate dual options in a single thumb scroll. Full-width stacked single columns for value props and checkout flows.\n  - **Tablet (768px - 1024px):** 3-column product grid with `16px` gutters.\n  - **Desktop (\u003e 1024px):** 4-column product grid with `24px` gutters and clean baseline alignment.\n- **Spacing Rhythm:** Based on an 8pt architectural scale (`0.25rem` through `2.5rem`), standardizing consistent gaps between title groups, pricing rows, and button anchors.\n\n## Elevation & Depth\n\nVisual hierarchy combines **ultra-light tactile shadows** with crisp **low-contrast borders (`#E5E7EB`)** to create clean, airy product cards that stand out on mobile screens without looking heavy or cluttered.\n\n### Depth Hierarchy\n- **Level 0 (Flat Canvas):** Page backgrounds (`#FFFFFF` and `#F7F8FA`) with zero elevation.\n- **Level 1 (Product Cards & Content Panels):** Border `1px solid #E5E7EB` paired with an ambient micro-shadow: `0 1px 3px rgba(6, 44, 89, 0.04), 0 4px 12px rgba(6, 44, 89, 0.02)`. The shadow has a very faint Navy tint (`#062C59`) rather than muddy black, subtly tying back to the primary brand color.\n- **Level 2 (Hover States & Sticky Navbars):** `0 4px 16px rgba(6, 44, 89, 0.08), 0 1px 4px rgba(6, 44, 89, 0.04)`. Used for the sticky header, mini-cart preview, and elevated interactive cards.\n- **Level 3 (Modals, Slide-over Cart & Floating Action WhatsApp):** `0 12px 32px rgba(6, 44, 89, 0.14), 0 4px 8px rgba(6, 44, 89, 0.04)`. High z-index surfaces focusing modal engagement.\n\n## Components\n\n### Buttons\n- **Primary CTA (\"Comprar ahora\", \"Añadir al carrito\"):**\n  - Background: MARUBI Orange (`#FF6126`).\n  - Text: White (`#FFFFFF`), `font-weight: 600`, `label-md` or `label-lg`.\n  - Border Radius: `10px`.\n  - Padding: `14px 24px` on desktop; minimum `48px` tap height on mobile.\n  - Hover / Active: Smooth transition to `#E54F18` with slight elevation shift.\n- **Secondary Action (\"Ver producto\", \"Filtros\"):**\n  - Background: White (`#FFFFFF`).\n  - Border: `1.5px solid #062C59`.\n  - Text: Deep Navy (`#062C59`), `font-weight: 600`.\n  - Border Radius: `10px`.\n  - Hover: Navy surface tint (`#F0F5FA`).\n- **Ghost / Tertiary Action:** Transparent background, Navy or Slate text, no border, text underline on hover.\n\n### Product Cards\n- **Structure:** Clean vertical card enclosed in a `1px solid #E5E7EB` border with `14px` rounded corners on a pure white surface.\n- **Image Container:** 1:1 square ratio with generous internal padding on `#F7F8FA` or pure white backgrounds. High-resolution imagery with neutral lighting.\n- **Discount Badge:** Absolute positioned top-left over image. Background `#FF6126`, text White, uppercase `12px` semibold, `6px` border-radius.\n- **Typography Block:** Compact layout. Product title in `text-primary` (`14px` mobile, `16px` desktop), limited to 2 lines max with ellipsis.\n- **Pricing Group:** High-contrast display: Current Price (`#062C59`, `price-card`), Previous Price strikethrough (`#9CA3AF`), discount percentage indicator.\n- **Action:** Direct button trigger (\"Ver producto\" or quick-add cart button).\n\n### Form Inputs & Text Fields\n- **Container:** Height `44px` to `48px`, border `1px solid #E5E7EB`, background `#FFFFFF`, border-radius `10px`.\n- **States:**\n  - Focus: Border shifts to Deep Navy (`#062C59`) with a soft glow `0 0 0 3px rgba(6, 44, 89, 0.1)`.\n  - Error: Border shifts to `#DC2626` with red validation message.\n  - Placeholder: `#9CA3AF`, typography `body-sm`.\n\n### Checkboxes & Radios\n- **Controls:** `20px × 20px`, rounded corners (`4px` for checkboxes, full circle for radios).\n- **Active State:** Deep Navy (`#062C59`) fill with white checkmark glyph or center dot. Border `#D1D5DB` when unselected.\n\n### Chips & Category Filters\n- **Default:** Pill or soft-radius (`8px`) container with `#F7F8FA` background, `#667085` text, no heavy border.\n- **Selected:** Deep Navy (`#062C59`) background with White text, or Orange (`#FF6126`) border for active sale filters.\n\n### Navigation Header & Utility\n- **Header:** Crisp white background with subtle bottom border (`#E5E7EB`). Compact height (`64px` mobile, `72px` desktop). Houses brand mark, search bar, and cart badge with an active item count pill in Orange (`#FF6126`).\n- **Footer:** Immersive Deep Navy (`#062C59`) background. High-contrast white brand text, secondary links in soft gray (`#D1D5DB`), institutional trust seals, and direct WhatsApp contact module.",
+      "theme": {
+        "colorMode": "LIGHT",
+        "font": "INTER",
+        "roundness": "ROUND_EIGHT",
+        "customColor": "#062c59",
+        "headlineFont": "INTER",
+        "bodyFont": "INTER",
+        "labelFont": "INTER",
+        "namedColors": {
+          "primary_container": "#062c59",
+          "surface_container": "#e9edff",
+          "on_error": "#ffffff",
+          "whatsapp-green": "#25D366",
+          "secondary_fixed_dim": "#ffb59d",
+          "text-primary": "#111827",
+          "surface_bright": "#f9f9ff",
+          "error": "#ba1a1a",
+          "surface-tertiary": "#F0F2F5",
+          "navy-surface": "#F0F5FA",
+          "secondary_fixed": "#ffdbd0",
+          "surface-secondary": "#F7F8FA",
+          "on_primary": "#ffffff",
+          "on_secondary_container": "#561600",
+          "tertiary": "#2d0f00",
+          "success": "#16A34A",
+          "on_primary_fixed": "#001b3d",
+          "surface_container_low": "#f1f3ff",
+          "on_tertiary": "#ffffff",
+          "on_tertiary_container": "#c9835a",
+          "on_error_container": "#93000a",
+          "on_secondary_fixed_variant": "#832600",
+          "primary_fixed": "#d6e3ff",
+          "outline_variant": "#c4c6d0",
+          "tertiary_fixed": "#ffdbc9",
+          "inverse_on_surface": "#edf0ff",
+          "on_background": "#141b2b",
+          "on_primary_container": "#7895c8",
+          "surface_container_lowest": "#ffffff",
+          "surface_container_high": "#e1e8fd",
+          "border-strong": "#D1D5DB",
+          "on_secondary_fixed": "#390c00",
+          "on_tertiary_fixed": "#331200",
+          "error_container": "#ffdad6",
+          "tertiary_fixed_dim": "#ffb68d",
+          "background": "#f9f9ff",
+          "surface_container_highest": "#dce2f7",
+          "on_tertiary_fixed_variant": "#6e3815",
+          "on_surface": "#141b2b",
+          "surface_dim": "#d3daef",
+          "primary": "#001737",
+          "surface_tint": "#425f8e",
+          "on_surface_variant": "#43474f",
+          "surface-page": "#FFFFFF",
+          "secondary": "#ac3400",
+          "text-muted": "#9CA3AF",
+          "on_primary_fixed_variant": "#294775",
+          "surface_variant": "#dce2f7",
+          "outline": "#747780",
+          "accent-conversion-hover": "#E54F18",
+          "tertiary_container": "#4d1f00",
+          "secondary_container": "#fd5f24",
+          "inverse_surface": "#293040",
+          "navy-hover": "#041F3F",
+          "accent-conversion-light": "#FFF3ED",
+          "inverse_primary": "#aac7fd",
+          "border-subtle": "#E5E7EB",
+          "on_secondary": "#ffffff",
+          "primary_fixed_dim": "#aac7fd",
+          "text-secondary": "#667085",
+          "surface": "#f9f9ff"
+        },
+        "designMd": "---\nname: DTC Modern Tech & Utility\ncolors:\n  surface: '#f9f9ff'\n  surface-dim: '#d3daef'\n  surface-bright: '#f9f9ff'\n  surface-container-lowest: '#ffffff'\n  surface-container-low: '#f1f3ff'\n  surface-container: '#e9edff'\n  surface-container-high: '#e1e8fd'\n  surface-container-highest: '#dce2f7'\n  on-surface: '#141b2b'\n  on-surface-variant: '#43474f'\n  inverse-surface: '#293040'\n  inverse-on-surface: '#edf0ff'\n  outline: '#747780'\n  outline-variant: '#c4c6d0'\n  surface-tint: '#425f8e'\n  primary: '#001737'\n  on-primary: '#ffffff'\n  primary-container: '#062c59'\n  on-primary-container: '#7895c8'\n  inverse-primary: '#aac7fd'\n  secondary: '#ac3400'\n  on-secondary: '#ffffff'\n  secondary-container: '#fd5f24'\n  on-secondary-container: '#561600'\n  tertiary: '#2d0f00'\n  on-tertiary: '#ffffff'\n  tertiary-container: '#4d1f00'\n  on-tertiary-container: '#c9835a'\n  error: '#ba1a1a'\n  on-error: '#ffffff'\n  error-container: '#ffdad6'\n  on-error-container: '#93000a'\n  primary-fixed: '#d6e3ff'\n  primary-fixed-dim: '#aac7fd'\n  on-primary-fixed: '#001b3d'\n  on-primary-fixed-variant: '#294775'\n  secondary-fixed: '#ffdbd0'\n  secondary-fixed-dim: '#ffb59d'\n  on-secondary-fixed: '#390c00'\n  on-secondary-fixed-variant: '#832600'\n  tertiary-fixed: '#ffdbc9'\n  tertiary-fixed-dim: '#ffb68d'\n  on-tertiary-fixed: '#331200'\n  on-tertiary-fixed-variant: '#6e3815'\n  background: '#f9f9ff'\n  on-background: '#141b2b'\n  surface-variant: '#dce2f7'\n  surface-page: '#FFFFFF'\n  surface-secondary: '#F7F8FA'\n  surface-tertiary: '#F0F2F5'\n  border-subtle: '#E5E7EB'\n  border-strong: '#D1D5DB'\n  text-primary: '#111827'\n  text-secondary: '#667085'\n  text-muted: '#9CA3AF'\n  accent-conversion-hover: '#E54F18'\n  accent-conversion-light: '#FFF3ED'\n  navy-hover: '#041F3F'\n  navy-surface: '#F0F5FA'\n  success: '#16A34A'\n  whatsapp-green: '#25D366'\ntypography:\n  display-hero:\n    fontFamily: Inter\n    fontSize: 48px\n    fontWeight: '700'\n    lineHeight: 56px\n    letterSpacing: -0.025em\n  display-hero-mobile:\n    fontFamily: Inter\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 40px\n    letterSpacing: -0.02em\n  headline-lg:\n    fontFamily: Inter\n    fontSize: 36px\n    fontWeight: '700'\n    lineHeight: 44px\n    letterSpacing: -0.02em\n  headline-lg-mobile:\n    fontFamily: Inter\n    fontSize: 26px\n    fontWeight: '700'\n    lineHeight: 34px\n    letterSpacing: -0.015em\n  headline-md:\n    fontFamily: Inter\n    fontSize: 24px\n    fontWeight: '600'\n    lineHeight: 32px\n    letterSpacing: -0.015em\n  headline-sm:\n    fontFamily: Inter\n    fontSize: 20px\n    fontWeight: '600'\n    lineHeight: 28px\n    letterSpacing: -0.01em\n  price-hero:\n    fontFamily: Inter\n    fontSize: 32px\n    fontWeight: '700'\n    lineHeight: 36px\n    letterSpacing: -0.02em\n  price-card:\n    fontFamily: Inter\n    fontSize: 20px\n    fontWeight: '700'\n    lineHeight: 26px\n    letterSpacing: -0.01em\n  price-strikethrough:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: 20px\n    letterSpacing: 0em\n  body-lg:\n    fontFamily: Inter\n    fontSize: 18px\n    fontWeight: '400'\n    lineHeight: 28px\n  body-md:\n    fontFamily: Inter\n    fontSize: 16px\n    fontWeight: '400'\n    lineHeight: 24px\n  body-sm:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '400'\n    lineHeight: 20px\n  label-lg:\n    fontFamily: Inter\n    fontSize: 16px\n    fontWeight: '600'\n    lineHeight: 20px\n  label-md:\n    fontFamily: Inter\n    fontSize: 14px\n    fontWeight: '600'\n    lineHeight: 18px\n  label-sm:\n    fontFamily: Inter\n    fontSize: 12px\n    fontWeight: '600'\n    lineHeight: 16px\n    letterSpacing: 0.025em\n  caption:\n    fontFamily: Inter\n    fontSize: 12px\n    fontWeight: '400'\n    lineHeight: 16px\nrounded:\n  sm: 0.25rem\n  DEFAULT: 0.5rem\n  md: 0.75rem\n  lg: 1rem\n  xl: 1.5rem\n  full: 9999px\nspacing:\n  gutter: 1rem\n  gutter-mobile: 0.75rem\n  margin: 2rem\n  margin-mobile: 1rem\n  space-xs: 0.25rem\n  space-sm: 0.5rem\n  space-md: 1rem\n  space-lg: 1.5rem\n  space-xl: 2.5rem\n---\n\n## Brand & Style\n\nThe design system establishes a premium, minimalist Direct-to-Consumer (DTC) digital commerce experience tailored for modern Peruvian consumers. It departs deliberately from traditional, cluttered hardware store aesthetics and chaotic marketplaces, positioning everyday practical tools, home solutions, and smart gear through the elevated design sensibility of modern tech lifestyle brands like Apple and Xiaomi.\n\n### Core Attributes & Personality\n- **Confidence & Rigor:** Institutional stability conveyed through deep corporate navy, precise typography, and razor-sharp UI hierarchy.\n- **Dynamic Action & Pragmatism:** Purposeful flashes of vibrant orange reserved exclusively for high-intent conversion pathways (Add to Cart, Checkout, Promotional Badges).\n- **Frictionless Simplicity:** Mobile-first user flows engineered for social ad traffic (Meta Ads), ensuring minimal cognitive load, immediate product discovery, and rapid checkout.\n- **Tactile Modernity:** Balanced surface transitions, crisp borders, subtle elevations, and clean photography framing the physical quality of the goods.\n\n### Visual Style Movement\nThe visual aesthetic merges **Modern DTC Minimalism** with **Consumer Tech Functionalism**. It leverages expansive white space, strict component geometry with soft corners, light gray structural surfaces, and discrete, functional micro-interactions. Every element serves an explicit conversion or informational purpose: **Product → Price → Benefit → Action**.\n\n## Colors\n\nThe color palette operates under a high-contrast, disciplined hierarchy designed to guide consumer attention directly to value and action.\n\n### Palette Hierarchy & Intent\n- **Primary Navy (`#062C59`):** Derived from the brand mark's circular foundation. Serves as the anchor for structural authority. Used across headers, primary typography, deep footers, brand identity accents, and key informational banners.\n- **Conversion Orange (`#FF6126`):** The signature brand accent. Strictly preserved for conversion-critical actions: \"Comprar ahora\", \"Añadir al carrito\", discount chips, active state tabs, and sale callouts. It must never be overused as generic background wash or large surface fill, preserving its urgency and click-through efficacy.\n- **Surfaces (`#FFFFFF` & `#F7F8FA`):** Pure white serves as the primary canvas for product photography and detail screens. Secondary off-white creates soft tonal separation for card backdrops, carousel rails, and section dividers without requiring heavy borders.\n- **Text & Contrast (`#111827` & `#667085`):** High-contrast neutral ink for headings and pricing, balanced by secondary cool-gray for body copy, specs, and helper text.\n\n## Typography\n\nTypography relies on **Inter** across all display, body, and label roles to preserve a unified, modern, high-precision aesthetic. Type choices prioritize instantaneous legibility for social advertising referrals scrolling rapidly on mobile viewports.\n\n### Typographic Principles\n- **Clarity over Expression:** Tightly tracked headings (`-0.015em` to `-0.025em`) prevent clumsy line wraps and deliver confident punchiness across product names and value propositions.\n- **Price Hierarchy:** Commercial numbers employ dedicated price tokens. The current sales price (`price-card` / `price-hero`) is styled in bold high-contrast navy or charcoal, whereas original crossed-out prices (`price-strikethrough`) sit unobtrusively in muted grey (`#9CA3AF`).\n- **Device Agility:** Responsive variants for hero banners and category headers gracefully step down in size on mobile screens to maintain fold efficiency and prevent text crowding above the conversion buttons.\n\n## Layout & Spacing\n\nThe layout philosophy follows a **fluid-responsive, mobile-first** structure built around clean whitespace and vertical density efficiency.\n\n### Layout Mechanics\n- **Max Content Width:** Centered on desktop with a maximum constraint between `1200px` and `1360px`, allowing generous breathing room on ultrawide viewports.\n- **Mobile Viewport Discipline:** Outer screen horizontal margins set to `16px` (`margin-mobile`), ensuring full utilization of horizontal real estate for product tiles without clipping touch targets.\n- **Grid Structure:**\n  - **Mobile (\u003c 768px):** 2-column product grid with tight `12px` (`gutter-mobile`) gaps, allowing users to evaluate dual options in a single thumb scroll. Full-width stacked single columns for value props and checkout flows.\n  - **Tablet (768px - 1024px):** 3-column product grid with `16px` gutters.\n  - **Desktop (\u003e 1024px):** 4-column product grid with `24px` gutters and clean baseline alignment.\n- **Spacing Rhythm:** Based on an 8pt architectural scale (`0.25rem` through `2.5rem`), standardizing consistent gaps between title groups, pricing rows, and button anchors.\n\n## Elevation & Depth\n\nVisual hierarchy combines **ultra-light tactile shadows** with crisp **low-contrast borders (`#E5E7EB`)** to create clean, airy product cards that stand out on mobile screens without looking heavy or cluttered.\n\n### Depth Hierarchy\n- **Level 0 (Flat Canvas):** Page backgrounds (`#FFFFFF` and `#F7F8FA`) with zero elevation.\n- **Level 1 (Product Cards & Content Panels):** Border `1px solid #E5E7EB` paired with an ambient micro-shadow: `0 1px 3px rgba(6, 44, 89, 0.04), 0 4px 12px rgba(6, 44, 89, 0.02)`. The shadow has a very faint Navy tint (`#062C59`) rather than muddy black, subtly tying back to the primary brand color.\n- **Level 2 (Hover States & Sticky Navbars):** `0 4px 16px rgba(6, 44, 89, 0.08), 0 1px 4px rgba(6, 44, 89, 0.04)`. Used for the sticky header, mini-cart preview, and elevated interactive cards.\n- **Level 3 (Modals, Slide-over Cart & Floating Action WhatsApp):** `0 12px 32px rgba(6, 44, 89, 0.14), 0 4px 8px rgba(6, 44, 89, 0.04)`. High z-index surfaces focusing modal engagement.\n\n## Shapes\n\nThe shape system adopts modern, refined rounded corners (`roundedness: 2`) tuned specifically to match contemporary tech device aesthetics without becoming childishly circular or hyper-round.\n\n### Radius Assignments\n- **Inputs & Field Controls:** `10px` (`rounded`) for ergonomic precision and clear text framing.\n- **Buttons (Primary & Secondary):** `10px` to `12px` (`rounded`), providing a firm, clickable button feel that stands out as a clear touch target.\n- **Product Cards & Panels:** `14px` to `16px` (`rounded-lg`), producing gentle corners that frame product imagery cleanly.\n- **Promotional Badges & Discount Chips:** `6px` to `8px` (`rounded-sm`), keeping sales tags crisp and compact over photography.\n- **Floating Contact Buttons (WhatsApp):** Circular pill (`9999px`) for standard mobile chat behavior.\n\n## Components\n\n### Buttons\n- **Primary CTA (\"Comprar ahora\", \"Añadir al carrito\"):**\n  - Background: MARUBI Orange (`#FF6126`).\n  - Text: White (`#FFFFFF`), `font-weight: 600`, `label-md` or `label-lg`.\n  - Border Radius: `10px`.\n  - Padding: `14px 24px` on desktop; minimum `48px` tap height on mobile.\n  - Hover / Active: Smooth transition to `#E54F18` with slight elevation shift.\n- **Secondary Action (\"Ver producto\", \"Filtros\"):**\n  - Background: White (`#FFFFFF`).\n  - Border: `1.5px solid #062C59`.\n  - Text: Deep Navy (`#062C59`), `font-weight: 600`.\n  - Border Radius: `10px`.\n  - Hover: Navy surface tint (`#F0F5FA`).\n- **Ghost / Tertiary Action:** Transparent background, Navy or Slate text, no border, text underline on hover.\n\n### Product Cards\n- **Structure:** Clean vertical card enclosed in a `1px solid #E5E7EB` border with `14px` rounded corners on a pure white surface.\n- **Image Container:** 1:1 square ratio with generous internal padding on `#F7F8FA` or pure white backgrounds. High-resolution imagery with neutral lighting.\n- **Discount Badge:** Absolute positioned top-left over image. Background `#FF6126`, text White, uppercase `12px` semibold, `6px` border-radius.\n- **Typography Block:** Compact layout. Product title in `text-primary` (`14px` mobile, `16px` desktop), limited to 2 lines max with ellipsis.\n- **Pricing Group:** High-contrast display: Current Price (`#062C59`, `price-card`), Previous Price strikethrough (`#9CA3AF`), discount percentage indicator.\n- **Action:** Direct button trigger (\"Ver producto\" or quick-add cart button).\n\n### Form Inputs & Text Fields\n- **Container:** Height `44px` to `48px`, border `1px solid #E5E7EB`, background `#FFFFFF`, border-radius `10px`.\n- **States:**\n  - Focus: Border shifts to Deep Navy (`#062C59`) with a soft glow `0 0 0 3px rgba(6, 44, 89, 0.1)`.\n  - Error: Border shifts to `#DC2626` with red validation message.\n  - Placeholder: `#9CA3AF`, typography `body-sm`.\n\n### Checkboxes & Radios\n- **Controls:** `20px × 20px`, rounded corners (`4px` for checkboxes, full circle for radios).\n- **Active State:** Deep Navy (`#062C59`) fill with white checkmark glyph or center dot. Border `#D1D5DB` when unselected.\n\n### Chips & Category Filters\n- **Default:** Pill or soft-radius (`8px`) container with `#F7F8FA` background, `#667085` text, no heavy border.\n- **Selected:** Deep Navy (`#062C59`) background with White text, or Orange (`#FF6126`) border for active sale filters.\n\n### Navigation Header & Utility\n- **Header:** Crisp white background with subtle bottom border (`#E5E7EB`). Compact height (`64px` mobile, `72px` desktop). Houses brand mark, search bar, and cart badge with an active item count pill in Orange (`#FF6126`).\n- **Footer:** Immersive Deep Navy (`#062C59`) background. High-contrast white brand text, secondary links in soft gray (`#D1D5DB`), institutional trust seals, and direct WhatsApp contact module.",
+        "colorVariant": "FIDELITY",
+        "overridePrimaryColor": "#062c59",
+        "overrideSecondaryColor": "#ff6126",
+        "overrideNeutralColor": "#111827",
+        "spacingScale": 2,
+        "typography": {
+          "display-hero-mobile": {
+            "fontFamily": "Inter",
+            "fontSize": "32px",
+            "fontWeight": "700",
+            "lineHeight": "40px",
+            "letterSpacing": "-0.02em"
+          },
+          "body-lg": {
+            "fontFamily": "Inter",
+            "fontSize": "18px",
+            "fontWeight": "400",
+            "lineHeight": "28px"
+          },
+          "body-sm": {
+            "fontFamily": "Inter",
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px"
+          },
+          "headline-lg": {
+            "fontFamily": "Inter",
+            "fontSize": "36px",
+            "fontWeight": "700",
+            "lineHeight": "44px",
+            "letterSpacing": "-0.02em"
+          },
+          "headline-sm": {
+            "fontFamily": "Inter",
+            "fontSize": "20px",
+            "fontWeight": "600",
+            "lineHeight": "28px",
+            "letterSpacing": "-0.01em"
+          },
+          "caption": {
+            "fontFamily": "Inter",
+            "fontSize": "12px",
+            "fontWeight": "400",
+            "lineHeight": "16px"
+          },
+          "price-card": {
+            "fontFamily": "Inter",
+            "fontSize": "20px",
+            "fontWeight": "700",
+            "lineHeight": "26px",
+            "letterSpacing": "-0.01em"
+          },
+          "label-lg": {
+            "fontFamily": "Inter",
+            "fontSize": "16px",
+            "fontWeight": "600",
+            "lineHeight": "20px"
+          },
+          "label-sm": {
+            "fontFamily": "Inter",
+            "fontSize": "12px",
+            "fontWeight": "600",
+            "lineHeight": "16px",
+            "letterSpacing": "0.025em"
+          },
+          "display-hero": {
+            "fontFamily": "Inter",
+            "fontSize": "48px",
+            "fontWeight": "700",
+            "lineHeight": "56px",
+            "letterSpacing": "-0.025em"
+          },
+          "headline-lg-mobile": {
+            "fontFamily": "Inter",
+            "fontSize": "26px",
+            "fontWeight": "700",
+            "lineHeight": "34px",
+            "letterSpacing": "-0.015em"
+          },
+          "price-hero": {
+            "fontFamily": "Inter",
+            "fontSize": "32px",
+            "fontWeight": "700",
+            "lineHeight": "36px",
+            "letterSpacing": "-0.02em"
+          },
+          "label-md": {
+            "fontFamily": "Inter",
+            "fontSize": "14px",
+            "fontWeight": "600",
+            "lineHeight": "18px"
+          },
+          "price-strikethrough": {
+            "fontFamily": "Inter",
+            "fontSize": "14px",
+            "fontWeight": "400",
+            "lineHeight": "20px",
+            "letterSpacing": "0em"
+          },
+          "headline-md": {
+            "fontFamily": "Inter",
+            "fontSize": "24px",
+            "fontWeight": "600",
+            "lineHeight": "32px",
+            "letterSpacing": "-0.015em"
+          },
+          "body-md": {
+            "fontFamily": "Inter",
+            "fontSize": "16px",
+            "fontWeight": "400",
+            "lineHeight": "24px"
+          }
+        },
+        "spacing": {
+          "gutter": "1rem",
+          "margin": "2rem",
+          "space-md": "1rem",
+          "gutter-mobile": "0.75rem",
+          "space-xs": "0.25rem",
+          "space-xl": "2.5rem",
+          "space-sm": "0.5rem",
+          "space-lg": "1.5rem",
+          "margin-mobile": "1rem"
+        },
+        "headlineFontFamily": "Inter",
+        "bodyFontFamily": "Inter",
+        "labelFontFamily": "Inter"
+      }
+    },
+    "version": "1"
+  }
+}
