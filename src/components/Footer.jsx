@@ -25,7 +25,7 @@ export default function Footer({ onNavigateHome }) {
           aria-label="MARUBI Negocio Formal Registrado RUC 10608928281"
         >
           <img
-            src="/assets/logo-marubi.png"
+            src="/assets/logo-marubi.webp"
             alt="MARUBI Perú Tienda Formal"
             width="52"
             height="52"
@@ -47,7 +47,7 @@ export default function Footer({ onNavigateHome }) {
             <div className="voltra-footer__brand-block">
               <div className="voltra-footer__logo-wrap">
                 <img
-                  src="/assets/logo-marubi.png"
+                  src="/assets/logo-marubi.webp"
                   alt="Logo MARUBI Perú"
                   width="40"
                   height="40"

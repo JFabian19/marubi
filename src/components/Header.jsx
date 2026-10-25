@@ -70,7 +70,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
             onClick={(e) => handleHomeNav(e, '#inicio')}
             aria-label="MARUBI, ir al inicio"
           >
-            <img src="/assets/logo-marubi.png" alt="Logo MARUBI" className="brand-logo-img" />
+            <img src="/assets/logo-marubi.webp" alt="Logo MARUBI" width="38" height="38" className="brand-logo-img" />
             <span>MARUBI</span>
           </a>
 
@@ -255,7 +255,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
             <div className="cart-collection-promo">
               <div className="cart-collection-card">
                 <div className="cart-collection-media">
-                  <img src="/assets/confort-todo-el-ano.jpg" alt="Colección Más Vendidos MARUBI" loading="lazy" />
+                  <img src="/assets/hero-mobile-640.webp" alt="Colección Más Vendidos MARUBI" width="640" height="512" loading="lazy" decoding="async" />
                 </div>
                 <div className="cart-collection-info">
                   <h4>

@@ -94,7 +94,7 @@ export const MULTIROW_ITEMS = [
     caption: '[ ¿PREGUNTA O PROBLEMA 1? ]',
     heading: '[ Producto / Línea 1 ]',
     text: '[ Espacio de plantilla para describir en una frase cómo este producto resuelve una necesidad rápida en el hogar. ]',
-    image: '/assets/confort-todo-el-ano.jpg',
+    image: '/assets/confort-todo-el-ano.webp',
     reverse: false,
   },
   {
@@ -102,7 +102,7 @@ export const MULTIROW_ITEMS = [
     caption: '[ SUBTÍTULO DE BENEFICIO 2 ]',
     heading: '[ Producto / Línea 2 ]',
     text: '[ Espacio de plantilla para resaltar el ahorro de tiempo, dinero o esfuerzo que brinda tu segundo producto estrella. ]',
-    image: '/assets/ola-de-calor-control.jpg',
+    image: '/assets/ola-de-calor-control.webp',
     reverse: true,
   },
   {
@@ -110,7 +110,7 @@ export const MULTIROW_ITEMS = [
     caption: '[ CATEGORÍA DESTACADA 3 ]',
     heading: '[ Producto / Línea 3 ]',
     text: '[ Espacio de plantilla para presentar una tercera solución práctica de tu catálogo MARUBI. ]',
-    image: '/assets/no-ocupa-espacio-piso.jpg',
+    image: '/assets/no-ocupa-espacio-piso.webp',
     reverse: false,
   },
 ];
@@ -125,9 +125,9 @@ export const PRODUCT_PAGE_TEMPLATE = {
   priceSave: 'Ahorras S/ 00',
   ctaLabel: 'Pedir ahora — S/ 00',
   gallery: [
-    { src: '/assets/confort-todo-el-ano.jpg', label: 'Vista 1 del producto' },
-    { src: '/assets/lifestyle-calor.jpg', label: 'Vista 2 del producto' },
-    { src: '/assets/no-ocupa-espacio-piso.jpg', label: 'Vista 3 del producto' },
+    { src: '/assets/confort-todo-el-ano.webp', label: 'Vista 1 del producto' },
+    { src: '/assets/lifestyle-calor.webp', label: 'Vista 2 del producto' },
+    { src: '/assets/no-ocupa-espacio-piso.webp', label: 'Vista 3 del producto' },
   ],
   purchasePoints: [
     { bold: 'Envío gratis', rest: 'a todo el Perú' },
@@ -144,7 +144,7 @@ export const PRODUCT_PAGE_TEMPLATE = {
     eyebrow: '[ QUÉ PUEDES ESPERAR ]',
     heading: '[ Beneficio Principal Explicado con Claridad ]',
     intro: '[ Párrafo introductorio de plantilla: explica con transparencia qué hace el producto y cómo sacarle el máximo provecho en el día a día. ]',
-    image: '/assets/ola-de-calor-control.jpg',
+    image: '/assets/ola-de-calor-control.webp',
     caption: '[ Pie de foto descriptivo del producto en uso. ]',
     steps: [
       { num: '01', title: '[ Punto Clave o Beneficio 01 ]', text: '[ Explicación breve del primer beneficio o ventaja práctica del producto. ]' },

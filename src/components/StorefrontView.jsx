@@ -26,36 +26,38 @@ export default function StorefrontView({ onOpenProduct }) {
 
   return (
     <main id="storefrontView" className="storefront-view">
-      {/* SECCIÓN 1: HERO / SLIDESHOW PRINCIPAL ("SOMOS MARUBI") */}
+      {/* SECCIÓN 1: HERO BANNER OFICIAL MARUBI (ADAPTATIVO COMPUTADORA Y TELÉFONO EN WEBP) */}
       <section className="voltra-hero-section" id="inicio" aria-label="Presentación de marca MARUBI Perú">
         <div className="voltra-hero-banner">
-          <div className="voltra-hero-media">
-            <img
-              src="/assets/confort-todo-el-ano.jpg"
-              alt="MARUBI Perú — Productos prácticos e innovadores para tu hogar"
-              className="hero-img-desktop"
-              width="1400"
-              height="520"
-              fetchPriority="high"
-              decoding="async"
+          <h1 className="sr-only">
+            Somos MARUBI — Tienda Oficial en Perú (Negocio Formal RUC 10608928281): Decoración navideña, Novedades para el hogar, Regalos para todos y Variedad de productos
+          </h1>
+          <picture className="voltra-hero-picture">
+            <source
+              media="(max-width: 640px)"
+              srcSet="/assets/hero-mobile-640.webp 640w, /assets/hero-mobile.webp 1024w"
+              sizes="100vw"
+              type="image/webp"
+              width="1024"
+              height="819"
+            />
+            <source
+              media="(min-width: 641px)"
+              srcSet="/assets/hero-desktop.webp"
+              type="image/webp"
+              width="1024"
+              height="379"
             />
             <img
-              src="/assets/lifestyle-calor.jpg"
-              alt="MARUBI Perú — Tienda online con envío gratis a todo el Perú"
-              className="hero-img-mobile"
-              width="800"
-              height="600"
+              src="/assets/hero-desktop.webp"
+              alt="Somos MARUBI — Negocio formal RUC 10608928281: Decoración navideña, novedades para el hogar, regalos para todos y variedad de productos"
+              className="voltra-hero-img"
+              width="1024"
+              height="379"
               fetchPriority="high"
-              decoding="async"
+              decoding="sync"
             />
-          </div>
-          <div className="voltra-hero-overlay page-width">
-            <div className="voltra-hero-box">
-              <h1 className="voltra-hero-title">
-                Somos <span>MARUBI</span>
-              </h1>
-            </div>
-          </div>
+          </picture>
         </div>
       </section>
 
@@ -141,7 +143,7 @@ export default function StorefrontView({ onOpenProduct }) {
         <div className="page-width voltra-split-grid">
           <div className="voltra-split-media">
             <img
-              src="/assets/lifestyle-calor.jpg"
+              src="/assets/lifestyle-calor.webp"
               alt="Beneficios de comprar en MARUBI Perú"
               width="680"
               height="740"
@@ -205,7 +207,7 @@ export default function StorefrontView({ onOpenProduct }) {
         <div className="page-width voltra-split-grid">
           <div className="voltra-split-media">
             <img
-              src="/assets/no-ocupa-espacio-piso.jpg"
+              src="/assets/no-ocupa-espacio-piso.webp"
               alt="Nuestra misión MARUBI Perú"
               width="680"
               height="740"
@@ -239,10 +241,10 @@ export default function StorefrontView({ onOpenProduct }) {
         <div className="page-width voltra-overlap-grid">
           <div className="voltra-overlap-media">
             <img
-              src="/assets/confort-todo-el-ano.jpg"
+              src="/assets/hero-mobile-640.webp"
               alt="Somos MARUBI Perú"
-              width="680"
-              height="425"
+              width="640"
+              height="512"
               loading="lazy"
               decoding="async"
             />

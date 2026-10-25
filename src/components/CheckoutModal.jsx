@@ -140,7 +140,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
 
         <div className="drawer-body">
           <div className="drawer-cart-product">
-            <img src="/assets/confort-todo-el-ano.jpg" alt="" className="drawer-product-thumb" />
+            <img src="/assets/confort-todo-el-ano.webp" alt="" width="60" height="60" loading="lazy" decoding="async" className="drawer-product-thumb" />
             <div>
               <strong>{selectedProduct?.title || '[ Nombre del Producto ]'}</strong>
               <span>[ Detalle o accesorios incluidos ]</span>

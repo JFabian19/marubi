@@ -465,7 +465,7 @@ h3 { font-size: 1rem; }
 }
 
 /* ==========================================================================
-   SECCIÓN 1: HERO PRINCIPAL MOBILE-FIRST ("SOMOS MARUBI")
+   SECCIÓN 1: HERO PRINCIPAL MOBILE-FIRST ("SOMOS MARUBI" EN WEBP)
    ========================================================================== */
 .voltra-hero-banner {
   position: relative;
@@ -473,61 +473,21 @@ h3 { font-size: 1rem; }
   overflow: hidden;
   background: var(--navy-dark);
 }
-.voltra-hero-media {
+.voltra-hero-picture {
+  display: block;
   width: 100%;
-  aspect-ratio: 4 / 3.2;
-  position: relative;
 }
-.voltra-hero-media::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(11, 43, 82, .08) 0%, rgba(7, 29, 55, .48) 100%);
-}
-.voltra-hero-media img {
+.voltra-hero-img {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 1024 / 819;
   object-fit: cover;
 }
-.hero-img-desktop { display: none; }
-.hero-img-mobile { display: block; }
-
 @media (min-width: 641px) {
-  .voltra-hero-media {
-    aspect-ratio: 27 / 10;
-    max-height: 540px;
+  .voltra-hero-img {
+    aspect-ratio: 1024 / 379;
   }
-  .hero-img-desktop { display: block; }
-  .hero-img-mobile { display: none; }
-}
-
-.voltra-hero-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 20px;
-  pointer-events: none;
-}
-.voltra-hero-box {
-  background: rgba(255, 255, 255, .94);
-  backdrop-filter: blur(8px);
-  padding: 12px 26px;
-  border-radius: var(--radius-box);
-  box-shadow: 0 10px 30px rgba(7, 29, 55, .2);
-  text-align: center;
-  pointer-events: auto;
-}
-.voltra-hero-title {
-  font-size: clamp(1.55rem, 3.6vw, 2.85rem);
-  color: var(--navy);
-}
-.voltra-hero-title span { color: var(--orange-dark); }
-
-@media (min-width: 768px) {
-  .voltra-hero-overlay { padding-bottom: 36px; }
-  .voltra-hero-box { padding: 18px 38px; }
 }
 
 /* ==========================================================================
