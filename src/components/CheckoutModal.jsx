@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PERU_LOCATIONS } from '../data/peruLocations';
+import { PRODUCT_PAGE_TEMPLATE } from '../data/templateData';
 
 export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
   const [nombre, setNombre] = useState('');
@@ -72,12 +73,9 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
     }
 
     const orderNumber = 'MRB-' + Math.floor(100000 + Math.random() * 900000);
-    const isLimaOrCallao = departamento === 'Lima' || departamento === 'Callao';
-    const metodoTexto = isLimaOrCallao
-      ? 'Pago contra entrega Lima'
-      : 'Despacho por agencia (Provincia)';
-    const prodTitle = selectedProduct?.title || '[ Nombre del Producto ]';
-    const prodPrice = selectedProduct?.salePrice || 'S/. 00.00';
+    const metodoTexto = 'Envío gratis a todo el Perú a través de Shalom';
+    const prodTitle = selectedProduct?.title || PRODUCT_PAGE_TEMPLATE.title;
+    const prodPrice = selectedProduct?.salePrice || PRODUCT_PAGE_TEMPLATE.priceCurrent;
 
     const waText =
       `¡Hola MARUBI! Acabo de registrar mi pedido en la tienda:%0A%0A` +
@@ -95,12 +93,12 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
     if (typeof window.fbq === 'function') {
       window.fbq('track', 'Lead', {
         content_name: prodTitle,
-        value: 0,
+        value: 169.9,
         currency: 'PEN',
       });
     }
 
-    window.open(`https://wa.me/51912345678?text=${waText}`, '_blank');
+    window.open(`https://wa.me/51910247625?text=${waText}`, '_blank', 'noopener,noreferrer');
     onClose();
     setNombre('');
     setWhatsapp('');
@@ -110,8 +108,6 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
     setDireccion('');
     setReferencia('');
   };
-
-  const isLimaOrCallao = departamento === 'Lima' || departamento === 'Callao';
 
   return (
     <div
@@ -140,12 +136,12 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
 
         <div className="drawer-body">
           <div className="drawer-cart-product">
-            <img src="/assets/confort-todo-el-ano.webp" alt="" width="60" height="60" loading="lazy" decoding="async" className="drawer-product-thumb" />
+            <img src="/assets/navidad/pack-navidad-15-piezas.jpg" alt="" width="60" height="60" loading="lazy" decoding="async" className="drawer-product-thumb" />
             <div>
-              <strong>{selectedProduct?.title || '[ Nombre del Producto ]'}</strong>
-              <span>[ Detalle o accesorios incluidos ]</span>
+              <strong>{selectedProduct?.title || PRODUCT_PAGE_TEMPLATE.title}</strong>
+              <span>15 piezas · envío gratis por Shalom</span>
             </div>
-            <strong className="drawer-product-price">{selectedProduct?.salePrice || 'S/ 00'}</strong>
+            <strong className="drawer-product-price">{selectedProduct?.salePrice || PRODUCT_PAGE_TEMPLATE.priceCurrent}</strong>
           </div>
 
           <form id="drawerOrderForm" onSubmit={handleSubmit}>
@@ -332,13 +328,11 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
                 />
               ) : null}
               <div className="shipping-cost-text">
-                <div className="shipping-cost-title">Envío gratis</div>
+                <div className="shipping-cost-title">Envío gratis por Shalom</div>
                 <div className="shipping-cost-desc">
                   {!departamento
-                    ? 'Selecciona tu ubicación para ver la modalidad'
-                    : isLimaOrCallao
-                    ? 'Pago contra entrega Lima'
-                    : 'Despacho por agencia, coordinado por WhatsApp'}
+                    ? 'Selecciona tu ubicación para coordinar el despacho'
+                    : 'Coordinaremos entrega o recojo por WhatsApp'}
                 </div>
               </div>
             </div>
@@ -348,7 +342,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
         <footer className="drawer-footer">
           <div>
             <span>Total</span>
-            <strong>{selectedProduct?.salePrice || 'S/ 00'}</strong>
+            <strong>{selectedProduct?.salePrice || PRODUCT_PAGE_TEMPLATE.priceCurrent}</strong>
           </div>
           <button type="submit" form="drawerOrderForm" id="drawerSubmitBtn">
             Continuar por WhatsApp

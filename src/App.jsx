@@ -5,9 +5,10 @@ import StorefrontView from './components/StorefrontView';
 import ProductTemplateView from './components/ProductTemplateView';
 import Footer from './components/Footer';
 import CheckoutModal from './components/CheckoutModal';
+import { PRODUCT_PAGE_TEMPLATE } from './data/templateData';
 
 const STOREFRONT_TITLE =
-  'MARUBI Perú | Tienda Oficial Online — Envío Gratis y Pago Contra Entrega';
+  'Pack Navideño de Mesa · 15 piezas por S/ 169.90 | MARUBI Perú';
 
 export default function App() {
   const [currentView, setCurrentView] = useState(() =>
@@ -19,7 +20,7 @@ export default function App() {
   useEffect(() => {
     document.body.classList.toggle('product-view-active', currentView === 'product');
     if (currentView === 'product') {
-      const prodTitle = selectedProduct?.title || 'Producto en Plantilla';
+      const prodTitle = selectedProduct?.title || PRODUCT_PAGE_TEMPLATE.title;
       document.title = `${prodTitle} | MARUBI Perú`;
     } else {
       document.title = STOREFRONT_TITLE;
@@ -67,8 +68,8 @@ export default function App() {
   const handleOpenCheckout = () => {
     if (typeof window.fbq === 'function') {
       window.fbq('track', 'InitiateCheckout', {
-        content_name: selectedProduct?.title || 'Producto Plantilla MARUBI',
-        value: 0,
+        content_name: selectedProduct?.title || PRODUCT_PAGE_TEMPLATE.title,
+        value: 169.9,
         currency: 'PEN',
       });
     }

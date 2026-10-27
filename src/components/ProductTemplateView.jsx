@@ -84,9 +84,10 @@ export default function ProductTemplateView({
               <p className="eyebrow">{data.eyebrow}</p>
               <h1 id="productTitle">{displayTitle}</h1>
               <p className="hero-lead">{data.lead}</p>
+              <p className="offer-label">OFERTA EXCLUSIVA</p>
               <div className="price-row" aria-label="Precio del producto">
                 <span className="price-current">{displayPrice}</span>
-                <span className="price-regular">{displayCompare}</span>
+                <s className="price-regular">{displayCompare}</s>
                 <span className="price-save">{data.priceSave}</span>
               </div>
               <ul className="purchase-points">
@@ -169,6 +170,26 @@ export default function ProductTemplateView({
           </div>
         </section>
 
+        <section className="product-video-section" aria-labelledby="productVideosTitle">
+          <div className="container">
+            <div className="section-heading">
+              <p className="eyebrow">MIRA EL PACK EN DETALLE</p>
+              <h2 id="productVideosTitle">Pronto podrás verlo en acción</h2>
+              <p>Estamos preparando videos reales para mostrarte cada pieza, sus diseños y cómo luce el pack en una mesa navideña.</p>
+            </div>
+            <div className="product-video-grid">
+              {['Vista completa del pack', 'Detalles de las piezas', 'Ideas para tu mesa'].map((title, index) => (
+                <div className="product-video-placeholder" key={title}>
+                  <span className="video-placeholder-icon" aria-hidden="true">▶</span>
+                  <strong>Video {index + 1}</strong>
+                  <span>{title}</span>
+                  <small>Próximamente</small>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Ficha Técnica */}
         <section className="specs-section" id="ficha-tecnica">
           <div className="container specs-layout">
@@ -192,21 +213,21 @@ export default function ProductTemplateView({
         <section className="delivery-section">
           <div className="container delivery-card">
             <div>
-              <p className="eyebrow">COMPRA SIN PAGO ADELANTADO EN LIMA</p>
-              <h2>Pídelo hoy y confirma la entrega por WhatsApp</h2>
+              <p className="eyebrow">ENVÍO GRATIS A TODO EL PERÚ</p>
+              <h2>Tu pack viaja por Shalom</h2>
             </div>
             <div className="delivery-steps">
               <div>
                 <strong>1</strong>
-                <span>Completa tus datos de entrega</span>
+                <span>Completa tus datos de contacto</span>
               </div>
               <div>
                 <strong>2</strong>
-                <span>Confirmamos disponibilidad por WhatsApp</span>
+                <span>Confirmamos el pedido por WhatsApp</span>
               </div>
               <div>
                 <strong>3</strong>
-                <span>Recibe y paga en Lima o Callao</span>
+                <span>Coordinamos el envío gratis por Shalom</span>
               </div>
             </div>
             <button

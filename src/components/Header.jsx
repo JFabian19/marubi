@@ -187,12 +187,8 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
                 </button>
                 {openSubmenus.productos && (
                   <ul className="drawer-sublist">
-                    <li><a href="#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Más Vendidos</a></li>
-                    <li><a href="#coleccion-destacada" onClick={(e) => handleHomeNav(e, '#coleccion-destacada')}>Últimos ingresos</a></li>
-                    <li><a href="#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Todos los productos</a></li>
-                    <li><a href="#producto" onClick={handleProductNav}>[ Categoría Plantilla 1 ]</a></li>
-                    <li><a href="#producto" onClick={handleProductNav}>[ Categoría Plantilla 2 ]</a></li>
-                    <li><a href="#producto" onClick={handleProductNav}>[ Categoría Plantilla 3 ]</a></li>
+                    <li><a href="#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Producto estrella</a></li>
+                    <li><a href="#producto" onClick={handleProductNav}>Pack Navideño de 15 piezas</a></li>
                   </ul>
                 )}
               </li>
@@ -255,15 +251,15 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
             <div className="cart-collection-promo">
               <div className="cart-collection-card">
                 <div className="cart-collection-media">
-                  <img src="/assets/hero-mobile-640.webp" alt="Colección Más Vendidos MARUBI" width="640" height="512" loading="lazy" decoding="async" />
+                  <img src="/assets/navidad/pack-navidad-15-piezas.jpg" alt="Pack Navideño MARUBI de 15 piezas" width="1200" height="1200" loading="lazy" decoding="async" />
                 </div>
                 <div className="cart-collection-info">
                   <h4>
                     <a href="#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>
-                      Más Vendidos →
+                      Pack Navideño →
                     </a>
                   </h4>
-                  <p>Explora soluciones prácticas MARUBI diseñadas para distintas tareas del hogar.</p>
+                  <p>15 piezas para celebrar: S/ 169.90 y envío gratis a todo el Perú por Shalom.</p>
                 </div>
               </div>
             </div>
