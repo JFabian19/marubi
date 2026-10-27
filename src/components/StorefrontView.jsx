@@ -16,10 +16,10 @@ const stories = [
   },
   {
     product: featuredProducts[1],
-    image: '/assets/mariposa/mariposa-detalle.jpg',
+    image: '/assets/mariposa/mariposa-perfil-marmol.webp',
     eyebrow: 'PARA ILUMINAR',
     title: 'Una mariposa que hace brillar el árbol',
-    text: 'Alas translúcidas y luz cálida en una figura de 35 cm aprox. Disponible por unidad o en pack de dos.',
+    text: 'Alas translúcidas, luz blanca y música navideña incluida en una figura de 35 cm aprox. Disponible por unidad o en pack de dos.',
     offer: '1 por S/ 149.90 · 2 por S/ 199.90',
   },
 ];
