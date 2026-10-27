@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BESTSELLERS_PLACEHOLDERS } from '../data/templateData';
 
 export default function Header({ onNavigateHome, onOpenProduct }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -32,10 +33,10 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
     onNavigateHome(targetHash);
   };
 
-  const handleProductNav = (e) => {
+  const handleProductNav = (e, product) => {
     e.preventDefault();
     closeAll();
-    onOpenProduct();
+    onOpenProduct(product);
   };
 
   const toggleSubmenu = (key) => {
@@ -187,8 +188,10 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
                 </button>
                 {openSubmenus.productos && (
                   <ul className="drawer-sublist">
-                    <li><a href="#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Producto estrella</a></li>
-                    <li><a href="#producto" onClick={handleProductNav}>Pack Navideño de 15 piezas</a></li>
+                    <li><a href="#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Favoritos de Navidad</a></li>
+                    {BESTSELLERS_PLACEHOLDERS.slice(0, 2).map((product) => (
+                      <li key={product.id}><a href={`#producto/${product.slug}`} onClick={(e) => handleProductNav(e, product)}>{product.title}</a></li>
+                    ))}
                   </ul>
                 )}
               </li>

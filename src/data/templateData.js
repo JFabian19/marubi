@@ -7,12 +7,13 @@ export const TICKER_ITEMS = [
   'PAGO CONTRA ENTREGA EN LIMA',
   'ENVÍO GRATIS A TODO EL PERÚ POR SHALOM',
   'PACK NAVIDEÑO DE 15 PIEZAS',
-  'OFERTA EXCLUSIVA S/ 169.90',
+  'MARIPOSA LED DESDE S/ 149.90',
 ];
 
 export const BESTSELLERS_PLACEHOLDERS = [
   {
     id: 'prod-1',
+    slug: 'pack-navideno-15-piezas',
     title: 'Pack Navideño de Mesa · 15 piezas',
     salePrice: 'S/ 169.90',
     comparePrice: 'S/ 209.90',
@@ -21,12 +22,12 @@ export const BESTSELLERS_PLACEHOLDERS = [
   },
   {
     id: 'prod-2',
-    placeholderLabel: 'Imagen del Producto 2',
-    title: '[ Nombre del Producto 2 — Haz clic para ver plantilla ]',
-    salePrice: 'S/ 00.00',
-    comparePrice: 'S/ 00.00',
-    discountBadge: '00% OFF',
-    image: '',
+    slug: 'mariposa-led-navidad',
+    title: 'Mariposa LED Navideña · 35 cm aprox.',
+    salePrice: 'S/ 149.90',
+    comparePrice: '',
+    discountBadge: '2 POR S/ 199.90',
+    image: '/assets/mariposa/mariposa-arbol.jpg',
   },
   {
     id: 'prod-3',
@@ -188,3 +189,86 @@ export const PRODUCT_PAGE_TEMPLATE = {
     { id: 'faq-5', q: '¿Cómo confirmo mi pedido?', a: 'Completa tus datos y continúa por WhatsApp. Nuestro equipo confirmará la disponibilidad y la coordinación del envío por Shalom.' },
   ],
 };
+
+export const BUTTERFLY_PRODUCT_PAGE = {
+  breadcrumbName: 'Mariposa LED Navideña',
+  eyebrow: 'DECORACIÓN NAVIDEÑA ILUMINADA',
+  title: 'Mariposa LED Navideña · 35 cm aprox.',
+  lead: 'Dale un punto de luz cálida y especial a tu árbol. Su silueta de alas translúcidas resalta entre las ramas y aporta un detalle que se ve tanto de día como de noche.',
+  priceCurrent: 'S/ 149.90',
+  priceRegular: '',
+  priceSave: '',
+  ctaLabel: 'Pedir 1 mariposa — S/ 149.90',
+  offers: [
+    { id: 'single', label: '1 mariposa', price: 'S/ 149.90', value: 149.9, detail: 'Para un punto de luz especial' },
+    { id: 'duo', label: 'Pack de 2 mariposas', price: 'S/ 199.90', value: 199.9, detail: 'Ahorras S/ 99.90 frente a dos unidades' },
+  ],
+  gallery: [
+    { src: '/assets/mariposa/mariposa-arbol.jpg', label: 'Mariposa LED encendida en un árbol nevado' },
+    { src: '/assets/mariposa/mariposa-producto.jpg', label: 'Vista frontal de la mariposa iluminada' },
+    { src: '/assets/mariposa/mariposa-detalle.jpg', label: 'Detalle de las alas y el cuerpo de la mariposa' },
+    { src: '/assets/mariposa/mariposa-pack-dos.jpg', label: 'Dos mariposas LED encendidas en un árbol' },
+    { src: '/assets/mariposa/mariposa-foto-real.jpg', label: 'Fotografía real de la mariposa encendida en tienda' },
+  ],
+  purchasePoints: [
+    { bold: 'Luz cálida', rest: 'con alas translúcidas iluminadas' },
+    { bold: '35 cm aprox.', rest: 'según el punto de medición' },
+    { bold: 'Envío gratis', rest: 'a todo el Perú a través de Shalom' },
+  ],
+  proofStrip: [
+    { strong: '1 por S/ 149.90', span: 'Mariposa individual' },
+    { strong: '2 por S/ 199.90', span: 'Pack de dos mariposas' },
+    { strong: 'Luz cálida', span: 'Para resaltar tu decoración' },
+    { strong: 'Envío gratis', span: 'A todo el Perú por Shalom' },
+  ],
+  expectation: {
+    eyebrow: 'UN DETALLE QUE DESTACA',
+    heading: 'Haz brillar tu árbol con una mariposa',
+    intro: 'Las alas transparentes dejan ver sus líneas decorativas, mientras la luz cálida perfila la forma. Puedes usar una como acento o elegir el pack de dos para repetir el efecto en distintas zonas del árbol.',
+    image: '/assets/mariposa/mariposa-detalle.jpg',
+    caption: 'Vista cercana de la mariposa encendida entre ramas nevadas.',
+    steps: [
+      { num: '01', title: 'Colócala entre las ramas', text: 'Su cuerpo y alas crean un punto de atención en la decoración del árbol.' },
+      { num: '02', title: 'Enciende su luz cálida', text: 'El borde iluminado dibuja las alas y contrasta con el follaje.' },
+      { num: '03', title: 'Elige una o dos', text: 'Compra una unidad o aprovecha el precio especial del pack de dos.' },
+    ],
+  },
+  features: {
+    eyebrow: 'ASÍ ES LA MARIPOSA',
+    heading: 'Luz y forma en un solo adorno',
+    subtitle: 'Un detalle para la decoración navideña, disponible por unidad o en pack de dos.',
+    items: [
+      { num: '01', title: 'Alas translúcidas', text: 'Sus líneas y bordes permiten apreciar el efecto de la iluminación.' },
+      { num: '02', title: 'Cuerpo ámbar', text: 'El centro aporta un tono dorado a la pieza.' },
+      { num: '03', title: 'Luz cálida', text: 'Crea un brillo suave y festivo entre las ramas.' },
+      { num: '04', title: 'Con cable', text: 'La pieza mostrada se ilumina mediante cable; confirma la conexión al hacer tu pedido.' },
+    ],
+  },
+  specs: {
+    eyebrow: 'DETALLE DEL PRODUCTO',
+    heading: 'Lo esencial antes de pedir',
+    intro: 'La medida se presenta como aproximada y puede variar según desde dónde se mida la figura.',
+    rows: [
+      { dt: 'Producto', dd: 'Mariposa decorativa LED navideña' },
+      { dt: 'Medida referencial', dd: '35 cm aprox., según el punto de medición' },
+      { dt: 'Color de luz', dd: 'Cálida' },
+      { dt: 'Presentación', dd: '1 mariposa o pack de 2' },
+      { dt: 'Precio individual', dd: 'S/ 149.90' },
+      { dt: 'Precio pack x2', dd: 'S/ 199.90' },
+      { dt: 'Envío', dd: 'Gratis a todo el Perú a través de Shalom' },
+    ],
+  },
+  videoLabels: ['Cómo luce encendida', 'Detalle y tamaño', 'Ideas para colocarla'],
+  videoIntro: 'Estamos preparando videos reales para mostrarte la iluminación, el tamaño y cómo queda en el árbol.',
+  deliveryHeading: 'Tu mariposa viaja por Shalom',
+  faqs: [
+    { id: 'faq-1', q: '¿Cuánto cuesta una mariposa?', a: 'Una mariposa cuesta S/ 149.90.' },
+    { id: 'faq-2', q: '¿Cuánto cuesta el pack de dos?', a: 'Dos mariposas cuestan S/ 199.90 en total. Ahorras S/ 99.90 frente a comprar dos unidades por separado.' },
+    { id: 'faq-3', q: '¿Qué tamaño tiene?', a: 'La medida referencial es de 35 cm aproximadamente. Puede variar según el punto desde donde se mida la figura.' },
+    { id: 'faq-4', q: '¿Cómo se ilumina?', a: 'La pieza fotografiada tiene cable y emite una luz cálida. Podemos confirmar contigo los detalles de conexión antes del envío.' },
+    { id: 'faq-5', q: '¿Cómo llega mi pedido?', a: 'El envío es gratis a todo el Perú a través de Shalom. Coordinaremos los datos de entrega o recojo por WhatsApp.' },
+  ],
+};
+
+export const getProductPage = (productId) =>
+  productId === 'prod-2' ? BUTTERFLY_PRODUCT_PAGE : PRODUCT_PAGE_TEMPLATE;

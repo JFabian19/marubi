@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { PRODUCT_PAGE_TEMPLATE } from '../data/templateData';
+import { getProductPage } from '../data/templateData';
 import WaveDivider from './WaveDivider';
 
 export default function ProductTemplateView({
@@ -7,14 +7,16 @@ export default function ProductTemplateView({
   onNavigateHome,
   onOpenCheckout,
 }) {
-  const data = PRODUCT_PAGE_TEMPLATE;
+  const data = getProductPage(selectedProduct?.id);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [selectedOfferId, setSelectedOfferId] = useState('single');
   const [openFaqId, setOpenFaqId] = useState(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const heroRef = useRef(null);
 
   useEffect(() => {
     setActiveImageIndex(0);
+    setSelectedOfferId('single');
     setOpenFaqId(null);
   }, [selectedProduct]);
 
@@ -29,9 +31,12 @@ export default function ProductTemplateView({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const displayTitle = selectedProduct?.title || data.title;
-  const displayPrice = selectedProduct?.salePrice || data.priceCurrent;
-  const displayCompare = selectedProduct?.comparePrice || data.priceRegular;
+  const activeOffer = data.offers?.find((offer) => offer.id === selectedOfferId);
+  const displayTitle = data.title;
+  const displayPrice = activeOffer?.price || data.priceCurrent;
+  const displayCompare = data.priceRegular;
+  const ctaLabel = activeOffer ? `Pedir ${activeOffer.label.toLowerCase()} — ${activeOffer.price}` : data.ctaLabel;
+  const openCheckout = () => onOpenCheckout(activeOffer || null);
 
   return (
     <>
@@ -47,7 +52,7 @@ export default function ProductTemplateView({
               ← Volver a la tienda MARUBI
             </button>
             <span className="breadcrumb-trail">
-              Inicio / Productos / <strong>{selectedProduct?.title || data.breadcrumbName}</strong>
+              Inicio / Productos / <strong>{data.breadcrumbName}</strong>
             </span>
           </div>
         </div>
@@ -84,12 +89,26 @@ export default function ProductTemplateView({
               <p className="eyebrow">{data.eyebrow}</p>
               <h1 id="productTitle">{displayTitle}</h1>
               <p className="hero-lead">{data.lead}</p>
-              <p className="offer-label">OFERTA EXCLUSIVA</p>
+              <p className="offer-label">{data.offers ? 'ELIGE TU PRESENTACIÓN' : 'OFERTA EXCLUSIVA'}</p>
               <div className="price-row" aria-label="Precio del producto">
                 <span className="price-current">{displayPrice}</span>
-                <s className="price-regular">{displayCompare}</s>
-                <span className="price-save">{data.priceSave}</span>
+                {displayCompare && <s className="price-regular">{displayCompare}</s>}
+                {(activeOffer?.id === 'duo' || data.priceSave) && (
+                  <span className="price-save">{activeOffer?.id === 'duo' ? activeOffer.detail : data.priceSave}</span>
+                )}
               </div>
+              {data.offers && (
+                <fieldset className="product-offer-options">
+                  <legend>Selecciona una opción</legend>
+                  {data.offers.map((offer) => (
+                    <label className={`product-offer-option ${selectedOfferId === offer.id ? 'selected' : ''}`} key={offer.id}>
+                      <input type="radio" name="productOffer" value={offer.id} checked={selectedOfferId === offer.id} onChange={() => { setSelectedOfferId(offer.id); setActiveImageIndex(offer.id === 'duo' ? 3 : 0); }} />
+                      <span><strong>{offer.label}</strong><small>{offer.detail}</small></span>
+                      <b>{offer.price}</b>
+                    </label>
+                  ))}
+                </fieldset>
+              )}
               <ul className="purchase-points">
                 {data.purchasePoints.map((pt, idx) => (
                   <li key={idx}>
@@ -101,9 +120,9 @@ export default function ProductTemplateView({
               <button
                 type="button"
                 className="btn-cta btn-cta--attention btn-open-checkout"
-                onClick={onOpenCheckout}
+                onClick={openCheckout}
               >
-                {data.ctaLabel}
+                {ctaLabel}
               </button>
               <p className="secure-notice">
                 No pagas en esta página. Confirmamos disponibilidad y entrega por WhatsApp.
@@ -173,12 +192,12 @@ export default function ProductTemplateView({
         <section className="product-video-section" aria-labelledby="productVideosTitle">
           <div className="container">
             <div className="section-heading">
-              <p className="eyebrow">MIRA EL PACK EN DETALLE</p>
+              <p className="eyebrow">MIRA EL PRODUCTO EN DETALLE</p>
               <h2 id="productVideosTitle">Pronto podrás verlo en acción</h2>
-              <p>Estamos preparando videos reales para mostrarte cada pieza, sus diseños y cómo luce el pack en una mesa navideña.</p>
+              <p>{data.videoIntro || 'Estamos preparando videos reales para mostrarte cada pieza, sus diseños y cómo luce el pack en una mesa navideña.'}</p>
             </div>
             <div className="product-video-grid">
-              {['Vista completa del pack', 'Detalles de las piezas', 'Ideas para tu mesa'].map((title, index) => (
+              {(data.videoLabels || ['Vista completa del pack', 'Detalles de las piezas', 'Ideas para tu mesa']).map((title, index) => (
                 <div className="product-video-placeholder" key={title}>
                   <span className="video-placeholder-icon" aria-hidden="true">▶</span>
                   <strong>Video {index + 1}</strong>
@@ -214,7 +233,7 @@ export default function ProductTemplateView({
           <div className="container delivery-card">
             <div>
               <p className="eyebrow">ENVÍO GRATIS A TODO EL PERÚ</p>
-              <h2>Tu pack viaja por Shalom</h2>
+              <h2>{data.deliveryHeading || 'Tu pack viaja por Shalom'}</h2>
             </div>
             <div className="delivery-steps">
               <div>
@@ -233,9 +252,9 @@ export default function ProductTemplateView({
             <button
               type="button"
               className="btn-cta btn-cta--attention btn-open-checkout"
-              onClick={onOpenCheckout}
+              onClick={openCheckout}
             >
-              {data.ctaLabel}
+              {ctaLabel}
             </button>
           </div>
         </section>
@@ -296,7 +315,7 @@ export default function ProductTemplateView({
         <button
           type="button"
           className="sticky-cta-btn btn-cta--attention btn-open-checkout"
-          onClick={onOpenCheckout}
+          onClick={openCheckout}
         >
           Pedir ahora
         </button>

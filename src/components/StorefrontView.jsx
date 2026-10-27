@@ -3,30 +3,42 @@ import { BESTSELLERS_PLACEHOLDERS } from '../data/templateData';
 import ProductCard from './ProductCard';
 import WaveDivider from './WaveDivider';
 
-const featuredProduct = BESTSELLERS_PLACEHOLDERS[0];
+const featuredProducts = BESTSELLERS_PLACEHOLDERS.slice(0, 2);
 
-const highlights = [
-  { image: '/assets/navidad/platos-dorados.jpg', title: '6 platos dorados', text: 'De polipropileno, con diseños para vestir tu mesa.' },
-  { image: '/assets/navidad/bowl-rojo.jpg', title: '2 bowls con orejitas', text: 'De cerámica, con detalles navideños rojo y verde.' },
-  { image: '/assets/navidad/plato-arbol.jpg', title: '1 plato de árbol', text: 'Una pieza especial para servir o decorar.' },
-  { image: '/assets/navidad/taza-verde.jpg', title: '6 tazas Merry Christmas', text: 'Tazas redondas con diseños festivos.' },
+const stories = [
+  {
+    product: featuredProducts[0],
+    image: '/assets/navidad/pack-navidad-15-piezas.jpg',
+    eyebrow: 'PARA COMPARTIR',
+    title: 'La mesa lista para Navidad',
+    text: '15 piezas para vestir la mesa: platos dorados, bowls con orejitas, plato de árbol y tazas Merry Christmas.',
+    offer: 'Oferta exclusiva S/ 169.90',
+  },
+  {
+    product: featuredProducts[1],
+    image: '/assets/mariposa/mariposa-detalle.jpg',
+    eyebrow: 'PARA ILUMINAR',
+    title: 'Una mariposa que hace brillar el árbol',
+    text: 'Alas translúcidas y luz cálida en una figura de 35 cm aprox. Disponible por unidad o en pack de dos.',
+    offer: '1 por S/ 149.90 · 2 por S/ 199.90',
+  },
 ];
 
 export default function StorefrontView({ onOpenProduct }) {
-  const openFeatured = (event) => {
+  const openProduct = (product) => (event) => {
     event.preventDefault();
-    onOpenProduct(featuredProduct);
+    onOpenProduct(product);
   };
 
   return (
     <main id="storefrontView" className="storefront-view">
       <section className="voltra-hero-section" id="inicio" aria-label="Presentación de MARUBI Perú">
         <div className="voltra-hero-banner">
-          <h1 className="sr-only">MARUBI Perú · Pack Navideño de Mesa de 15 piezas</h1>
+          <h1 className="sr-only">MARUBI Perú · Ideas para celebrar Navidad</h1>
           <picture className="voltra-hero-picture">
             <source media="(max-width: 640px)" srcSet="/assets/hero-mobile-640.webp 640w, /assets/hero-mobile.webp 1024w" sizes="100vw" type="image/webp" width="1024" height="819" />
             <source media="(min-width: 641px)" srcSet="/assets/hero-desktop.webp" type="image/webp" width="1024" height="379" />
-            <img src="/assets/hero-desktop.webp" alt="MARUBI Perú, productos para compartir en casa" className="voltra-hero-img" width="1024" height="379" fetchPriority="high" decoding="sync" />
+            <img src="/assets/hero-desktop.webp" alt="MARUBI Perú, decoración y productos para compartir en casa" className="voltra-hero-img" width="1024" height="379" fetchPriority="high" decoding="sync" />
           </picture>
         </div>
       </section>
@@ -34,51 +46,49 @@ export default function StorefrontView({ onOpenProduct }) {
       <section className="voltra-collection-section home-featured-section" id="mas-vendidos" aria-labelledby="headingMasVendidos">
         <div className="page-width">
           <div className="voltra-section-title-wrap">
-            <h2 id="headingMasVendidos" className="voltra-section-title">Nuestro producto estrella ✨</h2>
+            <p className="eyebrow">SELECCIÓN MARUBI</p>
+            <h2 id="headingMasVendidos" className="voltra-section-title">Nuestros favoritos de Navidad ✨</h2>
+            <p className="home-section-subtitle">Elige la mesa que invita a compartir o el detalle que hace brillar tu árbol.</p>
           </div>
-          <div className="home-featured-grid">
-            <ProductCard product={featuredProduct} onOpenProduct={onOpenProduct} />
-            <div className="home-featured-copy">
-              <p className="eyebrow">OFERTA EXCLUSIVA DE NAVIDAD</p>
-              <h2>Una mesa para celebrar juntos</h2>
-              <p>Platos dorados, bowls con orejitas, un plato en forma de árbol y tazas Merry Christmas. Todo el pack de 15 piezas por <strong>S/ 169.90</strong>.</p>
-              <p className="home-price-line"><s>S/ 209.90</s> <strong>S/ 169.90</strong> <span>Ahorras S/ 40.00</span></p>
-              <p className="home-shipping-note">Envío gratis a todo el Perú a través de Shalom.</p>
-              <a href="#producto" className="voltra-btn-solid" onClick={openFeatured}>Ver pack y pedir ahora</a>
-            </div>
+          <div className="home-product-grid">
+            {featuredProducts.map((product) => (
+              <ProductCard product={product} onOpenProduct={onOpenProduct} key={product.id} />
+            ))}
           </div>
         </div>
       </section>
 
-      <section className="home-highlights-section" aria-labelledby="homeHighlightsTitle">
+      <section className="home-stories-section" aria-labelledby="storiesTitle">
         <div className="page-width">
           <div className="section-heading">
-            <p className="eyebrow">CONOCE TU PACK</p>
-            <h2 id="homeHighlightsTitle">Cuatro tipos de piezas, una sola celebración</h2>
+            <p className="eyebrow">DOS FORMAS DE CELEBRAR</p>
+            <h2 id="storiesTitle">Pequeños detalles, grandes momentos</h2>
           </div>
-          <div className="home-highlights-grid">
-            {highlights.map((item) => (
-              <article className="home-highlight-card" key={item.title}>
-                <img src={item.image} alt={item.title} loading="lazy" width="1200" height="1200" />
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
+          <div className="home-story-grid">
+            {stories.map((story) => (
+              <article className="home-story-card" key={story.product.id}>
+                <img src={story.image} alt={story.product.title} loading="lazy" width="1200" height="1200" />
+                <div>
+                  <p className="eyebrow">{story.eyebrow}</p>
+                  <h3>{story.title}</h3>
+                  <p>{story.text}</p>
+                  <strong>{story.offer}</strong>
+                  <a href={`#producto/${story.product.slug}`} className="voltra-btn-solid" onClick={openProduct(story.product)}>Ver producto</a>
+                </div>
               </article>
             ))}
           </div>
-          <div className="home-highlights-action">
-            <a href="#producto" className="voltra-btn-solid" onClick={openFeatured}>Descubrir el pack completo</a>
-          </div>
         </div>
       </section>
 
-      <section className="home-shipping-section" aria-label="Envío de tu pack">
+      <section className="home-shipping-section" aria-label="Envío de tus pedidos">
         <div className="page-width home-shipping-inner">
           <div>
             <p className="eyebrow">COMPRA EN MARUBI</p>
-            <h2>Navidad en tu mesa, estés donde estés</h2>
-            <p>El envío del pack es gratis a todo el Perú a través de Shalom. Confirma tus datos y coordinaremos tu pedido por WhatsApp.</p>
+            <h2>Navidad en casa, estés donde estés</h2>
+            <p>Envío gratis a todo el Perú a través de Shalom. Elige tu producto y coordinaremos tu pedido por WhatsApp.</p>
           </div>
-          <a href="#producto" className="voltra-btn-solid" onClick={openFeatured}>Pedir por S/ 169.90</a>
+          <a href="#mas-vendidos" className="voltra-btn-solid">Ver los favoritos</a>
         </div>
       </section>
       <WaveDivider />

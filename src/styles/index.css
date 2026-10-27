@@ -563,6 +563,22 @@ h3 { font-size: 1rem; }
 }
 .voltra-card-media > img { width: 100%; height: 100%; object-fit: contain; background: white; }
 .home-featured-section { padding: 52px 0 72px; }
+.home-section-subtitle { color: var(--muted); margin: 10px auto 0; max-width: 560px; }
+.home-product-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 3vw, 36px); max-width: 850px; margin: 0 auto; }
+.home-product-grid .voltra-product-card { padding: 14px; border: 1px solid var(--line); box-shadow: 0 12px 30px rgba(11, 43, 82, .05); }
+.home-product-grid .voltra-card-media { border: 0; }
+.home-product-grid .voltra-card-content { padding: 14px 4px 5px; }
+.home-product-grid .voltra-card-title { font-size: clamp(1rem, 1.8vw, 1.18rem); }
+.home-product-grid .voltra-price-sale { color: var(--orange-dark); font-size: 1.16rem; }
+.home-stories-section { padding: 80px 0; background: var(--soft); }
+.home-story-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.home-story-card { background: white; border: 1px solid var(--line); border-radius: var(--radius-card); overflow: hidden; }
+.home-story-card > img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.home-story-card > div { display: grid; align-content: start; gap: 12px; padding: 26px; }
+.home-story-card h3 { font-size: clamp(1.35rem, 2vw, 1.75rem); }
+.home-story-card p:not(.eyebrow) { color: var(--muted); }
+.home-story-card strong { color: var(--orange-dark); }
+.home-story-card .voltra-btn-solid { justify-self: start; margin-top: 4px; }
 .home-featured-grid { display: grid; grid-template-columns: minmax(0, .75fr) minmax(0, 1.25fr); gap: clamp(28px, 6vw, 90px); align-items: center; max-width: 1040px; margin: 0 auto; }
 .home-featured-grid .voltra-card-media { border: 1px solid var(--line); }
 .home-featured-copy h2 { margin: 8px 0 18px; font-size: clamp(1.8rem, 3vw, 2.8rem); }
@@ -587,12 +603,15 @@ h3 { font-size: 1rem; }
 .home-shipping-inner p:last-child { color: var(--muted); }
 .home-shipping-inner .voltra-btn-solid { flex: 0 0 auto; }
 @media (max-width: 760px) {
+  .home-story-grid { grid-template-columns: 1fr; }
   .home-featured-grid { grid-template-columns: 1fr; max-width: 480px; }
   .home-highlights-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
   .home-shipping-inner { display: block; }
   .home-shipping-inner .voltra-btn-solid { margin-top: 20px; }
 }
 @media (max-width: 480px) {
+  .home-product-grid { grid-template-columns: 1fr; max-width: 390px; }
+  .home-story-card > div { padding: 20px; }
   .home-highlights-grid { grid-template-columns: 1fr 1fr; }
   .home-highlight-card h3, .home-highlight-card p { margin-inline: 12px; }
 }
@@ -1250,6 +1269,15 @@ h3 { font-size: 1rem; }
 .price-current { color: var(--orange-dark); font-family: var(--heading); font-size: 2.35rem; font-weight: 800; line-height: 1; }
 .price-regular { color: #7d8793; text-decoration: line-through; font-size: 1rem; }
 .price-save { color: var(--green); font-size: .84rem; font-weight: 700; }
+.product-offer-options { border: 0; margin: 20px 0 4px; padding: 0; display: grid; gap: 10px; }
+.product-offer-options legend { margin-bottom: 10px; font-size: .85rem; font-weight: 800; color: var(--navy); }
+.product-offer-option { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; border: 2px solid var(--line); border-radius: 8px; padding: 13px 14px; cursor: pointer; background: white; }
+.product-offer-option.selected { border-color: var(--orange-dark); background: #fff8f5; }
+.product-offer-option input { accent-color: var(--orange-dark); width: 17px; height: 17px; }
+.product-offer-option span { display: grid; gap: 2px; }
+.product-offer-option strong { font-size: .93rem; }
+.product-offer-option small { font-size: .75rem; color: var(--muted); }
+.product-offer-option b { color: var(--orange-dark); white-space: nowrap; font-size: .9rem; }
 .purchase-points { list-style: none; display: grid; gap: 11px; margin: 22px 0; }
 .purchase-points li { display: flex; align-items: center; gap: 9px; font-size: .95rem; }
 .purchase-points li > span { color: var(--green); font-weight: 800; }

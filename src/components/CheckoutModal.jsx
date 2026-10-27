@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { PERU_LOCATIONS } from '../data/peruLocations';
-import { PRODUCT_PAGE_TEMPLATE } from '../data/templateData';
+import { getProductPage } from '../data/templateData';
 
-export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
+export default function CheckoutModal({ isOpen, onClose, selectedProduct, selectedOffer }) {
+  const productData = getProductPage(selectedProduct?.id);
+  const productTitle = selectedOffer ? `${productData.title} · ${selectedOffer.label}` : productData.title;
+  const productPrice = selectedOffer?.price || productData.priceCurrent;
+  const productValue = selectedOffer?.value || (selectedProduct?.id === 'prod-2' ? 149.9 : 169.9);
   const [nombre, setNombre] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [whatsappError, setWhatsappError] = useState('');
@@ -74,8 +78,8 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
 
     const orderNumber = 'MRB-' + Math.floor(100000 + Math.random() * 900000);
     const metodoTexto = 'Envío gratis a todo el Perú a través de Shalom';
-    const prodTitle = selectedProduct?.title || PRODUCT_PAGE_TEMPLATE.title;
-    const prodPrice = selectedProduct?.salePrice || PRODUCT_PAGE_TEMPLATE.priceCurrent;
+    const prodTitle = productTitle;
+    const prodPrice = productPrice;
 
     const waText =
       `¡Hola MARUBI! Acabo de registrar mi pedido en la tienda:%0A%0A` +
@@ -93,7 +97,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
     if (typeof window.fbq === 'function') {
       window.fbq('track', 'Lead', {
         content_name: prodTitle,
-        value: 169.9,
+        value: productValue,
         currency: 'PEN',
       });
     }
@@ -136,12 +140,12 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
 
         <div className="drawer-body">
           <div className="drawer-cart-product">
-            <img src="/assets/navidad/pack-navidad-15-piezas.jpg" alt="" width="60" height="60" loading="lazy" decoding="async" className="drawer-product-thumb" />
+            <img src={productData.gallery[0].src} alt="" width="60" height="60" loading="lazy" decoding="async" className="drawer-product-thumb" />
             <div>
-              <strong>{selectedProduct?.title || PRODUCT_PAGE_TEMPLATE.title}</strong>
-              <span>15 piezas · envío gratis por Shalom</span>
+              <strong>{productTitle}</strong>
+              <span>Envío gratis por Shalom</span>
             </div>
-            <strong className="drawer-product-price">{selectedProduct?.salePrice || PRODUCT_PAGE_TEMPLATE.priceCurrent}</strong>
+            <strong className="drawer-product-price">{productPrice}</strong>
           </div>
 
           <form id="drawerOrderForm" onSubmit={handleSubmit}>
@@ -342,7 +346,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct }) {
         <footer className="drawer-footer">
           <div>
             <span>Total</span>
-            <strong>{selectedProduct?.salePrice || PRODUCT_PAGE_TEMPLATE.priceCurrent}</strong>
+            <strong>{productPrice}</strong>
           </div>
           <button type="submit" form="drawerOrderForm" id="drawerSubmitBtn">
             Continuar por WhatsApp
