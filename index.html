@@ -36,25 +36,24 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
   <link rel="apple-touch-icon" href="/assets/favicon-192x192.png">
 
-  <!-- Preload recursos críticos en WebP para velocidad instantánea en móviles (LCP) -->
-  <link
-    rel="preload"
-    as="image"
-    type="image/webp"
-    href="/assets/hero-mobile-640.webp"
-    imagesrcset="/assets/hero-mobile-640.webp 640w, /assets/hero-mobile.webp 1024w"
-    imagesizes="100vw"
-    media="(max-width: 640px)"
-    fetchpriority="high"
-  >
-  <link
-    rel="preload"
-    as="image"
-    type="image/webp"
-    href="/assets/hero-desktop.webp"
-    media="(min-width: 641px)"
-    fetchpriority="high"
-  >
+  <!-- Precargar el banner solo en la portada; las fichas priorizan su foto de producto. -->
+  <script>
+    if (!location.hash.startsWith('#producto')) {
+      const heroPreload = document.createElement('link');
+      heroPreload.rel = 'preload';
+      heroPreload.as = 'image';
+      heroPreload.type = 'image/webp';
+      heroPreload.fetchPriority = 'high';
+      if (matchMedia('(max-width: 640px)').matches) {
+        heroPreload.href = '/assets/hero-mobile-640.webp';
+        heroPreload.imageSrcset = '/assets/hero-mobile-640.webp 640w, /assets/hero-mobile.webp 1024w';
+        heroPreload.imageSizes = '100vw';
+      } else {
+        heroPreload.href = '/assets/hero-desktop.webp';
+      }
+      document.head.appendChild(heroPreload);
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">

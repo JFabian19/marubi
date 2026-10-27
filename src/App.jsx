@@ -50,18 +50,23 @@ export default function App() {
     setSelectedOffer(null);
     setCurrentView('product');
     const hash = `#producto/${product.slug}`;
-    if (window.location.hash !== hash) {
-      window.history.pushState(null, '', hash);
+    const productUrl = `/${hash}`;
+    if (`${window.location.pathname}${window.location.hash}` !== productUrl) {
+      window.history.pushState(null, '', productUrl);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleNavigateHome = (targetHash = '#inicio') => {
     setCurrentView('storefront');
-    window.history.pushState(null, '', targetHash);
-    if (targetHash && targetHash !== '#inicio' && targetHash !== '#') {
+    const sectionHash = targetHash && targetHash !== '#inicio' && targetHash !== '#' ? targetHash : '';
+    const homeUrl = `/inicio${sectionHash}`;
+    if (`${window.location.pathname}${window.location.hash}` !== homeUrl) {
+      window.history.pushState(null, '', homeUrl);
+    }
+    if (sectionHash) {
       setTimeout(() => {
-        const el = document.querySelector(targetHash);
+        const el = document.querySelector(sectionHash);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth' });
         } else {

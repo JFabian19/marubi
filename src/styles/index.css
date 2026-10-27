@@ -1437,6 +1437,8 @@ h3 { font-size: 1rem; }
 @media (max-width: 640px) {
   .small-hide { display: none !important; }
   .price-current { font-size: 2rem; }
+  .product-offer-option { grid-template-columns: auto minmax(0, 1fr); }
+  .product-offer-option b { grid-column: 2; justify-self: start; }
   .thumbnail-item { width: 64px; height: 64px; }
   .proof-grid strong { font-size: .98rem; }
   .expectation-list article { grid-template-columns: 38px 1fr; gap: 10px; }

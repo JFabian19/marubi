@@ -8,7 +8,7 @@ const featuredProducts = BESTSELLERS_PLACEHOLDERS.slice(0, 2);
 const stories = [
   {
     product: featuredProducts[0],
-    image: '/assets/navidad/pack-navidad-15-piezas.jpg',
+    image: '/assets/navidad/pack-navidad-15-piezas.webp',
     eyebrow: 'PARA COMPARTIR',
     title: 'La mesa lista para Navidad',
     text: '15 piezas para vestir la mesa: platos dorados, bowls con orejitas, plato de árbol y tazas Merry Christmas.',
@@ -67,7 +67,7 @@ export default function StorefrontView({ onOpenProduct }) {
           <div className="home-story-grid">
             {stories.map((story) => (
               <article className="home-story-card" key={story.product.id}>
-                <img src={story.image} alt={story.product.title} loading="lazy" width="1200" height="1200" />
+                <img src={story.image} alt={story.product.title} loading="lazy" width="1024" height="1024" />
                 <div>
                   <p className="eyebrow">{story.eyebrow}</p>
                   <h3>{story.title}</h3>

@@ -67,6 +67,8 @@ export default function ProductTemplateView({
                   src={data.gallery[activeImageIndex]?.src}
                   alt={data.gallery[activeImageIndex]?.label || displayTitle}
                   className="main-gallery-img"
+                  fetchPriority="high"
+                  decoding="async"
                 />
               </div>
               <div className="thumbnails-row" aria-label="Vistas del producto">
@@ -79,7 +81,7 @@ export default function ProductTemplateView({
                     aria-label={item.label}
                     aria-pressed={idx === activeImageIndex}
                   >
-                    <img src={item.src} alt="" />
+                    <img src={item.src.replace(/\.webp$/, '-thumb.webp')} alt="" loading="lazy" decoding="async" width="72" height="72" />
                   </button>
                 ))}
               </div>

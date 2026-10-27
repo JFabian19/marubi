@@ -18,7 +18,7 @@ export const BESTSELLERS_PLACEHOLDERS = [
     salePrice: 'S/ 169.90',
     comparePrice: 'S/ 209.90',
     discountBadge: 'OFERTA EXCLUSIVA',
-    image: '/assets/navidad/pack-navidad-15-piezas.jpg',
+    image: '/assets/navidad/pack-navidad-15-piezas.webp',
   },
   {
     id: 'prod-2',
@@ -125,13 +125,13 @@ export const PRODUCT_PAGE_TEMPLATE = {
   priceSave: 'Ahorras S/ 40.00',
   ctaLabel: 'Pedir mi pack — S/ 169.90',
   gallery: [
-    { src: '/assets/navidad/pack-navidad-15-piezas.jpg', label: 'Pack navideño completo de 15 piezas' },
-    { src: '/assets/navidad/platos-dorados.jpg', label: 'Seis platos dorados de polipropileno' },
-    { src: '/assets/navidad/bowl-rojo.jpg', label: 'Bowl de cerámica con orejitas y diseño rojo' },
-    { src: '/assets/navidad/bowl-verde.jpg', label: 'Bowl de cerámica con orejitas y diseño verde' },
-    { src: '/assets/navidad/plato-arbol.jpg', label: 'Plato navideño con forma de árbol' },
-    { src: '/assets/navidad/taza-roja.jpg', label: 'Taza Merry Christmas con asa roja' },
-    { src: '/assets/navidad/taza-verde.jpg', label: 'Taza Merry Christmas con asa verde' },
+    { src: '/assets/navidad/pack-navidad-15-piezas.webp', label: 'Pack navideño completo de 15 piezas' },
+    { src: '/assets/navidad/platos-dorados.webp', label: 'Seis platos dorados de polipropileno' },
+    { src: '/assets/navidad/bowl-rojo.webp', label: 'Bowl de cerámica con orejitas y diseño rojo' },
+    { src: '/assets/navidad/bowl-verde.webp', label: 'Bowl de cerámica con orejitas y diseño verde' },
+    { src: '/assets/navidad/plato-arbol.webp', label: 'Plato navideño con forma de árbol' },
+    { src: '/assets/navidad/taza-roja.webp', label: 'Taza Merry Christmas con asa roja' },
+    { src: '/assets/navidad/taza-verde.webp', label: 'Taza Merry Christmas con asa verde' },
   ],
   purchasePoints: [
     { bold: '15 piezas', rest: 'para vestir tu mesa navideña' },
@@ -148,7 +148,7 @@ export const PRODUCT_PAGE_TEMPLATE = {
     eyebrow: 'UNA MESA PARA COMPARTIR',
     heading: 'Todo listo para darle un toque navideño a tu mesa',
     intro: 'Combina los platos dorados con las piezas de diseño festivo para servir bocaditos, postres o bebidas. Las tazas y los bowls aportan los detalles rojos y verdes de la temporada.',
-    image: '/assets/navidad/pack-navidad-15-piezas.jpg',
+    image: '/assets/navidad/pack-navidad-15-piezas.webp',
     caption: 'El pack reúne las cuatro clases de piezas en una sola propuesta.',
     steps: [
       { num: '01', title: 'Arma una mesa festiva', text: 'Seis platos dorados dan una base luminosa a cada lugar de la mesa.' },

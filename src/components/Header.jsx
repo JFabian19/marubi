@@ -66,7 +66,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
           </button>
 
           <a
-            href="#inicio"
+            href="/inicio"
             className="brand-logo"
             onClick={(e) => handleHomeNav(e, '#inicio')}
             aria-label="MARUBI, ir al inicio"
@@ -93,7 +93,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
             </button>
 
             <a
-              href="#inicio"
+              href="/inicio"
               onClick={(e) => handleHomeNav(e, '#inicio')}
               className="header-icon-btn small-hide"
               aria-label="Cuenta"
@@ -172,7 +172,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
           <nav className="side-drawer__body">
             <ul className="drawer-nav-list">
               <li>
-                <a href="#inicio" onClick={(e) => handleHomeNav(e, '#inicio')} className="drawer-nav-link">
+                <a href="/inicio" onClick={(e) => handleHomeNav(e, '#inicio')} className="drawer-nav-link">
                   Home
                 </a>
               </li>
@@ -188,7 +188,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
                 </button>
                 {openSubmenus.productos && (
                   <ul className="drawer-sublist">
-                    <li><a href="#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Favoritos de Navidad</a></li>
+                    <li><a href="/inicio#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Favoritos de Navidad</a></li>
                     {BESTSELLERS_PLACEHOLDERS.slice(0, 2).map((product) => (
                       <li key={product.id}><a href={`#producto/${product.slug}`} onClick={(e) => handleProductNav(e, product)}>{product.title}</a></li>
                     ))}
@@ -207,7 +207,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
                 </button>
                 {openSubmenus.faq && (
                   <ul className="drawer-sublist">
-                    <li><a href="#somos-marubi" onClick={(e) => handleHomeNav(e, '#somos-marubi')}>¿Quiénes somos?</a></li>
+                    <li><a href="/inicio#somos-marubi" onClick={(e) => handleHomeNav(e, '#somos-marubi')}>¿Quiénes somos?</a></li>
                     <li><a href="#footer-ayuda" onClick={closeAll}>Cómo comprar</a></li>
                     <li><a href="#footer-ayuda" onClick={closeAll}>Medios de pago</a></li>
                     <li><a href="#footer-ayuda" onClick={closeAll}>¿Cómo son los envíos?</a></li>
@@ -244,7 +244,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
             <div className="cart-empty-box">
               <h3>Tu carrito está vacío</h3>
               <a
-                href="#mas-vendidos"
+                href="/inicio#mas-vendidos"
                 className="btn-solid-primary"
                 onClick={(e) => handleHomeNav(e, '#mas-vendidos')}
               >
@@ -254,11 +254,11 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
             <div className="cart-collection-promo">
               <div className="cart-collection-card">
                 <div className="cart-collection-media">
-                  <img src="/assets/navidad/pack-navidad-15-piezas.jpg" alt="Pack Navideño MARUBI de 15 piezas" width="1200" height="1200" loading="lazy" decoding="async" />
+                  <img src="/assets/navidad/pack-navidad-15-piezas.webp" alt="Pack Navideño MARUBI de 15 piezas" width="1024" height="1024" loading="lazy" decoding="async" />
                 </div>
                 <div className="cart-collection-info">
                   <h4>
-                    <a href="#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>
+                    <a href="/inicio#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>
                       Pack Navideño →
                     </a>
                   </h4>
