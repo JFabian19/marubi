@@ -91,10 +91,11 @@ export default function ProductTemplateView({
               <p className="eyebrow">{data.eyebrow}</p>
               <h1 id="productTitle">{displayTitle}</h1>
               <p className="hero-lead">{data.lead}</p>
+              {data.promoBanner && <p className="limited-offer-banner">⚡ {data.promoBanner}</p>}
               <p className="offer-label">{data.offers ? 'ELIGE TU PRESENTACIÓN' : 'OFERTA EXCLUSIVA'}</p>
               <div className="price-row" aria-label="Precio del producto">
                 <span className="price-current">{displayPrice}</span>
-                {displayCompare && <s className="price-regular">{displayCompare}</s>}
+                {displayCompare && <s className="price-regular">{activeOffer?.comparePrice || displayCompare}</s>}
                 {(activeOffer?.quantity > 1 || data.priceSave) && (
                   <span className="price-save">{activeOffer?.quantity > 1 ? activeOffer.detail : data.priceSave}</span>
                 )}
@@ -106,7 +107,7 @@ export default function ProductTemplateView({
                     <label className={`product-offer-option ${selectedOfferId === offer.id ? 'selected' : ''}`} key={offer.id}>
                       <input type="radio" name="productOffer" value={offer.id} checked={selectedOfferId === offer.id} onChange={() => { setSelectedOfferId(offer.id); setActiveImageIndex(offer.id === 'duo' ? 3 : 0); }} />
                       <span><strong>{offer.label}</strong><small>{offer.detail}</small></span>
-                      <b>{offer.price}</b>
+                      <b><s>{offer.comparePrice}</s><strong>{offer.price}</strong></b>
                     </label>
                   ))}
                 </fieldset>

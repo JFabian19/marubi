@@ -7,7 +7,7 @@ export const TICKER_ITEMS = [
   'PAGO CONTRA ENTREGA EN LIMA',
   'ENVÍO GRATIS A TODO EL PERÚ POR SHALOM',
   'PACK NAVIDEÑO DE 15 PIEZAS',
-  'MARIPOSA LED DESDE S/ 139',
+  'OFERTA LIMITADA · MARIPOSA LED DE S/ 170 A S/ 139',
 ];
 
 export const BESTSELLERS_PLACEHOLDERS = [
@@ -25,8 +25,8 @@ export const BESTSELLERS_PLACEHOLDERS = [
     slug: 'mariposa-led-navidad',
     title: 'Mariposa LED Navideña · 35 cm aprox.',
     salePrice: 'S/ 139',
-    comparePrice: '',
-    discountBadge: '2 POR S/ 249',
+    comparePrice: 'S/ 170',
+    discountBadge: 'OFERTA LIMITADA',
     image: '/assets/mariposa/mariposa-frente-marmol.webp',
   },
   {
@@ -196,13 +196,14 @@ export const BUTTERFLY_PRODUCT_PAGE = {
   title: 'Mariposa LED Navideña · 35 cm aprox.',
   lead: 'Ilumina tu decoración con sus alas de luz blanca y acompaña el momento con su música navideña incluida. Su silueta translúcida destaca tanto de día como de noche.',
   priceCurrent: 'S/ 139',
-  priceRegular: '',
-  priceSave: '',
+  priceRegular: 'S/ 170',
+  priceSave: 'Ahorras S/ 31',
   ctaLabel: 'Pedir 1 mariposa — S/ 139',
+  promoBanner: 'OFERTA POR TIEMPO LIMITADO · PRECIOS ESPECIALES DE 1, 2 Y 3 UNIDADES',
   offers: [
-    { id: 'single', label: '1 mariposa', price: 'S/ 139', value: 139, quantity: 1, detail: 'Para un punto de luz especial' },
-    { id: 'duo', label: 'Pack de 2 mariposas', price: 'S/ 249', value: 249, quantity: 2, detail: 'Ahorras S/ 29 frente a dos unidades' },
-    { id: 'trio', label: 'Pack de 3 mariposas', price: 'S/ 369', value: 369, quantity: 3, detail: 'Ahorras S/ 48 frente a tres unidades' },
+    { id: 'single', label: '1 mariposa', price: 'S/ 139', comparePrice: 'S/ 170', value: 139, quantity: 1, detail: 'Ahorras S/ 31 · oferta limitada' },
+    { id: 'duo', label: 'Pack de 2 mariposas', price: 'S/ 249', comparePrice: 'S/ 340', value: 249, quantity: 2, detail: 'Ahorras S/ 91 · oferta limitada' },
+    { id: 'trio', label: 'Pack de 3 mariposas', price: 'S/ 369', comparePrice: 'S/ 510', value: 369, quantity: 3, detail: 'Ahorras S/ 141 · oferta limitada' },
   ],
   gallery: [
     { src: '/assets/mariposa/mariposa-frente-marmol.webp', label: 'Vista frontal de la mariposa LED y su reflejo sobre mármol' },
@@ -221,9 +222,9 @@ export const BUTTERFLY_PRODUCT_PAGE = {
     { bold: 'Envío gratis', rest: 'a todo el Perú a través de Shalom' },
   ],
   proofStrip: [
-    { strong: '1 por S/ 139', span: 'Mariposa individual' },
-    { strong: '2 por S/ 249', span: 'Pack de dos mariposas' },
-    { strong: '3 por S/ 369', span: 'Pack de tres mariposas' },
+    { strong: 'S/ 170 → S/ 139', span: 'Oferta individual limitada' },
+    { strong: 'S/ 340 → S/ 249', span: 'Pack de dos mariposas' },
+    { strong: 'S/ 510 → S/ 369', span: 'Pack de tres mariposas' },
     { strong: 'Envío gratis', span: 'A todo el Perú por Shalom' },
   ],
   expectation: {
@@ -273,8 +274,8 @@ export const BUTTERFLY_PRODUCT_PAGE = {
   deliveryHeading: 'Tu mariposa viaja por Shalom',
   faqs: [
     { id: 'faq-1', q: '¿Cuánto cuesta una mariposa?', a: 'Una mariposa cuesta S/ 139.' },
-    { id: 'faq-2', q: '¿Cuánto cuesta el pack de dos?', a: 'Dos mariposas cuestan S/ 249 en total. Ahorras S/ 29 frente a comprar dos unidades por separado.' },
-    { id: 'faq-7', q: '¿Cuánto cuesta el pack de tres?', a: 'Tres mariposas cuestan S/ 369 en total. Ahorras S/ 48 frente a comprar tres unidades por separado.' },
+    { id: 'faq-2', q: '¿Cuánto cuesta el pack de dos?', a: 'Dos mariposas cuestan S/ 249 en total. El precio anterior era S/ 340 y ahora ahorras S/ 91.' },
+    { id: 'faq-7', q: '¿Cuánto cuesta el pack de tres?', a: 'Tres mariposas cuestan S/ 369 en total. El precio anterior era S/ 510 y ahora ahorras S/ 141.' },
     { id: 'faq-3', q: '¿Qué tamaño tiene?', a: 'La medida referencial es de 35 cm aproximadamente. Puede variar según el punto desde donde se mida la figura.' },
     { id: 'faq-4', q: '¿Cómo se ilumina?', a: 'La pieza fotografiada tiene cable y emite luz blanca. Podemos confirmar contigo los detalles de conexión antes del envío.' },
     { id: 'faq-5', q: '¿Cómo llega mi pedido?', a: 'El envío es gratis a todo el Perú a través de Shalom. Coordinaremos los datos de entrega o recojo por WhatsApp.' },
