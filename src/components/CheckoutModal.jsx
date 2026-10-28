@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { PERU_LOCATIONS } from '../data/peruLocations';
 import { getProductPage } from '../data/templateData';
+import { createOrderId, saveOrder } from '../lib/orders';
 
 export default function CheckoutModal({ isOpen, onClose, selectedProduct, selectedOffer }) {
   const productData = getProductPage(selectedProduct?.id);
   const productTitle = selectedOffer ? `${productData.title} · ${selectedOffer.label}` : productData.title;
   const productPrice = selectedOffer?.price || productData.priceCurrent;
-  const productValue = selectedOffer?.value || (selectedProduct?.id === 'prod-2' ? 149.9 : 169.9);
+  const productValue = selectedOffer?.value || Number(selectedProduct?.salePrice?.replace(/[^\d.]/g, '')) || 0;
   const [nombre, setNombre] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
   const [whatsappError, setWhatsappError] = useState('');
@@ -15,6 +16,9 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
   const [distrito, setDistrito] = useState('');
   const [direccion, setDireccion] = useState('');
   const [referencia, setReferencia] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const pendingOrderId = useRef(null);
 
   const departamentos = Object.keys(PERU_LOCATIONS);
   const provincias = departamento && PERU_LOCATIONS[departamento]
@@ -29,6 +33,13 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
     document.body.classList.toggle('modal-open', isOpen);
     return () => document.body.classList.remove('modal-open');
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      pendingOrderId.current = null;
+      setSubmitError('');
+    }
+  }, [isOpen, selectedProduct?.id]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -65,8 +76,10 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (submitting) return;
+    setSubmitError('');
     if (!/^9\d{8}$/.test(whatsapp)) {
       setWhatsappError('Escribe 9 dígitos y empieza con 9.');
       return;
@@ -76,7 +89,8 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       return;
     }
 
-    const orderNumber = 'MRB-' + Math.floor(100000 + Math.random() * 900000);
+    const orderNumber = pendingOrderId.current || createOrderId();
+    pendingOrderId.current = orderNumber;
     const metodoTexto = 'Envío gratis a todo el Perú a través de Shalom';
     const prodTitle = productTitle;
     const prodPrice = productPrice;
@@ -94,16 +108,49 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       `💰 *Total a pagar:* ${encodeURIComponent(prodPrice)}%0A%0A` +
       `Deseo confirmar la entrega de mi pedido. ¡Gracias!`;
 
+    // Abre la pestaña durante el clic para que el bloqueador de ventanas no impida WhatsApp.
+    const whatsappTab = window.open('', '_blank');
+    if (whatsappTab) whatsappTab.opener = null;
+    setSubmitting(true);
+    try {
+      await saveOrder({
+        orderId: orderNumber,
+        productId: selectedProduct.id,
+        productName: productData.title,
+        offer: selectedOffer?.label || '',
+        quantity: selectedOffer?.quantity || 1,
+        total: productValue,
+        name: nombre.trim(),
+        whatsapp,
+        department: departamento,
+        province: provincia,
+        district: distrito,
+        address: direccion.trim(),
+        reference: referencia.trim(),
+        pageUrl: window.location.href,
+      });
+    } catch (error) {
+      whatsappTab?.close();
+      setSubmitError('No pudimos registrar tu pedido. Inténtalo otra vez; tus datos siguen aquí.');
+      setSubmitting(false);
+      return;
+    }
     if (typeof window.fbq === 'function') {
-      window.fbq('track', 'Lead', {
+      window.fbq('track', 'Purchase', {
+        content_ids: [selectedProduct.id],
         content_name: prodTitle,
+        content_type: 'product',
+        num_items: selectedOffer?.quantity || 1,
         value: productValue,
         currency: 'PEN',
-      });
+      }, { eventID: orderNumber });
     }
-
-    window.open(`https://wa.me/51910247625?text=${waText}`, '_blank', 'noopener,noreferrer');
+    const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;
+    if (whatsappTab) whatsappTab.location.href = whatsappUrl;
+    else window.location.href = whatsappUrl;
     onClose();
+    pendingOrderId.current = null;
+    setSubmitting(false);
     setNombre('');
     setWhatsapp('');
     setDepartamento('');
@@ -348,10 +395,11 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
             <span>Total</span>
             <strong>{productPrice}</strong>
           </div>
-          <button type="submit" form="drawerOrderForm" id="drawerSubmitBtn">
-            Continuar por WhatsApp
+          <button type="submit" form="drawerOrderForm" id="drawerSubmitBtn" disabled={submitting}>
+            {submitting ? 'Registrando pedido…' : 'Realizar pedido por WhatsApp'}
           </button>
-          <small>Al continuar, enviarás estos datos a nuestro WhatsApp de atención.</small>
+          {submitError && <small className="order-submit-error" role="alert">{submitError}</small>}
+          <small>Al continuar, registraremos tu pedido y abrirás WhatsApp para confirmarlo.</small>
         </footer>
       </section>
     </div>

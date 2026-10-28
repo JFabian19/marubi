@@ -27,6 +27,15 @@ export default function App() {
     if (currentView === 'product') {
       const prodTitle = getProductPage(selectedProduct?.id).title;
       document.title = `${prodTitle} | MARUBI Perú`;
+      if (typeof window.fbq === 'function') {
+        window.fbq('track', 'ViewContent', {
+          content_ids: [selectedProduct.id],
+          content_name: selectedProduct.title,
+          content_type: 'product',
+          value: Number(selectedProduct.salePrice?.replace(/[^\d.]/g, '')) || 0,
+          currency: 'PEN',
+        });
+      }
     } else {
       document.title = STOREFRONT_TITLE;
     }
@@ -82,8 +91,11 @@ export default function App() {
     setSelectedOffer(offer);
     if (typeof window.fbq === 'function') {
       window.fbq('track', 'InitiateCheckout', {
-        content_name: getProductPage(selectedProduct?.id).title,
-        value: offer?.value || (selectedProduct?.id === 'prod-2' ? 149.9 : 169.9),
+        content_ids: [selectedProduct.id],
+        content_name: selectedProduct.title,
+        content_type: 'product',
+        num_items: offer?.quantity || 1,
+        value: offer?.value || Number(selectedProduct.salePrice?.replace(/[^\d.]/g, '')) || 0,
         currency: 'PEN',
       });
     }

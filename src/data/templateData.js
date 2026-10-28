@@ -200,8 +200,8 @@ export const BUTTERFLY_PRODUCT_PAGE = {
   priceSave: '',
   ctaLabel: 'Pedir 1 mariposa — S/ 149.90',
   offers: [
-    { id: 'single', label: '1 mariposa', price: 'S/ 149.90', value: 149.9, detail: 'Para un punto de luz especial' },
-    { id: 'duo', label: 'Pack de 2 mariposas', price: 'S/ 199.90', value: 199.9, detail: 'Ahorras S/ 99.90 frente a dos unidades' },
+    { id: 'single', label: '1 mariposa', price: 'S/ 149.90', value: 149.9, quantity: 1, detail: 'Para un punto de luz especial' },
+    { id: 'duo', label: 'Pack de 2 mariposas', price: 'S/ 199.90', value: 199.9, quantity: 2, detail: 'Ahorras S/ 99.90 frente a dos unidades' },
   ],
   gallery: [
     { src: '/assets/mariposa/mariposa-frente-marmol.webp', label: 'Vista frontal de la mariposa LED y su reflejo sobre mármol' },

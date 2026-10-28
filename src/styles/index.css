@@ -1403,6 +1403,8 @@ h3 { font-size: 1rem; }
 .drawer-footer span { color: var(--muted); font-size: .7rem; }
 .drawer-footer strong { color: var(--navy); font-family: var(--heading); font-size: 1.2rem; }
 #drawerSubmitBtn { min-height: 48px; border: 0; border-radius: 6px; background: var(--orange); color: white; padding: 11px 18px; font-family: var(--heading); font-size: .92rem; font-weight: 700; }
+#drawerSubmitBtn:disabled { opacity: .65; cursor: wait; }
+.order-submit-error { color: #b42318; font-weight: 700; }
 .drawer-footer small { grid-column: 1 / -1; color: var(--muted); font-size: .67rem; text-align: center; }
 
 @media (max-width: 860px) {
