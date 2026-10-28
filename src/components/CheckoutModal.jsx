@@ -19,6 +19,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const pendingOrderId = useRef(null);
+  const trackedPurchaseId = useRef(null);
 
   const departamentos = Object.keys(PERU_LOCATIONS);
   const provincias = departamento && PERU_LOCATIONS[departamento]
@@ -37,6 +38,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
   useEffect(() => {
     if (!isOpen) {
       pendingOrderId.current = null;
+      trackedPurchaseId.current = null;
       setSubmitError('');
     }
   }, [isOpen, selectedProduct?.id]);
@@ -112,6 +114,17 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
     const whatsappTab = window.open('', '_blank');
     if (whatsappTab) whatsappTab.opener = null;
     setSubmitting(true);
+    if (trackedPurchaseId.current !== orderNumber && typeof window.fbq === 'function') {
+      window.fbq('track', 'Purchase', {
+        content_ids: [selectedProduct.id],
+        content_name: prodTitle,
+        content_type: 'product',
+        num_items: selectedOffer?.quantity || 1,
+        value: productValue,
+        currency: 'PEN',
+      }, { eventID: orderNumber });
+      trackedPurchaseId.current = orderNumber;
+    }
     try {
       await saveOrder({
         orderId: orderNumber,
@@ -134,16 +147,6 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       setSubmitError('No pudimos registrar tu pedido. Inténtalo otra vez; tus datos siguen aquí.');
       setSubmitting(false);
       return;
-    }
-    if (typeof window.fbq === 'function') {
-      window.fbq('track', 'Purchase', {
-        content_ids: [selectedProduct.id],
-        content_name: prodTitle,
-        content_type: 'product',
-        num_items: selectedOffer?.quantity || 1,
-        value: productValue,
-        currency: 'PEN',
-      }, { eventID: orderNumber });
     }
     const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;
     if (whatsappTab) whatsappTab.location.href = whatsappUrl;
