@@ -1323,6 +1323,10 @@ h3 { font-size: 1rem; }
 
 .product-video-section { padding: 86px 0; background: #fff8f5; }
 .product-video-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.product-video-grid--media { grid-template-columns: repeat(2, minmax(0, 360px)); justify-content: center; gap: 24px; }
+.product-video-card { margin: 0; min-width: 0; }
+.product-video-card video { display: block; width: 100%; height: auto; aspect-ratio: 9 / 16; object-fit: cover; border-radius: var(--radius-media); background: #17242b; }
+.product-video-card figcaption { padding: 12px 4px 0; color: var(--navy); font-weight: 700; text-align: center; }
 .product-video-placeholder { aspect-ratio: 9 / 12; border: 2px dashed #d9b9aa; border-radius: var(--radius-media); background: linear-gradient(145deg, #fff, #f8e9df); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; text-align: center; padding: 24px; color: var(--navy); }
 .product-video-placeholder strong { font-family: var(--heading); font-size: 1.2rem; }
 .product-video-placeholder span:not(.video-placeholder-icon) { color: var(--muted); font-size: .9rem; }

@@ -100,7 +100,7 @@ export default function Footer({ onNavigateHome }) {
                 <li><a href="/inicio" onClick={(e) => handleHomeClick(e, '#inicio')}>¿Cómo son los envíos?</a></li>
                 <li><a href="/inicio" onClick={(e) => handleHomeClick(e, '#inicio')}>Garantía y devoluciones</a></li>
                 <li><a href="/inicio" onClick={(e) => handleHomeClick(e, '#inicio')}>Contacto</a></li>
-                <li><a href="/inicio#somos-marubi" onClick={(e) => handleHomeClick(e, '#somos-marubi')}>Comprar en MARUBI</a></li>
+                <li><a href="/inicio" onClick={(e) => handleHomeClick(e, '#somos-marubi')}>Comprar en MARUBI</a></li>
               </ul>
             </div>
 

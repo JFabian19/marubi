@@ -10,15 +10,16 @@ import { BESTSELLERS_PLACEHOLDERS, getProductPage } from './data/templateData';
 const STOREFRONT_TITLE =
   'Decoración navideña y packs especiales | MARUBI Perú';
 
-const productFromHash = () => BESTSELLERS_PLACEHOLDERS.find(
-  (product) => window.location.hash === `#producto/${product.slug}`
-) || BESTSELLERS_PLACEHOLDERS[0];
+const productFromLocation = () => BESTSELLERS_PLACEHOLDERS.find(
+  (product) => window.location.pathname.replace(/\/$/, '') === `/producto/${product.slug}`
+    || window.location.hash === `#producto/${product.slug}`
+);
 
 export default function App() {
   const [currentView, setCurrentView] = useState(() =>
-    window.location.hash.startsWith('#producto') ? 'product' : 'storefront'
+    productFromLocation() ? 'product' : 'storefront'
   );
-  const [selectedProduct, setSelectedProduct] = useState(productFromHash);
+  const [selectedProduct, setSelectedProduct] = useState(() => productFromLocation() || BESTSELLERS_PLACEHOLDERS[0]);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
 
@@ -42,9 +43,22 @@ export default function App() {
   }, [currentView, selectedProduct]);
 
   useEffect(() => {
+    if (window.location.hash.startsWith('#producto/')) {
+      const legacyProduct = productFromLocation();
+      if (legacyProduct) {
+        window.history.replaceState(null, '', `/producto/${legacyProduct.slug}`);
+      }
+    } else if (['#inicio', '#home', '#mas-vendidos', '#somos-marubi'].includes(window.location.hash)) {
+      const section = window.location.hash;
+      window.history.replaceState(null, '', '/inicio');
+      if (section !== '#inicio' && section !== '#home') {
+        requestAnimationFrame(() => document.querySelector(section)?.scrollIntoView());
+      }
+    }
     const handlePopState = () => {
-      if (window.location.hash.startsWith('#producto')) {
-        setSelectedProduct(productFromHash());
+      const product = productFromLocation();
+      if (product) {
+        setSelectedProduct(product);
         setCurrentView('product');
       } else {
         setCurrentView('storefront');
@@ -58,8 +72,7 @@ export default function App() {
     setSelectedProduct(product);
     setSelectedOffer(null);
     setCurrentView('product');
-    const hash = `#producto/${product.slug}`;
-    const productUrl = `/${hash}`;
+    const productUrl = `/producto/${product.slug}`;
     if (`${window.location.pathname}${window.location.hash}` !== productUrl) {
       window.history.pushState(null, '', productUrl);
     }
@@ -69,7 +82,7 @@ export default function App() {
   const handleNavigateHome = (targetHash = '#inicio') => {
     setCurrentView('storefront');
     const sectionHash = targetHash && targetHash !== '#inicio' && targetHash !== '#' ? targetHash : '';
-    const homeUrl = `/inicio${sectionHash}`;
+    const homeUrl = '/inicio';
     if (`${window.location.pathname}${window.location.hash}` !== homeUrl) {
       window.history.pushState(null, '', homeUrl);
     }
@@ -111,7 +124,7 @@ export default function App() {
       />
 
       {currentView === 'storefront' ? (
-        <StorefrontView onOpenProduct={handleOpenProduct} />
+        <StorefrontView onOpenProduct={handleOpenProduct} onNavigateHome={handleNavigateHome} />
       ) : (
         <ProductTemplateView
           selectedProduct={selectedProduct}

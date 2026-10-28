@@ -8,7 +8,7 @@ export default function ProductCard({ product, onOpenProduct }) {
 
   return (
     <article className="voltra-product-card">
-      <a href={`#producto/${product.slug}`} className="voltra-card-link" onClick={handleClick}>
+      <a href={`/producto/${product.slug}`} className="voltra-card-link" onClick={handleClick}>
         <div className="voltra-card-media">
           {product.image ? (
             <img src={product.image} alt={product.title} loading="lazy" />

@@ -95,8 +95,8 @@ export default function ProductTemplateView({
               <div className="price-row" aria-label="Precio del producto">
                 <span className="price-current">{displayPrice}</span>
                 {displayCompare && <s className="price-regular">{displayCompare}</s>}
-                {(activeOffer?.id === 'duo' || data.priceSave) && (
-                  <span className="price-save">{activeOffer?.id === 'duo' ? activeOffer.detail : data.priceSave}</span>
+                {(activeOffer?.quantity > 1 || data.priceSave) && (
+                  <span className="price-save">{activeOffer?.quantity > 1 ? activeOffer.detail : data.priceSave}</span>
                 )}
               </div>
               {data.offers && (
@@ -195,11 +195,24 @@ export default function ProductTemplateView({
           <div className="container">
             <div className="section-heading">
               <p className="eyebrow">MIRA EL PRODUCTO EN DETALLE</p>
-              <h2 id="productVideosTitle">Pronto podrás verlo en acción</h2>
+              <h2 id="productVideosTitle">{data.videos ? 'Mira la mariposa en acción' : 'Pronto podrás verlo en acción'}</h2>
               <p>{data.videoIntro || 'Estamos preparando videos reales para mostrarte cada pieza, sus diseños y cómo luce el pack en una mesa navideña.'}</p>
             </div>
-            <div className="product-video-grid">
-              {(data.videoLabels || ['Vista completa del pack', 'Detalles de las piezas', 'Ideas para tu mesa']).map((title, index) => (
+            {data.videos ? (
+              <div className="product-video-grid product-video-grid--media">
+                {data.videos.map((video) => (
+                  <figure className="product-video-card" key={video.src}>
+                    <video controls playsInline preload="none" poster={video.poster} width="540" height="960" aria-label={video.title}>
+                      <source src={video.src} type="video/mp4" />
+                      Tu navegador no puede reproducir este video.
+                    </video>
+                    <figcaption>{video.title}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            ) : (
+              <div className="product-video-grid">
+              {(data.videoLabels || ['Vista completa del pack', 'Detalles de las piezas']).map((title, index) => (
                 <div className="product-video-placeholder" key={title}>
                   <span className="video-placeholder-icon" aria-hidden="true">▶</span>
                   <strong>Video {index + 1}</strong>
@@ -207,7 +220,8 @@ export default function ProductTemplateView({
                   <small>Próximamente</small>
                 </div>
               ))}
-            </div>
+              </div>
+            )}
           </div>
         </section>
 

@@ -19,12 +19,12 @@ const stories = [
     image: '/assets/mariposa/mariposa-perfil-marmol.webp',
     eyebrow: 'PARA ILUMINAR',
     title: 'Una mariposa que hace brillar el árbol',
-    text: 'Alas translúcidas, luz blanca y música navideña incluida en una figura de 35 cm aprox. Disponible por unidad o en pack de dos.',
-    offer: '1 por S/ 149.90 · 2 por S/ 199.90',
+    text: 'Alas translúcidas, luz blanca y música navideña incluida en una figura de 35 cm aprox. Disponible por unidad o en packs de dos y tres.',
+    offer: '1 por S/ 139 · 2 por S/ 210 · 3 por S/ 309',
   },
 ];
 
-export default function StorefrontView({ onOpenProduct }) {
+export default function StorefrontView({ onOpenProduct, onNavigateHome }) {
   const openProduct = (product) => (event) => {
     event.preventDefault();
     onOpenProduct(product);
@@ -73,7 +73,7 @@ export default function StorefrontView({ onOpenProduct }) {
                   <h3>{story.title}</h3>
                   <p>{story.text}</p>
                   <strong>{story.offer}</strong>
-                  <a href={`#producto/${story.product.slug}`} className="voltra-btn-solid" onClick={openProduct(story.product)}>Ver producto</a>
+                  <a href={`/producto/${story.product.slug}`} className="voltra-btn-solid" onClick={openProduct(story.product)}>Ver producto</a>
                 </div>
               </article>
             ))}
@@ -88,7 +88,7 @@ export default function StorefrontView({ onOpenProduct }) {
             <h2>Navidad en casa, estés donde estés</h2>
             <p>Envío gratis a todo el Perú a través de Shalom. Elige tu producto y coordinaremos tu pedido por WhatsApp.</p>
           </div>
-          <a href="#mas-vendidos" className="voltra-btn-solid">Ver los favoritos</a>
+          <a href="/inicio" className="voltra-btn-solid" onClick={(event) => { event.preventDefault(); onNavigateHome('#mas-vendidos'); }}>Ver los favoritos</a>
         </div>
       </section>
       <WaveDivider />

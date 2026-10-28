@@ -39,6 +39,12 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
     onOpenProduct(product);
   };
 
+  const handleFooterNav = (e) => {
+    e.preventDefault();
+    closeAll();
+    document.getElementById('footer-ayuda')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const toggleSubmenu = (key) => {
     setOpenSubmenus((prev) => ({ ...prev, [key]: !prev[key] }));
   };
@@ -188,9 +194,9 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
                 </button>
                 {openSubmenus.productos && (
                   <ul className="drawer-sublist">
-                    <li><a href="/inicio#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Favoritos de Navidad</a></li>
+                    <li><a href="/inicio" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Favoritos de Navidad</a></li>
                     {BESTSELLERS_PLACEHOLDERS.slice(0, 2).map((product) => (
-                      <li key={product.id}><a href={`#producto/${product.slug}`} onClick={(e) => handleProductNav(e, product)}>{product.title}</a></li>
+                      <li key={product.id}><a href={`/producto/${product.slug}`} onClick={(e) => handleProductNav(e, product)}>{product.title}</a></li>
                     ))}
                   </ul>
                 )}
@@ -207,16 +213,16 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
                 </button>
                 {openSubmenus.faq && (
                   <ul className="drawer-sublist">
-                    <li><a href="/inicio#somos-marubi" onClick={(e) => handleHomeNav(e, '#somos-marubi')}>¿Quiénes somos?</a></li>
-                    <li><a href="#footer-ayuda" onClick={closeAll}>Cómo comprar</a></li>
-                    <li><a href="#footer-ayuda" onClick={closeAll}>Medios de pago</a></li>
-                    <li><a href="#footer-ayuda" onClick={closeAll}>¿Cómo son los envíos?</a></li>
-                    <li><a href="#footer-ayuda" onClick={closeAll}>Garantía y devoluciones</a></li>
+                    <li><a href="/inicio" onClick={(e) => handleHomeNav(e, '#somos-marubi')}>¿Quiénes somos?</a></li>
+                    <li><a href="/inicio" onClick={handleFooterNav}>Cómo comprar</a></li>
+                    <li><a href="/inicio" onClick={handleFooterNav}>Medios de pago</a></li>
+                    <li><a href="/inicio" onClick={handleFooterNav}>¿Cómo son los envíos?</a></li>
+                    <li><a href="/inicio" onClick={handleFooterNav}>Garantía y devoluciones</a></li>
                   </ul>
                 )}
               </li>
               <li>
-                <a href="#footer-ayuda" onClick={closeAll} className="drawer-nav-link">
+                <a href="/inicio" onClick={handleFooterNav} className="drawer-nav-link">
                   Contacto
                 </a>
               </li>
@@ -244,7 +250,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
             <div className="cart-empty-box">
               <h3>Tu carrito está vacío</h3>
               <a
-                href="/inicio#mas-vendidos"
+                href="/inicio"
                 className="btn-solid-primary"
                 onClick={(e) => handleHomeNav(e, '#mas-vendidos')}
               >
@@ -258,7 +264,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
                 </div>
                 <div className="cart-collection-info">
                   <h4>
-                    <a href="/inicio#mas-vendidos" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>
+                    <a href="/inicio" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>
                       Pack Navideño →
                     </a>
                   </h4>
