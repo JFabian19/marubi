@@ -26,7 +26,7 @@ export const BESTSELLERS_PLACEHOLDERS = [
     title: 'Mariposa LED Navideña · 35 cm aprox.',
     salePrice: 'S/ 139',
     comparePrice: '',
-    discountBadge: '2 POR S/ 210',
+    discountBadge: '2 POR S/ 249',
     image: '/assets/mariposa/mariposa-frente-marmol.webp',
   },
   {
@@ -201,8 +201,8 @@ export const BUTTERFLY_PRODUCT_PAGE = {
   ctaLabel: 'Pedir 1 mariposa — S/ 139',
   offers: [
     { id: 'single', label: '1 mariposa', price: 'S/ 139', value: 139, quantity: 1, detail: 'Para un punto de luz especial' },
-    { id: 'duo', label: 'Pack de 2 mariposas', price: 'S/ 210', value: 210, quantity: 2, detail: 'Ahorras S/ 68 frente a dos unidades' },
-    { id: 'trio', label: 'Pack de 3 mariposas', price: 'S/ 309', value: 309, quantity: 3, detail: 'Ahorras S/ 108 frente a tres unidades' },
+    { id: 'duo', label: 'Pack de 2 mariposas', price: 'S/ 249', value: 249, quantity: 2, detail: 'Ahorras S/ 29 frente a dos unidades' },
+    { id: 'trio', label: 'Pack de 3 mariposas', price: 'S/ 369', value: 369, quantity: 3, detail: 'Ahorras S/ 48 frente a tres unidades' },
   ],
   gallery: [
     { src: '/assets/mariposa/mariposa-frente-marmol.webp', label: 'Vista frontal de la mariposa LED y su reflejo sobre mármol' },
@@ -222,8 +222,8 @@ export const BUTTERFLY_PRODUCT_PAGE = {
   ],
   proofStrip: [
     { strong: '1 por S/ 139', span: 'Mariposa individual' },
-    { strong: '2 por S/ 210', span: 'Pack de dos mariposas' },
-    { strong: '3 por S/ 309', span: 'Pack de tres mariposas' },
+    { strong: '2 por S/ 249', span: 'Pack de dos mariposas' },
+    { strong: '3 por S/ 369', span: 'Pack de tres mariposas' },
     { strong: 'Envío gratis', span: 'A todo el Perú por Shalom' },
   ],
   expectation: {
@@ -260,8 +260,8 @@ export const BUTTERFLY_PRODUCT_PAGE = {
       { dt: 'Música', dd: 'Melodía navideña integrada' },
       { dt: 'Presentación', dd: '1 mariposa o packs de 2 y 3' },
       { dt: 'Precio individual', dd: 'S/ 139' },
-      { dt: 'Precio pack x2', dd: 'S/ 210' },
-      { dt: 'Precio pack x3', dd: 'S/ 309' },
+      { dt: 'Precio pack x2', dd: 'S/ 249' },
+      { dt: 'Precio pack x3', dd: 'S/ 369' },
       { dt: 'Envío', dd: 'Gratis a todo el Perú a través de Shalom' },
     ],
   },
@@ -273,8 +273,8 @@ export const BUTTERFLY_PRODUCT_PAGE = {
   deliveryHeading: 'Tu mariposa viaja por Shalom',
   faqs: [
     { id: 'faq-1', q: '¿Cuánto cuesta una mariposa?', a: 'Una mariposa cuesta S/ 139.' },
-    { id: 'faq-2', q: '¿Cuánto cuesta el pack de dos?', a: 'Dos mariposas cuestan S/ 210 en total. Ahorras S/ 68 frente a comprar dos unidades por separado.' },
-    { id: 'faq-7', q: '¿Cuánto cuesta el pack de tres?', a: 'Tres mariposas cuestan S/ 309 en total. Ahorras S/ 108 frente a comprar tres unidades por separado.' },
+    { id: 'faq-2', q: '¿Cuánto cuesta el pack de dos?', a: 'Dos mariposas cuestan S/ 249 en total. Ahorras S/ 29 frente a comprar dos unidades por separado.' },
+    { id: 'faq-7', q: '¿Cuánto cuesta el pack de tres?', a: 'Tres mariposas cuestan S/ 369 en total. Ahorras S/ 48 frente a comprar tres unidades por separado.' },
     { id: 'faq-3', q: '¿Qué tamaño tiene?', a: 'La medida referencial es de 35 cm aproximadamente. Puede variar según el punto desde donde se mida la figura.' },
     { id: 'faq-4', q: '¿Cómo se ilumina?', a: 'La pieza fotografiada tiene cable y emite luz blanca. Podemos confirmar contigo los detalles de conexión antes del envío.' },
     { id: 'faq-5', q: '¿Cómo llega mi pedido?', a: 'El envío es gratis a todo el Perú a través de Shalom. Coordinaremos los datos de entrega o recojo por WhatsApp.' },

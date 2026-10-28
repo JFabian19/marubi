@@ -20,7 +20,7 @@ const stories = [
     eyebrow: 'PARA ILUMINAR',
     title: 'Una mariposa que hace brillar el árbol',
     text: 'Alas translúcidas, luz blanca y música navideña incluida en una figura de 35 cm aprox. Disponible por unidad o en packs de dos y tres.',
-    offer: '1 por S/ 139 · 2 por S/ 210 · 3 por S/ 309',
+    offer: '1 por S/ 139 · 2 por S/ 249 · 3 por S/ 369',
   },
 ];
 
