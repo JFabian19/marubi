@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Butterfly from './components/Butterfly';
 import TickerBar from './components/TickerBar';
 import Header from './components/Header';
 import StorefrontView from './components/StorefrontView';
@@ -114,6 +115,8 @@ export default function App() {
     }
     setCheckoutOpen(true);
   };
+
+  if (currentView === 'product' && selectedProduct?.id === 'prod-2') return <Butterfly />;
 
   return (
     <>

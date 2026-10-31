@@ -137,17 +137,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       setSubmitting(false);
       return;
     }
-    if (trackedPurchaseId.current !== orderNumber && typeof window.fbq === 'function') {
-      window.fbq('track', 'Purchase', {
-        content_ids: [selectedProduct.id],
-        content_name: prodTitle,
-        content_type: 'product',
-        num_items: selectedOffer?.quantity || 1,
-        value: productValue,
-        currency: 'PEN',
-      }, { eventID: orderNumber });
-      trackedPurchaseId.current = orderNumber;
-    }
+    if (typeof window.fbq === 'function') window.fbq('trackCustom', 'OrderFormSubmitted');
     const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;
     if (whatsappTab) whatsappTab.location.href = whatsappUrl;
     else window.location.href = whatsappUrl;
