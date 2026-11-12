@@ -1,7 +1,8 @@
 import { PERU_LOCATIONS } from './data/peruLocations';
 import { createOrderId, saveOrder } from './lib/orders';
 
-// Esta ficha usa el mismo píxel que la portada de MARUBI.
+// Esta ficha usa el mismo píxel que la portada de MARUBI (ID: 1635217208321987).
+const PIXEL_ID = '1635217208321987';
 const product = {
   content_ids: ['YH1001-1A'],
   content_name: 'Organizador Metálico para Plantas de 6 Niveles MARUBI',
@@ -30,7 +31,8 @@ function formatSoles(amount) {
 }
 
 function initPixel() {
-  if (!window.fbq) {
+  const alreadyLoaded = typeof window.fbq === 'function';
+  if (!alreadyLoaded) {
     const fbq = function (...args) {
       if (fbq.callMethod) fbq.callMethod(...args);
       else fbq.queue.push(args);
@@ -44,10 +46,101 @@ function initPixel() {
     script.async = true;
     script.src = 'https://connect.facebook.net/en_US/fbevents.js';
     document.head.append(script);
-    fbq('init', '1635217208321987');
+    fbq('init', PIXEL_ID);
+    fbq('track', 'PageView');
   }
-  window.fbq('track', 'PageView');
   window.fbq('track', 'ViewContent', product);
+}
+
+// Tracking de Scroll y Visita a Secciones de Información
+function initEngagementTracking() {
+  let hasScrolled = false;
+  const scrollMilestones = new Set();
+
+  function checkScrollDepth() {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+    if (scrollTop > 40 && !hasScrolled) {
+      hasScrolled = true;
+      window.fbq?.('trackCustom', 'UserScrolled', { ...product });
+    }
+    const docHeight = Math.max(
+      document.documentElement.scrollHeight - window.innerHeight,
+      1
+    );
+    const pct = Math.round((scrollTop / docHeight) * 100);
+    [25, 50, 75, 90].forEach((milestone) => {
+      if (pct >= milestone && !scrollMilestones.has(milestone)) {
+        scrollMilestones.add(milestone);
+        window.fbq?.('trackCustom', 'ScrollDepth', {
+          ...product,
+          depth_percent: milestone,
+          depth: `${milestone}%`,
+        });
+      }
+    });
+  }
+
+  window.addEventListener('scroll', checkScrollDepth, { passive: true });
+
+  // Detectar si visitó las secciones de información del producto
+  const sectionMap = [
+    { selector: '.compare-section', name: 'antes_y_despues', isInfo: true },
+    { selector: '.benefits', name: 'beneficios', isInfo: true },
+    { selector: '#medidas', name: 'medidas_y_materiales', isInfo: true },
+    { selector: '#detalles', name: 'detalles_del_producto', isInfo: true },
+    { selector: '.spaces', name: 'ideas_espacios', isInfo: false },
+    { selector: '#pedido', name: 'seccion_oferta', isInfo: false },
+    { selector: '#preguntas', name: 'preguntas_frecuentes', isInfo: true },
+  ];
+
+  const visitedSections = new Set();
+  let visitedInfoTracked = false;
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const sectionName = entry.target.dataset.trackSection;
+          const isInfo = entry.target.dataset.trackInfo === 'true';
+          if (sectionName && !visitedSections.has(sectionName)) {
+            visitedSections.add(sectionName);
+            window.fbq?.('trackCustom', 'SectionVisited', {
+              ...product,
+              section: sectionName,
+            });
+            if (isInfo && !visitedInfoTracked) {
+              visitedInfoTracked = true;
+              window.fbq?.('trackCustom', 'VisitedProductInfo', {
+                ...product,
+                first_info_section: sectionName,
+              });
+            }
+          }
+        });
+      },
+      { threshold: 0.35 }
+    );
+
+    sectionMap.forEach(({ selector, name, isInfo }) => {
+      const el = document.querySelector(selector);
+      if (el) {
+        el.dataset.trackSection = name;
+        el.dataset.trackInfo = String(isInfo);
+        observer.observe(el);
+      }
+    });
+  }
+
+  // Interacción con preguntas frecuentes
+  document.querySelectorAll('#preguntas details').forEach((detail) => {
+    detail.addEventListener('toggle', () => {
+      if (detail.open) {
+        const question = detail.querySelector('summary')?.textContent?.trim() || '';
+        window.fbq?.('trackCustom', 'FAQOpened', { ...product, question });
+      }
+    });
+  });
 }
 
 const scenes = [
@@ -85,10 +178,15 @@ document.querySelector('#gallery-prev').addEventListener('click', () => showScen
 document.querySelector('#gallery-next').addEventListener('click', () => showScene(1));
 
 const range = document.querySelector('#compare-range');
+let compareTracked = false;
 range.addEventListener('input', () => {
   const value = range.valueAsNumber;
   document.querySelector('#comparison').style.setProperty('--split', value + '%');
   range.setAttribute('aria-valuetext', value + ' % antes y ' + (100 - value) + ' % después');
+  if (!compareTracked) {
+    compareTracked = true;
+    window.fbq?.('trackCustom', 'BeforeAfterCompared', { ...product });
+  }
 });
 
 const menu = document.querySelector('#product-nav');
@@ -128,7 +226,9 @@ const submitError = document.querySelector('#submitError');
 let selectedQty = 1;
 let exitDiscountAmount = 0; // S/ 5 de descuento al darle clic a la X
 let exitDiscountOffered = false;
+let registrationAttemptTracked = false;
 let pendingOrderId = null;
+let trackedPurchaseId = null;
 let isSubmitting = false;
 
 // Poblar provincias
@@ -208,10 +308,44 @@ bundleCards.forEach((card) => {
   });
 });
 
-function openCheckout(initialQty) {
+function trackRegistrationAttempt(sourceField) {
+  if (registrationAttemptTracked) return;
+  registrationAttemptTracked = true;
+  const active = BUNDLES[selectedQty];
+  const finalPrice = getFinalPrice(selectedQty);
+  const payload = {
+    ...product,
+    num_items: active.quantity,
+    value: finalPrice,
+    status: 'intento_de_registro',
+    field: sourceField,
+  };
+  // Eventos estándar y personalizados para intento de registro al llenar datos
+  window.fbq?.('track', 'CompleteRegistration', payload);
+  window.fbq?.('track', 'Lead', payload);
+  window.fbq?.('trackCustom', 'IntentoDeRegistro', payload);
+}
+
+['#drawerNombre', '#drawerWhatsapp', '#drawerDireccion', '#drawerReferencia', '#drawerProvincia', '#drawerCiudad'].forEach((sel) => {
+  const input = document.querySelector(sel);
+  if (!input) return;
+  input.addEventListener('input', () => {
+    if (input.value && input.value.trim().length >= 2) {
+      trackRegistrationAttempt(sel);
+    }
+  });
+  input.addEventListener('change', () => {
+    if (input.value && input.value.trim().length >= 1) {
+      trackRegistrationAttempt(sel);
+    }
+  });
+});
+
+function openCheckout(initialQty, placement = 'boton') {
   if (initialQty === 1 || initialQty === 2) {
     selectedQty = initialQty;
   }
+  registrationAttemptTracked = false;
   updatePricingUI();
   submitError.hidden = true;
   exitDiscountPopup.hidden = true;
@@ -219,10 +353,12 @@ function openCheckout(initialQty) {
   modalOverlay.classList.add('active');
   document.body.classList.add('modal-open');
   const active = BUNDLES[selectedQty];
+  const finalPrice = getFinalPrice(selectedQty);
   window.fbq?.('track', 'InitiateCheckout', {
     ...product,
     num_items: active.quantity,
-    value: getFinalPrice(selectedQty),
+    value: finalPrice,
+    placement,
   });
 }
 
@@ -239,6 +375,7 @@ function handleAttemptClose() {
   if (!exitDiscountOffered && exitDiscountAmount === 0) {
     exitDiscountOffered = true;
     exitDiscountPopup.hidden = false;
+    window.fbq?.('trackCustom', 'ExitDiscountOffered', { ...product, discount: 5 });
     return;
   }
   forceCloseCheckout();
@@ -248,6 +385,11 @@ claimDiscountBtn.addEventListener('click', () => {
   exitDiscountAmount = 5;
   exitDiscountPopup.hidden = true;
   updatePricingUI();
+  window.fbq?.('trackCustom', 'ExitDiscountClaimed', {
+    ...product,
+    discount: 5,
+    value: getFinalPrice(selectedQty),
+  });
   document.querySelector('#drawerNombre')?.focus();
 });
 
@@ -259,7 +401,8 @@ document.querySelectorAll('[data-open-checkout]').forEach((btn) => {
   btn.addEventListener('click', () => {
     const attr = btn.dataset.openCheckout;
     const qty = attr === 'selected' ? selectedQty : Number(attr) || 1;
-    openCheckout(qty);
+    const placement = btn.dataset.placement || 'landing';
+    openCheckout(qty, placement);
   });
 });
 
@@ -307,6 +450,9 @@ orderForm.addEventListener('submit', async (e) => {
     return;
   }
 
+  // Asegurar que el intento de registro quede registrado antes de la compra
+  trackRegistrationAttempt('submit');
+
   const active = BUNDLES[selectedQty];
   const finalPrice = getFinalPrice(selectedQty);
   const offerLabel =
@@ -343,6 +489,31 @@ orderForm.addEventListener('submit', async (e) => {
   submitBtn.disabled = true;
   submitText.textContent = 'Procesando Pedido…';
 
+  // Disparar evento de Compra (Purchase) cuando hace clic en Realizar Pedido
+  if (trackedPurchaseId !== orderNumber) {
+    trackedPurchaseId = orderNumber;
+    window.fbq?.(
+      'track',
+      'Purchase',
+      {
+        content_ids: product.content_ids,
+        content_name: product.content_name,
+        content_type: 'product',
+        num_items: active.quantity,
+        value: finalPrice,
+        currency: 'PEN',
+      },
+      { eventID: orderNumber }
+    );
+    window.fbq?.('trackCustom', 'OrderFormSubmitted', {
+      content_ids: product.content_ids,
+      num_items: active.quantity,
+      value: finalPrice,
+      currency: 'PEN',
+      order_id: orderNumber,
+    });
+  }
+
   try {
     await saveOrder({
       orderId: orderNumber,
@@ -363,12 +534,6 @@ orderForm.addEventListener('submit', async (e) => {
   } catch {
     // Continuar a WhatsApp con los datos del cliente.
   }
-
-  window.fbq?.('trackCustom', 'OrderFormSubmitted', {
-    content_ids: product.content_ids,
-    value: finalPrice,
-    currency: 'PEN',
-  });
 
   const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;
   if (whatsappTab) whatsappTab.location.href = whatsappUrl;
@@ -399,6 +564,7 @@ document.addEventListener('click', (event) => {
 });
 
 initPixel();
+initEngagementTracking();
 document.querySelectorAll('a[data-contact]').forEach((link) => {
   link.addEventListener('click', () => {
     window.fbq?.('track', 'Contact', { ...product, contact_channel: 'WhatsApp', placement: link.dataset.contact });

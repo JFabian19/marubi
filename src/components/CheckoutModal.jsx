@@ -74,6 +74,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const pendingOrderId = useRef(null);
+  const registrationTracked = useRef(false);
 
   const provinciasList = Object.keys(PERU_LOCATIONS);
   const ciudadesList =
@@ -95,9 +96,37 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
   useEffect(() => {
     if (!isOpen) {
       pendingOrderId.current = null;
+      registrationTracked.current = false;
       setSubmitError('');
     }
   }, [isOpen, selectedProduct?.id]);
+
+  useEffect(() => {
+    if (!isOpen || registrationTracked.current) return;
+    const hasData =
+      nombre.trim().length > 1 ||
+      whatsapp.trim().length > 1 ||
+      direccion.trim().length > 1 ||
+      referencia.trim().length > 1 ||
+      Boolean(provincia) ||
+      Boolean(ciudad);
+    if (hasData && typeof window.fbq === 'function') {
+      registrationTracked.current = true;
+      const currentBundle = bundles.find((b) => b.quantity === selectedQty) || bundles[0];
+      const regPayload = {
+        content_ids: [selectedProduct?.id || 'prod-1'],
+        content_name: productData.title,
+        content_type: 'product',
+        num_items: currentBundle.quantity,
+        value: currentBundle.price,
+        currency: 'PEN',
+        status: true,
+      };
+      window.fbq('track', 'CompleteRegistration', regPayload);
+      window.fbq('track', 'Lead', regPayload);
+      window.fbq('trackCustom', 'IntentoDeRegistro', regPayload);
+    }
+  }, [isOpen, nombre, whatsapp, direccion, referencia, provincia, ciudad, bundles, selectedQty, selectedProduct?.id, productData.title]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -188,10 +217,18 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
     }
 
     if (typeof window.fbq === 'function') {
-      window.fbq('trackCustom', 'OrderFormSubmitted', {
+      const purchasePayload = {
         content_ids: [selectedProduct?.id || 'prod-1'],
+        content_name: productData.title,
+        content_type: 'product',
+        num_items: activeBundle.quantity,
         value: activeBundle.price,
         currency: 'PEN',
+      };
+      window.fbq('track', 'Purchase', purchasePayload, { eventID: orderNumber });
+      window.fbq('trackCustom', 'OrderFormSubmitted', {
+        ...purchasePayload,
+        order_id: orderNumber,
       });
     }
 
