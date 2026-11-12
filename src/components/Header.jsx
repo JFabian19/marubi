@@ -198,6 +198,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
                     {BESTSELLERS_PLACEHOLDERS.slice(0, 2).map((product) => (
                       <li key={product.id}><a href={`/producto/${product.slug}`} onClick={(e) => handleProductNav(e, product)}>{product.title}</a></li>
                     ))}
+                    <li><a href="/producto/organizador-de-plantas-6-niveles">Organizador de plantas de 6 niveles</a></li>
                   </ul>
                 )}
               </li>

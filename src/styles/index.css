@@ -58,6 +58,16 @@ button { cursor: pointer; }
   border: 0;
 }
 
+.home-plant-feature { padding: clamp(36px, 5vw, 70px) 0; background: #f6f2eb; }
+.home-plant-inner { display: grid; grid-template-columns: minmax(210px, 390px) minmax(240px, 490px); justify-content: center; gap: clamp(20px, 5vw, 80px); align-items: center; }
+.home-plant-inner > img { width: 100%; height: clamp(240px, 24vw, 325px); object-fit: cover; border-radius: 12px; }
+.home-plant-inner h2 + p { margin-top: 12px; }
+.home-plant-inner strong { display: block; margin: 10px 0 15px; color: #092c5b; font-size: 1.5rem; }
+@media (max-width: 600px) {
+  .home-plant-inner { grid-template-columns: 1fr; }
+  .home-plant-inner > img { height: 245px; }
+}
+
 /* Mobile-First Containers */
 .container { width: min(100% - 28px, var(--max)); margin-inline: auto; }
 .page-width { width: min(100% - 28px, var(--page-max)); margin-inline: auto; }
