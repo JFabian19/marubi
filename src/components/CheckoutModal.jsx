@@ -188,6 +188,22 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       `🗺️ *Ubicación:* ${encodeURIComponent(ciudad)}, ${encodeURIComponent(provincia)}%0A%0A` +
       `Deseo confirmar la entrega de mi pedido. ¡Gracias!`;
 
+    if (typeof window.fbq === 'function') {
+      const purchasePayload = {
+        content_ids: [selectedProduct?.id || 'prod-1'],
+        content_name: productData.title,
+        content_type: 'product',
+        num_items: activeBundle.quantity,
+        value: activeBundle.price,
+        currency: 'PEN',
+      };
+      window.fbq('track', 'Purchase', purchasePayload, { eventID: orderNumber });
+      window.fbq('trackCustom', 'OrderFormSubmitted', {
+        ...purchasePayload,
+        order_id: orderNumber,
+      });
+    }
+
     const whatsappTab = window.open('', '_blank');
     if (whatsappTab) whatsappTab.opener = null;
     setSubmitting(true);
@@ -207,6 +223,8 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
         district: ciudad,
         address: direccion.trim(),
         reference: referencia.trim(),
+        deliveryMethod: isProvincia ? 'shalom' : 'lima',
+        place: `${ciudad}, ${provincia}`,
         pageUrl: window.location.href,
       });
     } catch (error) {
@@ -214,22 +232,6 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       setSubmitError('No pudimos registrar tu pedido. Inténtalo otra vez; tus datos siguen aquí.');
       setSubmitting(false);
       return;
-    }
-
-    if (typeof window.fbq === 'function') {
-      const purchasePayload = {
-        content_ids: [selectedProduct?.id || 'prod-1'],
-        content_name: productData.title,
-        content_type: 'product',
-        num_items: activeBundle.quantity,
-        value: activeBundle.price,
-        currency: 'PEN',
-      };
-      window.fbq('track', 'Purchase', purchasePayload, { eventID: orderNumber });
-      window.fbq('trackCustom', 'OrderFormSubmitted', {
-        ...purchasePayload,
-        order_id: orderNumber,
-      });
     }
 
     const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;

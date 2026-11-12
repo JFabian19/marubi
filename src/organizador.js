@@ -554,14 +554,9 @@ orderForm.addEventListener('submit', async (e) => {
     `🗺️ *Ubicación:* ${encodeURIComponent(ciudad)}, ${encodeURIComponent(provincia)}%0A%0A` +
     `Deseo confirmar la entrega de mi pedido. ¡Gracias!`;
 
-  const whatsappTab = window.open('', '_blank');
-  if (whatsappTab) whatsappTab.opener = null;
-
   isSubmitting = true;
-  submitBtn.disabled = true;
-  submitText.textContent = 'Procesando Pedido…';
 
-  // Disparar evento de Compra (Purchase) cuando hace clic en Realizar Pedido
+  // Disparar evento de Compra (Purchase) inmediatamente mientras el botón "Realizar Pedido" sigue activo
   if (trackedPurchaseId !== orderNumber) {
     trackedPurchaseId = orderNumber;
     window.fbq?.(
@@ -586,6 +581,16 @@ orderForm.addEventListener('submit', async (e) => {
     });
   }
 
+  const whatsappTab = window.open('', '_blank');
+  if (whatsappTab) whatsappTab.opener = null;
+
+  const statusTimer = window.setTimeout(() => {
+    if (isSubmitting) {
+      submitBtn.disabled = true;
+      submitText.textContent = 'Procesando Pedido…';
+    }
+  }, 220);
+
   try {
     await saveOrder({
       orderId: orderNumber,
@@ -601,10 +606,14 @@ orderForm.addEventListener('submit', async (e) => {
       district: ciudad,
       address: direccion,
       reference: referencia,
+      deliveryMethod: isProvincia ? 'shalom' : 'lima',
+      place: `${ciudad}, ${provincia}`,
       pageUrl: window.location.href,
     });
   } catch {
     // Continuar a WhatsApp con los datos del cliente.
+  } finally {
+    window.clearTimeout(statusTimer);
   }
 
   const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;
