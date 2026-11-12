@@ -98,7 +98,7 @@ export default function StorefrontView({ onOpenProduct, onNavigateHome }) {
             <p className="eyebrow">ORGANIZACIÓN PARA EL HOGAR</p>
             <h2 id="homePlantTitle">Más plantas, menos espacio 🌿</h2>
             <p>Organizador metálico blanco de 6 niveles con ruedas.</p>
-            <strong>S/ 89</strong>
+            <strong>S/ 79 ? Oferta 2x S/ 144</strong>
             <a className="voltra-btn-solid" href="/producto/organizador-de-plantas-6-niveles">Ver el organizador</a>
           </div>
         </div>
