@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { PERU_LOCATIONS } from '../data/peruLocations';
 import { getProductPage } from '../data/templateData';
 import { createOrderId, saveOrder } from '../lib/orders';
+import { updateMetaUserData, trackMetaEvent } from '../lib/metaPixel';
 
 function formatSoles(amount) {
   return `S/. ${Number(amount || 0).toFixed(2)}`;
@@ -102,15 +103,21 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
   }, [isOpen, selectedProduct?.id]);
 
   useEffect(() => {
-    if (!isOpen || registrationTracked.current) return;
+    if (!isOpen) return;
+    const customerData = {
+      name: nombre.trim(),
+      whatsapp: whatsapp.trim(),
+      province: provincia,
+      city: ciudad,
+    };
+    if (customerData.name || customerData.whatsapp || customerData.province || customerData.city) {
+      updateMetaUserData(customerData);
+    }
+    if (registrationTracked.current) return;
     const hasData =
-      nombre.trim().length > 1 ||
-      whatsapp.trim().length > 1 ||
-      direccion.trim().length > 1 ||
-      referencia.trim().length > 1 ||
-      Boolean(provincia) ||
-      Boolean(ciudad);
-    if (hasData && typeof window.fbq === 'function') {
+      /^9\d{8}$/.test(customerData.whatsapp) ||
+      (customerData.name.length > 1 && Boolean(provincia || ciudad));
+    if (hasData) {
       registrationTracked.current = true;
       const currentBundle = bundles.find((b) => b.quantity === selectedQty) || bundles[0];
       const regPayload = {
@@ -122,9 +129,9 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
         currency: 'PEN',
         status: true,
       };
-      window.fbq('track', 'CompleteRegistration', regPayload);
-      window.fbq('track', 'Lead', regPayload);
-      window.fbq('trackCustom', 'IntentoDeRegistro', regPayload);
+      trackMetaEvent('CompleteRegistration', regPayload, { userData: customerData });
+      trackMetaEvent('Lead', regPayload, { userData: customerData });
+      trackMetaEvent('IntentoDeRegistro', regPayload, { isCustom: true, userData: customerData });
     }
   }, [isOpen, nombre, whatsapp, direccion, referencia, provincia, ciudad, bundles, selectedQty, selectedProduct?.id, productData.title]);
 
@@ -188,55 +195,89 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       `🗺️ *Ubicación:* ${encodeURIComponent(ciudad)}, ${encodeURIComponent(provincia)}%0A%0A` +
       `Deseo confirmar la entrega de mi pedido. ¡Gracias!`;
 
-    if (typeof window.fbq === 'function') {
-      const purchasePayload = {
-        content_ids: [selectedProduct?.id || 'prod-1'],
-        content_name: productData.title,
-        content_type: 'product',
-        num_items: activeBundle.quantity,
-        value: activeBundle.price,
-        currency: 'PEN',
-      };
-      window.fbq('track', 'Purchase', purchasePayload, { eventID: orderNumber });
-      window.fbq('trackCustom', 'OrderFormSubmitted', {
-        ...purchasePayload,
-        order_id: orderNumber,
+    const customerData = {
+      name: nombre.trim(),
+      whatsapp,
+      province: provincia,
+      city: ciudad,
+    };
+    updateMetaUserData(customerData);
+
+    const purchasePayload = {
+      content_ids: [selectedProduct?.id || 'prod-1'],
+      content_name: productData.title,
+      content_type: 'product',
+      num_items: activeBundle.quantity,
+      value: activeBundle.price,
+      currency: 'PEN',
+    };
+
+    if (!registrationTracked.current) {
+      registrationTracked.current = true;
+      trackMetaEvent('CompleteRegistration', purchasePayload, {
+        eventID: `reg_${orderNumber}`,
+        userData: customerData,
+        keepalive: true,
+      });
+      trackMetaEvent('Lead', purchasePayload, {
+        eventID: `lead_${orderNumber}`,
+        userData: customerData,
+        keepalive: true,
       });
     }
 
-    const whatsappTab = window.open('', '_blank');
-    if (whatsappTab) whatsappTab.opener = null;
+    trackMetaEvent('Purchase', purchasePayload, {
+      eventID: orderNumber,
+      userData: customerData,
+      keepalive: true,
+    });
+    trackMetaEvent(
+      'OrderFormSubmitted',
+      {
+        ...purchasePayload,
+        order_id: orderNumber,
+      },
+      {
+        isCustom: true,
+        eventID: `form_${orderNumber}`,
+        userData: customerData,
+        keepalive: true,
+      }
+    );
+
     setSubmitting(true);
 
     try {
-      await saveOrder({
-        orderId: orderNumber,
-        productId: selectedProduct?.id || 'prod-1',
-        productName: productData.title,
-        offer: activeBundle.offerLabel,
-        quantity: activeBundle.quantity,
-        total: activeBundle.price,
-        name: nombre.trim(),
-        whatsapp,
-        department: provincia,
-        province: provincia,
-        district: ciudad,
-        address: direccion.trim(),
-        reference: referencia.trim(),
-        deliveryMethod: isProvincia ? 'shalom' : 'lima',
-        place: `${ciudad}, ${provincia}`,
-        pageUrl: window.location.href,
-      });
+      const pixelFlushDelay = new Promise((resolve) => window.setTimeout(resolve, 550));
+      await Promise.all([
+        saveOrder({
+          orderId: orderNumber,
+          productId: selectedProduct?.id || 'prod-1',
+          productName: productData.title,
+          offer: activeBundle.offerLabel,
+          quantity: activeBundle.quantity,
+          total: activeBundle.price,
+          name: nombre.trim(),
+          whatsapp,
+          department: provincia,
+          province: provincia,
+          district: ciudad,
+          address: direccion.trim(),
+          reference: referencia.trim(),
+          deliveryMethod: isProvincia ? 'shalom' : 'lima',
+          place: `${ciudad}, ${provincia}`,
+          pageUrl: window.location.href,
+        }),
+        pixelFlushDelay,
+      ]);
     } catch (error) {
-      whatsappTab?.close();
       setSubmitError('No pudimos registrar tu pedido. Inténtalo otra vez; tus datos siguen aquí.');
       setSubmitting(false);
       return;
     }
 
     const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;
-    if (whatsappTab) whatsappTab.location.href = whatsappUrl;
-    else window.location.href = whatsappUrl;
+    window.location.href = whatsappUrl;
 
     onClose();
     pendingOrderId.current = null;

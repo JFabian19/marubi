@@ -83,8 +83,51 @@
     }
   </script>
 
-  <!-- Meta Pixel Code -->
+  <!-- Meta Pixel Code (Advanced Matching) -->
   <script>
+    (function() {
+      function getCookie(n) {
+        var m = document.cookie.match(new RegExp('(?:^|;\\s*)' + n + '=([^;]*)'));
+        return m ? decodeURIComponent(m[1]) : '';
+      }
+      function setCookie(n, v) {
+        if (!v) return;
+        document.cookie = n + '=' + encodeURIComponent(v) + '; path=/; max-age=7776000; SameSite=Lax';
+      }
+      var fbc = getCookie('_fbc');
+      var fbp = getCookie('_fbp');
+      var extId = getCookie('_mrb_eid');
+      var saved = {};
+      try {
+        var sp = new URLSearchParams(window.location.search);
+        var fbclid = sp.get('fbclid');
+        if (fbclid) {
+          fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+        } else if (!fbc) {
+          fbc = localStorage.getItem('marubi_fbc') || '';
+        }
+        if (fbc) {
+          setCookie('_fbc', fbc);
+          localStorage.setItem('marubi_fbc', fbc);
+        }
+        if (!fbp) {
+          fbp = localStorage.getItem('marubi_fbp') || ('fb.1.' + Date.now() + '.' + Math.floor(1000000000 + Math.random() * 9000000000));
+        }
+        setCookie('_fbp', fbp);
+        localStorage.setItem('marubi_fbp', fbp);
+        if (!extId) {
+          extId = localStorage.getItem('marubi_ext_id') || ('mrb_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10));
+        }
+        setCookie('_mrb_eid', extId);
+        localStorage.setItem('marubi_ext_id', extId);
+        var rawUser = localStorage.getItem('marubi_user_data');
+        if (rawUser) saved = JSON.parse(rawUser) || {};
+      } catch (err) {
+        if (!extId) extId = 'mrb_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 10);
+      }
+      window.__marubiUserData = Object.assign({ country: 'pe', external_id: extId }, saved, { country: 'pe', external_id: extId });
+      window.__marubiPageViewId = 'pv_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+    })();
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -93,12 +136,12 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1635217208321987');
-    fbq('track', 'PageView');
+    fbq('init', '1635217208321987', window.__marubiUserData);
+    fbq('track', 'PageView', {}, { eventID: window.__marubiPageViewId });
   </script>
   <!-- End Meta Pixel Code -->
-  <script type="module" crossorigin src="/assets/index-B0-NkrBi.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/orders-B1QyfsuH.js">
+  <script type="module" crossorigin src="/assets/index-BUpfVR5I.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/metaPixel-BLv9A44g.js">
   <link rel="stylesheet" crossorigin href="/assets/index-BvynLoze.css">
 </head>
 <body>

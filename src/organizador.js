@@ -1,8 +1,16 @@
 import { PERU_LOCATIONS } from './data/peruLocations';
 import { createOrderId, saveOrder } from './lib/orders';
+import {
+  META_PIXEL_ID,
+  ensureFbcAndFbp,
+  getStoredUserData,
+  updateMetaUserData,
+  trackMetaEvent,
+  sendKeepalivePixelBeacon,
+} from './lib/metaPixel';
 
 // Esta ficha usa el mismo píxel que la portada de MARUBI (ID: 1635217208321987).
-const PIXEL_ID = '1635217208321987';
+const PIXEL_ID = META_PIXEL_ID;
 const product = {
   content_ids: ['YH1001-1A'],
   content_name: 'Organizador Metálico para Plantas de 6 Niveles MARUBI',
@@ -31,6 +39,8 @@ function formatSoles(amount) {
 }
 
 function initPixel() {
+  ensureFbcAndFbp();
+  const userData = getStoredUserData();
   const alreadyLoaded = typeof window.fbq === 'function';
   if (!alreadyLoaded) {
     const fbq = function (...args) {
@@ -46,10 +56,26 @@ function initPixel() {
     script.async = true;
     script.src = 'https://connect.facebook.net/en_US/fbevents.js';
     document.head.append(script);
-    fbq('init', PIXEL_ID);
-    fbq('track', 'PageView');
+    fbq('init', PIXEL_ID, userData);
+    window.__marubiPageViewId =
+      window.__marubiPageViewId || `pv_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+    fbq('track', 'PageView', {}, { eventID: window.__marubiPageViewId });
+  } else {
+    window.fbq('init', PIXEL_ID, userData);
   }
-  window.fbq('track', 'ViewContent', product);
+
+  if (!window.__marubiViewContentId) {
+    window.__marubiViewContentId = `vc_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+    window.fbq('track', 'ViewContent', product, { eventID: window.__marubiViewContentId });
+  }
+
+  // Fallback si un navegador in-app o bloqueador impide cargar fbevents.js
+  window.setTimeout(() => {
+    if (typeof window.fbq?.callMethod !== 'function') {
+      sendKeepalivePixelBeacon('PageView', {}, window.__marubiPageViewId);
+      sendKeepalivePixelBeacon('ViewContent', product, window.__marubiViewContentId);
+    }
+  }, 1800);
 }
 
 // Tracking de Scroll y Visita a Secciones de Información
@@ -275,6 +301,7 @@ menu.addEventListener('click', () => toggleMenu(false));
 const modalOverlay = document.querySelector('#checkoutDrawerOverlay');
 const closeBtn = document.querySelector('#closeCheckoutBtn');
 const exitDiscountPopup = document.querySelector('#exitDiscountPopup');
+const closeExitPopupBtn = document.querySelector('#closeExitPopupBtn');
 const claimDiscountBtn = document.querySelector('#claimDiscountBtn');
 const confirmCloseBtn = document.querySelector('#confirmCloseBtn');
 const discountAppliedBanner = document.querySelector('#discountAppliedBanner');
@@ -285,6 +312,9 @@ const bundleCards = document.querySelectorAll('[data-bundle-qty]');
 const landingOfferCards = document.querySelectorAll('[data-select-offer]');
 const subtotalEl = document.querySelector('#codSubtotal');
 const totalEl = document.querySelector('#codTotal');
+const nombreInput = document.querySelector('#drawerNombre');
+const direccionInput = document.querySelector('#drawerDireccion');
+const referenciaInput = document.querySelector('#drawerReferencia');
 const provinciaSelect = document.querySelector('#drawerProvincia');
 const ciudadSelect = document.querySelector('#drawerCiudad');
 const whatsappInput = document.querySelector('#drawerWhatsapp');
@@ -299,9 +329,28 @@ let selectedQty = 1;
 let exitDiscountAmount = 0; // S/ 5 de descuento al darle clic a la X
 let exitDiscountOffered = false;
 let registrationAttemptTracked = false;
+let fullLeadTracked = false;
+let checkoutSessionId = '';
 let pendingOrderId = null;
 let trackedPurchaseId = null;
 let isSubmitting = false;
+
+function getFormCustomerData() {
+  return {
+    name: nombreInput?.value?.trim() || '',
+    whatsapp: whatsappInput?.value?.trim() || '',
+    province: provinciaSelect?.value || '',
+    city: ciudadSelect?.value || '',
+  };
+}
+
+function syncFormUserData() {
+  const data = getFormCustomerData();
+  if (data.name || data.whatsapp || data.province || data.city) {
+    updateMetaUserData(data);
+  }
+  return data;
+}
 
 // Poblar provincias
 Object.keys(PERU_LOCATIONS).forEach((prov) => {
@@ -380,11 +429,18 @@ bundleCards.forEach((card) => {
   });
 });
 
-function trackRegistrationAttempt(sourceField) {
-  if (registrationAttemptTracked) return;
-  registrationAttemptTracked = true;
+function ensureCheckoutSessionId() {
+  if (!checkoutSessionId) {
+    checkoutSessionId = `chk_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
+  }
+  return checkoutSessionId;
+}
+
+function trackRegistrationAttempt(sourceField, forceFullSync = false) {
+  const customerData = syncFormUserData();
   const active = BUNDLES[selectedQty];
   const finalPrice = getFinalPrice(selectedQty);
+  const sessId = ensureCheckoutSessionId();
   const payload = {
     ...product,
     num_items: active.quantity,
@@ -392,10 +448,45 @@ function trackRegistrationAttempt(sourceField) {
     status: 'intento_de_registro',
     field: sourceField,
   };
-  // Eventos estándar y personalizados para intento de registro al llenar datos
-  window.fbq?.('track', 'CompleteRegistration', payload);
-  window.fbq?.('track', 'Lead', payload);
-  window.fbq?.('trackCustom', 'IntentoDeRegistro', payload);
+
+  if (!registrationAttemptTracked) {
+    registrationAttemptTracked = true;
+    trackMetaEvent('IntentoDeRegistro', payload, {
+      isCustom: true,
+      eventID: `intento_${sessId}`,
+      userData: customerData,
+    });
+  }
+
+  const hasValidPhone = /^9\d{8}$/.test(customerData.whatsapp);
+  const hasNameAndLocation =
+    customerData.name.length >= 2 && Boolean(customerData.province || customerData.city);
+
+  if ((hasValidPhone || hasNameAndLocation || forceFullSync) && !fullLeadTracked) {
+    fullLeadTracked = true;
+    trackMetaEvent('CompleteRegistration', payload, {
+      eventID: `reg_${sessId}`,
+      userData: customerData,
+      keepalive: forceFullSync,
+    });
+    trackMetaEvent('Lead', payload, {
+      eventID: `lead_${sessId}`,
+      userData: customerData,
+      keepalive: forceFullSync,
+    });
+  } else if (forceFullSync) {
+    // Re-enviar con keepalive y el mismo eventID para asegurar entrega con todos los parámetros user_data
+    trackMetaEvent('CompleteRegistration', payload, {
+      eventID: `reg_${sessId}`,
+      userData: customerData,
+      keepalive: true,
+    });
+    trackMetaEvent('Lead', payload, {
+      eventID: `lead_${sessId}`,
+      userData: customerData,
+      keepalive: true,
+    });
+  }
 }
 
 ['#drawerNombre', '#drawerWhatsapp', '#drawerDireccion', '#drawerReferencia', '#drawerProvincia', '#drawerCiudad'].forEach((sel) => {
@@ -403,13 +494,16 @@ function trackRegistrationAttempt(sourceField) {
   if (!input) return;
   input.addEventListener('input', () => {
     if (input.value && input.value.trim().length >= 2) {
-      trackRegistrationAttempt(sel);
+      trackRegistrationAttempt(sel, false);
     }
   });
   input.addEventListener('change', () => {
     if (input.value && input.value.trim().length >= 1) {
-      trackRegistrationAttempt(sel);
+      trackRegistrationAttempt(sel, false);
     }
+  });
+  input.addEventListener('blur', () => {
+    syncFormUserData();
   });
 });
 
@@ -417,7 +511,9 @@ function openCheckout(initialQty, placement = 'boton') {
   if (initialQty === 1 || initialQty === 2) {
     selectedQty = initialQty;
   }
+  checkoutSessionId = `chk_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
   registrationAttemptTracked = false;
+  fullLeadTracked = false;
   updatePricingUI();
   submitError.hidden = true;
   exitDiscountPopup.hidden = true;
@@ -426,12 +522,19 @@ function openCheckout(initialQty, placement = 'boton') {
   document.body.classList.add('modal-open');
   const active = BUNDLES[selectedQty];
   const finalPrice = getFinalPrice(selectedQty);
-  window.fbq?.('track', 'InitiateCheckout', {
-    ...product,
-    num_items: active.quantity,
-    value: finalPrice,
-    placement,
-  });
+  trackMetaEvent(
+    'InitiateCheckout',
+    {
+      ...product,
+      num_items: active.quantity,
+      value: finalPrice,
+      placement,
+    },
+    {
+      eventID: `ic_${checkoutSessionId}`,
+      userData: getFormCustomerData(),
+    }
+  );
 }
 
 function forceCloseCheckout() {
@@ -442,27 +545,52 @@ function forceCloseCheckout() {
   pendingOrderId = null;
 }
 
+function applyExitDiscountAndStay() {
+  exitDiscountAmount = 5;
+  exitDiscountPopup.hidden = true;
+  updatePricingUI();
+  trackMetaEvent(
+    'ExitDiscountClaimed',
+    {
+      ...product,
+      discount: 5,
+      value: getFinalPrice(selectedQty),
+    },
+    { isCustom: true, userData: getFormCustomerData() }
+  );
+  nombreInput?.focus();
+}
+
 function handleAttemptClose() {
-  // Si aún no se le ofreció el descuento de 5 soles al darle clic a la X, mostrárselo y activarlo
+  // Si el aviso de descuento está abierto y le da clic a la X, aplicar el descuento y volver al formulario
+  if (!exitDiscountPopup.hidden) {
+    applyExitDiscountAndStay();
+    return;
+  }
+  // Si aún no se le ofreció el descuento de 5 soles al darle clic a la X, activarlo de inmediato y mostrar el aviso
   if (!exitDiscountOffered && exitDiscountAmount === 0) {
     exitDiscountOffered = true;
+    exitDiscountAmount = 5;
+    updatePricingUI();
     exitDiscountPopup.hidden = false;
-    window.fbq?.('trackCustom', 'ExitDiscountOffered', { ...product, discount: 5 });
+    trackMetaEvent(
+      'ExitDiscountOffered',
+      {
+        ...product,
+        discount: 5,
+        value: getFinalPrice(selectedQty),
+      },
+      { isCustom: true, userData: getFormCustomerData() }
+    );
     return;
   }
   forceCloseCheckout();
 }
 
-claimDiscountBtn.addEventListener('click', () => {
-  exitDiscountAmount = 5;
-  exitDiscountPopup.hidden = true;
-  updatePricingUI();
-  window.fbq?.('trackCustom', 'ExitDiscountClaimed', {
-    ...product,
-    discount: 5,
-    value: getFinalPrice(selectedQty),
-  });
-  document.querySelector('#drawerNombre')?.focus();
+claimDiscountBtn.addEventListener('click', applyExitDiscountAndStay);
+closeExitPopupBtn?.addEventListener('click', applyExitDiscountAndStay);
+exitDiscountPopup.addEventListener('click', (e) => {
+  if (e.target === exitDiscountPopup) applyExitDiscountAndStay();
 });
 
 confirmCloseBtn.addEventListener('click', () => {
@@ -493,6 +621,9 @@ whatsappInput.addEventListener('input', () => {
   } else {
     whatsappGroup.classList.remove('is-invalid');
     whatsappError.hidden = true;
+    if (/^9\d{8}$/.test(digits)) {
+      trackRegistrationAttempt('#drawerWhatsapp', false);
+    }
   }
 });
 
@@ -501,10 +632,10 @@ orderForm.addEventListener('submit', async (e) => {
   if (isSubmitting) return;
   submitError.hidden = true;
 
-  const nombre = document.querySelector('#drawerNombre').value.trim();
+  const nombre = nombreInput.value.trim();
   const whatsapp = whatsappInput.value.trim();
-  const direccion = document.querySelector('#drawerDireccion').value.trim();
-  const referencia = document.querySelector('#drawerReferencia').value.trim();
+  const direccion = direccionInput.value.trim();
+  const referencia = referenciaInput.value.trim();
   const provincia = provinciaSelect.value;
   const ciudad = ciudadSelect.value;
 
@@ -521,9 +652,6 @@ orderForm.addEventListener('submit', async (e) => {
     submitError.hidden = false;
     return;
   }
-
-  // Asegurar que el intento de registro quede registrado antes de la compra
-  trackRegistrationAttempt('submit');
 
   const active = BUNDLES[selectedQty];
   const finalPrice = getFinalPrice(selectedQty);
@@ -555,70 +683,77 @@ orderForm.addEventListener('submit', async (e) => {
     `Deseo confirmar la entrega de mi pedido. ¡Gracias!`;
 
   isSubmitting = true;
+  submitBtn.disabled = true;
+  submitText.textContent = 'Procesando Pedido…';
 
-  // Disparar evento de Compra (Purchase) inmediatamente mientras el botón "Realizar Pedido" sigue activo
+  // 1. Actualizar Advanced Matching con todos los parámetros del cliente (ph, fn, ln, ct, st, country, external_id)
+  const customerData = {
+    name: nombre,
+    whatsapp,
+    province: provincia,
+    city: ciudad,
+  };
+  updateMetaUserData(customerData);
+
+  // 2. Asegurar que CompleteRegistration y Lead se envíen con todos los datos del cliente y keepalive
+  trackRegistrationAttempt('submit', true);
+
+  // 3. Disparar Purchase y OrderFormSubmitted con keepalive y deduplicación por orderNumber
   if (trackedPurchaseId !== orderNumber) {
     trackedPurchaseId = orderNumber;
-    window.fbq?.(
-      'track',
-      'Purchase',
-      {
-        content_ids: product.content_ids,
-        content_name: product.content_name,
-        content_type: 'product',
-        num_items: active.quantity,
-        value: finalPrice,
-        currency: 'PEN',
-      },
-      { eventID: orderNumber }
-    );
-    window.fbq?.('trackCustom', 'OrderFormSubmitted', {
+    const purchasePayload = {
       content_ids: product.content_ids,
+      content_name: product.content_name,
+      content_type: 'product',
       num_items: active.quantity,
       value: finalPrice,
       currency: 'PEN',
-      order_id: orderNumber,
+    };
+    trackMetaEvent('Purchase', purchasePayload, {
+      eventID: orderNumber,
+      userData: customerData,
+      keepalive: true,
     });
+    trackMetaEvent(
+      'OrderFormSubmitted',
+      {
+        ...purchasePayload,
+        order_id: orderNumber,
+      },
+      {
+        isCustom: true,
+        eventID: `form_${orderNumber}`,
+        userData: customerData,
+        keepalive: true,
+      }
+    );
   }
 
-  const whatsappTab = window.open('', '_blank');
-  if (whatsappTab) whatsappTab.opener = null;
+  // 4. Guardar en Google Sheets y dar margen (550ms) para que fbevents.js + CAPIG completen antes de redirigir a WhatsApp
+  const pixelFlushDelay = new Promise((resolve) => window.setTimeout(resolve, 550));
+  const saveOrderPromise = saveOrder({
+    orderId: orderNumber,
+    productId: 'YH1001-1A',
+    productName: product.content_name,
+    offer: offerLabel,
+    quantity: active.quantity,
+    total: finalPrice,
+    name: nombre,
+    whatsapp,
+    department: provincia,
+    province: provincia,
+    district: ciudad,
+    address: direccion,
+    reference: referencia,
+    deliveryMethod: isProvincia ? 'shalom' : 'lima',
+    place: `${ciudad}, ${provincia}`,
+    pageUrl: window.location.href,
+  }).catch(() => {});
 
-  const statusTimer = window.setTimeout(() => {
-    if (isSubmitting) {
-      submitBtn.disabled = true;
-      submitText.textContent = 'Procesando Pedido…';
-    }
-  }, 220);
-
-  try {
-    await saveOrder({
-      orderId: orderNumber,
-      productId: 'YH1001-1A',
-      productName: product.content_name,
-      offer: offerLabel,
-      quantity: active.quantity,
-      total: finalPrice,
-      name: nombre,
-      whatsapp,
-      department: provincia,
-      province: provincia,
-      district: ciudad,
-      address: direccion,
-      reference: referencia,
-      deliveryMethod: isProvincia ? 'shalom' : 'lima',
-      place: `${ciudad}, ${provincia}`,
-      pageUrl: window.location.href,
-    });
-  } catch {
-    // Continuar a WhatsApp con los datos del cliente.
-  } finally {
-    window.clearTimeout(statusTimer);
-  }
+  await Promise.all([saveOrderPromise, pixelFlushDelay]);
 
   const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;
-  if (whatsappTab) whatsappTab.location.href = whatsappUrl;
-  else window.location.href = whatsappUrl;
+  window.location.href = whatsappUrl;
 
   forceCloseCheckout();
   isSubmitting = false;
