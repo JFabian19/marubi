@@ -1474,3 +1474,454 @@ h3 { font-size: 1rem; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+
+/* ==========================================================================
+   MODAL PEDIDO CONTRAENTREGA (DISEÑO EXACTAMENTE IGUAL A CAPTURAS COD)
+   ========================================================================== */
+.cod-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: rgba(11, 21, 35, 0.72);
+  backdrop-filter: blur(4px);
+}
+
+.cod-modal-card {
+  width: 100%;
+  max-width: 430px;
+  max-height: 92dvh;
+  background: #ffffff;
+  border-radius: 18px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  position: relative;
+  font-family: var(--body);
+}
+
+.cod-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111111;
+  background: transparent;
+}
+
+.cod-close-btn:hover {
+  background: #f3f4f6;
+}
+
+.cod-modal-body {
+  padding: 26px 18px 28px 18px;
+  color: #111111;
+}
+
+.cod-section-title {
+  font-family: var(--body);
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.cod-shipping-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+  background: #ffffff;
+}
+
+.cod-shipping-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cod-radio-selected {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.6px solid #1f2937;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: #ffffff;
+}
+
+.cod-radio-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #111111;
+}
+
+.cod-shipping-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cod-shipping-main {
+  font-size: 15.5px;
+  font-weight: 400;
+  color: #1f2937;
+  line-height: 1.3;
+}
+
+.cod-shipping-sub {
+  font-size: 15px;
+  font-weight: 400;
+  color: #6b7280;
+  line-height: 1.35;
+}
+
+.cod-shipping-price {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #111111;
+  flex-shrink: 0;
+}
+
+.cod-bundles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.cod-bundle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cod-bundle-card:hover {
+  border-color: #9ca3af;
+}
+
+.cod-bundle-card.selected {
+  border: 2.2px solid #0284c7;
+  background: #eef8ff;
+  padding: 9px 13px;
+}
+
+.cod-bundle-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cod-bundle-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 7px;
+  object-fit: cover;
+  background: #f3f4f6;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.cod-bundle-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  min-width: 0;
+}
+
+.cod-bundle-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #111111;
+  line-height: 1.2;
+}
+
+.cod-badge-blue {
+  display: inline-block;
+  background: #0ea5e9;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 5px;
+  line-height: 1.25;
+}
+
+.cod-badge-green {
+  display: inline-block;
+  background: #05c46b;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 5px;
+  line-height: 1.25;
+  min-width: 132px;
+}
+
+.cod-bundle-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.cod-bundle-old-price {
+  font-size: 14.5px;
+  font-weight: 400;
+  color: #374151;
+  text-decoration: line-through;
+  line-height: 1.2;
+  margin-bottom: 3px;
+}
+
+.cod-bundle-price {
+  font-size: 17.5px;
+  font-weight: 800;
+  color: #111111;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.cod-summary-box {
+  background: #f7f7f8;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+}
+
+.cod-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15.5px;
+  color: #111111;
+  margin-bottom: 10px;
+}
+
+.cod-summary-row span {
+  font-weight: 400;
+}
+
+.cod-summary-row strong {
+  font-weight: 700;
+}
+
+.cod-summary-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 10px 0;
+}
+
+.cod-summary-row.cod-summary-total {
+  margin-bottom: 0;
+}
+
+.cod-summary-row.cod-summary-total span {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: #111111;
+}
+
+.cod-summary-row.cod-summary-total strong {
+  font-size: 19.5px;
+  font-weight: 800;
+  color: #111111;
+}
+
+.cod-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cod-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.cod-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111111;
+  line-height: 1.2;
+}
+
+.cod-req {
+  color: #dc2626;
+  margin-left: 2px;
+  font-weight: 700;
+}
+
+.cod-input-group {
+  display: flex;
+  align-items: stretch;
+  height: 48px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  overflow: hidden;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cod-input-group:focus-within {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+}
+
+.cod-input-group.is-invalid {
+  border-color: #d92d20;
+  box-shadow: 0 0 0 2px rgba(217, 45, 32, 0.15);
+}
+
+.cod-input-icon {
+  width: 48px;
+  background: #d9d9d9;
+  border-right: 1px solid #cccccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cod-input-group input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  padding: 0 14px;
+  font-size: 16px;
+  color: #111111;
+  background: #ffffff;
+  outline: none;
+}
+
+.cod-input-group input::placeholder {
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.cod-select-wrap {
+  position: relative;
+  height: 48px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #ffffff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.cod-select-wrap:focus-within {
+  border-color: #0284c7;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+}
+
+.cod-select-wrap select {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: 0 40px 0 14px;
+  font-size: 16px;
+  color: #111111;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.cod-select-wrap select:disabled {
+  color: #6b7280;
+  background: #f9fafb;
+}
+
+.cod-select-chevron {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cod-submit-wrap {
+  padding: 12px 4px 6px 4px;
+}
+
+@keyframes codButtonRock {
+  0%, 100% {
+    transform: rotate(-1.8deg) scale(1);
+  }
+  50% {
+    transform: rotate(1.4deg) scale(1.015);
+  }
+}
+
+.cod-submit-btn {
+  width: 100%;
+  min-height: 58px;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(95deg, #ffe47a 0%, #f8b434 52%, #f39c12 100%);
+  color: #1a1a1a;
+  font-size: 16px;
+  font-weight: 800;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+  transform: rotate(-1.8deg);
+  animation: codButtonRock 3.2s ease-in-out infinite;
+  transition: filter 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cod-submit-btn:hover {
+  filter: brightness(1.03);
+  box-shadow: 0 8px 22px rgba(243, 156, 18, 0.38);
+}
+
+.cod-submit-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.cod-cart-check-icon {
+  flex-shrink: 0;
+  color: #1a1a1a;
+}
