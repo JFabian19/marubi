@@ -55,19 +55,28 @@ function initPixel() {
 // Tracking de Scroll y Visita a Secciones de Información
 function initEngagementTracking() {
   let hasScrolled = false;
+  let scrollTicking = false;
+  let cachedDocHeight = 1;
   const scrollMilestones = new Set();
 
+  function updateDocHeight() {
+    cachedDocHeight = Math.max(
+      document.documentElement.scrollHeight - window.innerHeight,
+      1
+    );
+  }
+  updateDocHeight();
+  window.addEventListener('resize', updateDocHeight, { passive: true });
+  window.addEventListener('load', updateDocHeight, { once: true });
+
   function checkScrollDepth() {
+    scrollTicking = false;
     const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
     if (scrollTop > 40 && !hasScrolled) {
       hasScrolled = true;
       window.fbq?.('trackCustom', 'UserScrolled', { ...product });
     }
-    const docHeight = Math.max(
-      document.documentElement.scrollHeight - window.innerHeight,
-      1
-    );
-    const pct = Math.round((scrollTop / docHeight) * 100);
+    const pct = Math.round((scrollTop / cachedDocHeight) * 100);
     [25, 50, 75, 90].forEach((milestone) => {
       if (pct >= milestone && !scrollMilestones.has(milestone)) {
         scrollMilestones.add(milestone);
@@ -80,7 +89,16 @@ function initEngagementTracking() {
     });
   }
 
-  window.addEventListener('scroll', checkScrollDepth, { passive: true });
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!scrollTicking) {
+        scrollTicking = true;
+        window.requestAnimationFrame(checkScrollDepth);
+      }
+    },
+    { passive: true }
+  );
 
   // Detectar si visitó las secciones de información del producto
   const sectionMap = [
@@ -154,11 +172,13 @@ const scenes = [
     file: 'balcon',
     label: 'Balcón pequeño',
     alt: 'Organizador de seis plataformas con macetas en un balcón cubierto',
+    srcset: '/assets/organizador-plantas/balcon-movil.webp 640w, /assets/organizador-plantas/balcon.webp 1024w',
   },
   {
     file: 'despues',
     label: 'Rincón de jardinería interior',
     alt: 'Plantas en el organizador escalonado junto a un cuadro botánico',
+    srcset: '/assets/organizador-plantas/despues-movil.webp 540w, /assets/organizador-plantas/despues.webp 756w',
   },
 ];
 
@@ -177,12 +197,64 @@ function showScene(step) {
 document.querySelector('#gallery-prev').addEventListener('click', () => showScene(-1));
 document.querySelector('#gallery-next').addEventListener('click', () => showScene(1));
 
+// Soporte táctil (swipe) para la galería en móviles
+const heroGallery = document.querySelector('.hero-gallery');
+let touchStartX = 0;
+let touchStartY = 0;
+heroGallery?.addEventListener(
+  'touchstart',
+  (e) => {
+    if (e.touches.length === 1) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }
+  },
+  { passive: true }
+);
+heroGallery?.addEventListener(
+  'touchend',
+  (e) => {
+    if (!e.changedTouches.length) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+      showScene(dx < 0 ? 1 : -1);
+    }
+  },
+  { passive: true }
+);
+
+// Precargar en segundo plano las demás fotos de la galería cuando la red esté libre
+window.addEventListener(
+  'load',
+  () => {
+    const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1200));
+    idle(() => {
+      const isMobile = window.matchMedia('(max-width: 740px)').matches;
+      const toPreload = isMobile
+        ? ['/assets/organizador-plantas/balcon-movil.webp', '/assets/organizador-plantas/despues-movil.webp']
+        : ['/assets/organizador-plantas/balcon.webp', '/assets/organizador-plantas/despues.webp'];
+      toPreload.forEach((src) => {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = src;
+      });
+    });
+  },
+  { once: true }
+);
+
 const range = document.querySelector('#compare-range');
+const comparisonEl = document.querySelector('#comparison');
 let compareTracked = false;
+let compareFrame = null;
 range.addEventListener('input', () => {
   const value = range.valueAsNumber;
-  document.querySelector('#comparison').style.setProperty('--split', value + '%');
-  range.setAttribute('aria-valuetext', value + ' % antes y ' + (100 - value) + ' % después');
+  if (compareFrame) cancelAnimationFrame(compareFrame);
+  compareFrame = requestAnimationFrame(() => {
+    comparisonEl.style.setProperty('--split', value + '%');
+    range.setAttribute('aria-valuetext', value + ' % antes y ' + (100 - value) + ' % después');
+  });
   if (!compareTracked) {
     compareTracked = true;
     window.fbq?.('trackCustom', 'BeforeAfterCompared', { ...product });
