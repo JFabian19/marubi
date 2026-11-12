@@ -1695,7 +1695,7 @@ h3 { font-size: 1rem; }
   padding: 4px 10px;
   border-radius: 5px;
   line-height: 1.25;
-  min-width: 132px;
+  max-width: 100%;
 }
 
 .cod-bundle-right {
@@ -1892,12 +1892,10 @@ h3 { font-size: 1rem; }
 }
 
 @keyframes codButtonRock {
-  0%, 100% {
-    transform: rotate(-1.8deg) scale(1);
-  }
-  50% {
-    transform: rotate(1.4deg) scale(1.015);
-  }
+  0%, 62%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+  14% { transform: translateY(-7px) scale(1.045) rotate(-1.5deg); }
+  28% { transform: translateY(0) scale(0.985) rotate(1.2deg); }
+  42% { transform: translateY(-5px) scale(1.03) rotate(-0.8deg); }
 }
 
 .cod-submit-btn {
@@ -1917,7 +1915,7 @@ h3 { font-size: 1rem; }
   gap: 10px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
   transform: rotate(-1.8deg);
-  animation: codButtonRock 3.2s ease-in-out infinite;
+  animation: codButtonRock 1.55s ease-in-out infinite;
   transition: filter 0.2s ease, box-shadow 0.2s ease;
 }
 

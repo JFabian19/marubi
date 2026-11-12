@@ -14,12 +14,14 @@ const BUNDLES = {
   1: {
     quantity: 1,
     price: 79,
-    offerLabel: '1 unidad · Color Blanco (S/ 79)',
+    oldPrice: 129,
+    offerLabel: '1 unidad · Color Blanco (S/ 79 · Antes S/ 129)',
   },
   2: {
     quantity: 2,
     price: 144,
-    offerLabel: 'Promo 2x · 2 Unidades Color Blanco (2x S/ 144)',
+    oldPrice: 258,
+    offerLabel: 'Promo 2x · 2 Unidades Color Blanco (2x S/ 144 · Antes S/ 258)',
   },
 };
 
@@ -99,10 +101,18 @@ function toggleMenu(open) {
 toggle.addEventListener('click', () => toggleMenu(toggle.getAttribute('aria-expanded') !== 'true'));
 menu.addEventListener('click', () => toggleMenu(false));
 
-// Modal de Checkout
+// Modal de Checkout y Ofertas
 const modalOverlay = document.querySelector('#checkoutDrawerOverlay');
 const closeBtn = document.querySelector('#closeCheckoutBtn');
+const exitDiscountPopup = document.querySelector('#exitDiscountPopup');
+const claimDiscountBtn = document.querySelector('#claimDiscountBtn');
+const confirmCloseBtn = document.querySelector('#confirmCloseBtn');
+const discountAppliedBanner = document.querySelector('#discountAppliedBanner');
+const codDiscountRow = document.querySelector('#codDiscountRow');
+const bundlePrice1El = document.querySelector('#bundlePrice1');
+const bundlePrice2El = document.querySelector('#bundlePrice2');
 const bundleCards = document.querySelectorAll('[data-bundle-qty]');
+const landingOfferCards = document.querySelectorAll('[data-select-offer]');
 const subtotalEl = document.querySelector('#codSubtotal');
 const totalEl = document.querySelector('#codTotal');
 const provinciaSelect = document.querySelector('#drawerProvincia');
@@ -116,6 +126,8 @@ const submitText = document.querySelector('#drawerSubmitText');
 const submitError = document.querySelector('#submitError');
 
 let selectedQty = 1;
+let exitDiscountAmount = 0; // S/ 5 de descuento al darle clic a la X
+let exitDiscountOffered = false;
 let pendingOrderId = null;
 let isSubmitting = false;
 
@@ -144,17 +156,47 @@ provinciaSelect.addEventListener('change', () => {
   }
 });
 
-function selectBundle(qty) {
-  selectedQty = BUNDLES[qty] ? Number(qty) : 1;
+function getFinalPrice(qty) {
+  const base = BUNDLES[qty]?.price || 79;
+  return Math.max(0, base - exitDiscountAmount);
+}
+
+function updatePricingUI() {
   const active = BUNDLES[selectedQty];
   bundleCards.forEach((card) => {
     const isSel = Number(card.dataset.bundleQty) === selectedQty;
     card.classList.toggle('selected', isSel);
   });
-  const formatted = formatSoles(active.price);
-  subtotalEl.textContent = formatted;
-  totalEl.textContent = formatted;
+  landingOfferCards.forEach((card) => {
+    const isSel = Number(card.dataset.selectOffer) === selectedQty;
+    card.classList.toggle('is-active', isSel);
+  });
+
+  if (bundlePrice1El) bundlePrice1El.textContent = formatSoles(getFinalPrice(1));
+  if (bundlePrice2El) bundlePrice2El.textContent = formatSoles(getFinalPrice(2));
+
+  subtotalEl.textContent = formatSoles(active.price);
+  if (exitDiscountAmount > 0) {
+    codDiscountRow.hidden = false;
+    discountAppliedBanner.hidden = false;
+  } else {
+    codDiscountRow.hidden = true;
+    discountAppliedBanner.hidden = true;
+  }
+  totalEl.textContent = formatSoles(getFinalPrice(selectedQty));
 }
+
+function selectBundle(qty) {
+  selectedQty = BUNDLES[qty] ? Number(qty) : 1;
+  updatePricingUI();
+}
+
+landingOfferCards.forEach((card) => {
+  card.addEventListener('click', () => {
+    const qty = Number(card.dataset.selectOffer) || 1;
+    selectBundle(qty);
+  });
+});
 
 bundleCards.forEach((card) => {
   card.addEventListener('click', () => selectBundle(Number(card.dataset.bundleQty)));
@@ -166,9 +208,13 @@ bundleCards.forEach((card) => {
   });
 });
 
-function openCheckout(initialQty = 1) {
-  selectBundle(initialQty);
+function openCheckout(initialQty) {
+  if (initialQty === 1 || initialQty === 2) {
+    selectedQty = initialQty;
+  }
+  updatePricingUI();
   submitError.hidden = true;
+  exitDiscountPopup.hidden = true;
   modalOverlay.hidden = false;
   modalOverlay.classList.add('active');
   document.body.classList.add('modal-open');
@@ -176,27 +222,50 @@ function openCheckout(initialQty = 1) {
   window.fbq?.('track', 'InitiateCheckout', {
     ...product,
     num_items: active.quantity,
-    value: active.price,
+    value: getFinalPrice(selectedQty),
   });
 }
 
-function closeCheckout() {
+function forceCloseCheckout() {
+  exitDiscountPopup.hidden = true;
   modalOverlay.classList.remove('active');
   modalOverlay.hidden = true;
   document.body.classList.remove('modal-open');
   pendingOrderId = null;
 }
 
+function handleAttemptClose() {
+  // Si aún no se le ofreció el descuento de 5 soles al darle clic a la X, mostrárselo y activarlo
+  if (!exitDiscountOffered && exitDiscountAmount === 0) {
+    exitDiscountOffered = true;
+    exitDiscountPopup.hidden = false;
+    return;
+  }
+  forceCloseCheckout();
+}
+
+claimDiscountBtn.addEventListener('click', () => {
+  exitDiscountAmount = 5;
+  exitDiscountPopup.hidden = true;
+  updatePricingUI();
+  document.querySelector('#drawerNombre')?.focus();
+});
+
+confirmCloseBtn.addEventListener('click', () => {
+  forceCloseCheckout();
+});
+
 document.querySelectorAll('[data-open-checkout]').forEach((btn) => {
   btn.addEventListener('click', () => {
-    const qty = Number(btn.dataset.openCheckout) || 1;
+    const attr = btn.dataset.openCheckout;
+    const qty = attr === 'selected' ? selectedQty : Number(attr) || 1;
     openCheckout(qty);
   });
 });
 
-closeBtn.addEventListener('click', closeCheckout);
+closeBtn.addEventListener('click', handleAttemptClose);
 modalOverlay.addEventListener('click', (e) => {
-  if (e.target === modalOverlay) closeCheckout();
+  if (e.target === modalOverlay) handleAttemptClose();
 });
 
 whatsappInput.addEventListener('input', () => {
@@ -239,6 +308,12 @@ orderForm.addEventListener('submit', async (e) => {
   }
 
   const active = BUNDLES[selectedQty];
+  const finalPrice = getFinalPrice(selectedQty);
+  const offerLabel =
+    exitDiscountAmount > 0
+      ? `${active.offerLabel} + Descuento especial S/ 5`
+      : active.offerLabel;
+
   const orderNumber = pendingOrderId || createOrderId();
   pendingOrderId = orderNumber;
   const isProvincia = provincia !== 'Lima' && provincia !== 'Callao';
@@ -251,8 +326,8 @@ orderForm.addEventListener('submit', async (e) => {
     `📦 *Pedido:* %23${orderNumber}%0A` +
     `🛍️ *Producto:* ${encodeURIComponent(product.content_name)}%0A` +
     `🎨 *Color:* Blanco%0A` +
-    `🔢 *Opción:* ${encodeURIComponent(active.offerLabel)}%0A` +
-    `💰 *Total:* ${encodeURIComponent(formatSoles(active.price))}%0A` +
+    `🔢 *Opción:* ${encodeURIComponent(offerLabel)}%0A` +
+    `💰 *Total:* ${encodeURIComponent(formatSoles(finalPrice))}%0A` +
     `🚚 *Envío:* ${encodeURIComponent(envioTexto)}%0A%0A` +
     `👤 *Nombre y Apellidos:* ${encodeURIComponent(nombre)}%0A` +
     `📱 *Celular con WhatsApp:* ${whatsapp}%0A` +
@@ -266,16 +341,16 @@ orderForm.addEventListener('submit', async (e) => {
 
   isSubmitting = true;
   submitBtn.disabled = true;
-  submitText.textContent = 'Abriendo WhatsApp…';
+  submitText.textContent = 'Procesando Pedido…';
 
   try {
     await saveOrder({
       orderId: orderNumber,
       productId: 'YH1001-1A',
       productName: product.content_name,
-      offer: active.offerLabel,
+      offer: offerLabel,
       quantity: active.quantity,
-      total: active.price,
+      total: finalPrice,
       name: nombre,
       whatsapp,
       department: provincia,
@@ -286,12 +361,12 @@ orderForm.addEventListener('submit', async (e) => {
       pageUrl: window.location.href,
     });
   } catch {
-    // Incluso si la hoja tarda en confirmar, permitimos continuar a WhatsApp con todos sus datos.
+    // Continuar a WhatsApp con los datos del cliente.
   }
 
   window.fbq?.('trackCustom', 'OrderFormSubmitted', {
     content_ids: product.content_ids,
-    value: active.price,
+    value: finalPrice,
     currency: 'PEN',
   });
 
@@ -299,10 +374,10 @@ orderForm.addEventListener('submit', async (e) => {
   if (whatsappTab) whatsappTab.location.href = whatsappUrl;
   else window.location.href = whatsappUrl;
 
-  closeCheckout();
+  forceCloseCheckout();
   isSubmitting = false;
   submitBtn.disabled = false;
-  submitText.textContent = 'Enviar Pedido a WhatsApp';
+  submitText.textContent = 'Realizar Pedido';
   orderForm.reset();
   ciudadSelect.disabled = true;
 });
@@ -310,7 +385,7 @@ orderForm.addEventListener('submit', async (e) => {
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
     if (!modalOverlay.hidden) {
-      closeCheckout();
+      handleAttemptClose();
       return;
     }
     if (toggle.getAttribute('aria-expanded') === 'true') {
