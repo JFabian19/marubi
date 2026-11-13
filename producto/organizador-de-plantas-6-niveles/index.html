@@ -167,7 +167,7 @@
                   <span class="price-save-pill">AHORRAS S/ 50</span>
                 </div>
               </div>
-              <span class="offer-hot-tag">🔥 OFERTA HOY</span>
+              <span class="offer-hot-tag" id="landingTimer">Cupón extra S/ 5<br><small>Vence en <b role="timer" data-offer-clock></b></small></span>
             </div>
             <div class="offer-cards-grid" role="group" aria-label="Elige tu oferta">
               <button type="button" class="landing-offer-card is-active" data-select-offer="1">
@@ -214,7 +214,7 @@
               <path d="M2 3h2.5l2.2 12.2a1.5 1.5 0 0 0 1.5 1.3h10.2a1.5 1.5 0 0 0 1.5-1.2L21.5 6H5.2" />
               <polyline points="10.5 10.5 12.5 12.5 16 9" />
             </svg>
-            <span>REALIZAR PEDIDO</span>
+            <span>ABRIR FORMULARIO DE PEDIDO</span>
             <svg class="icon " aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
           </button>
           <p class="shipping-note"><svg class="icon " aria-hidden="true" focusable="false"><use href="#i-pin"/></svg>Contraentrega en Lima según cobertura.</p>
@@ -330,7 +330,7 @@
             <path d="M2 3h2.5l2.2 12.2a1.5 1.5 0 0 0 1.5 1.3h10.2a1.5 1.5 0 0 0 1.5-1.2L21.5 6H5.2" />
             <polyline points="10.5 10.5 12.5 12.5 16 9" />
           </svg>
-          <span>REALIZAR PEDIDO</span>
+          <span>ABRIR FORMULARIO DE PEDIDO</span>
           <svg class="icon " aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
         </button>
         <p class="offer-shipping">Entregas en Lima y envíos gratis a provincias por Shalom.</p>
@@ -356,11 +356,11 @@
       <path d="M2 3h2.5l2.2 12.2a1.5 1.5 0 0 0 1.5 1.3h10.2a1.5 1.5 0 0 0 1.5-1.2L21.5 6H5.2" />
       <polyline points="10.5 10.5 12.5 12.5 16 9" />
     </svg>
-    <span>REALIZAR PEDIDO 🌿</span>
+    <span>ABRIR FORMULARIO</span>
   </button>
 
   <!-- Modal de Pedido Superfácil -->
-  <div class="cod-modal-overlay" id="checkoutDrawerOverlay" role="dialog" aria-modal="true" aria-label="Formulario de pedido" hidden>
+  <dialog class="cod-modal-overlay" id="checkoutDrawerOverlay" role="dialog" aria-modal="true" aria-label="Formulario de pedido">
     <section class="cod-modal-card">
       <button type="button" class="cod-close-btn" id="closeCheckoutBtn" aria-label="Cerrar formulario">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -369,26 +369,9 @@
         </svg>
       </button>
 
-      <!-- Popup de descuento de S/ 5 al darle clic a la X -->
-      <div class="exit-discount-popup" id="exitDiscountPopup" hidden>
-        <div class="exit-discount-card">
-          <button type="button" class="exit-discount-close" id="closeExitPopupBtn" aria-label="Aplicar descuento y volver al formulario">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-          <span class="exit-discount-badge">🎁 ¡ESPERA! REGALO ESPECIAL</span>
-          <h4>¡Te damos S/ 5.00 de descuento!</h4>
-          <p>No te vayas sin tu organizador. Completa tu pedido ahora mismo y te descontamos <strong>S/ 5.00 adicionales</strong> sobre el precio de oferta.</p>
-          <button type="button" class="exit-claim-btn" id="claimDiscountBtn">¡Aplicar S/ 5 de descuento ahora!</button>
-          <button type="button" class="exit-leave-btn" id="confirmCloseBtn">No gracias, salir sin descuento</button>
-        </div>
-      </div>
-
       <div class="cod-modal-body">
         <div class="cod-discount-applied-banner" id="discountAppliedBanner" hidden>
-          <span>🎉 <strong>¡Descuento de S/ 5.00 activado!</strong> Aprovecha tu precio especial ahora.</span>
+          <span>🎉 <strong>¡Descuento de S/ 5.00 activado!</strong> Revisa tu total antes de confirmar.</span>
         </div>
 
         <h3 class="cod-section-title">Opciones de envío</h3>
@@ -546,12 +529,28 @@
                 <path d="M2 3h2.5l2.2 12.2a1.5 1.5 0 0 0 1.5 1.3h10.2a1.5 1.5 0 0 0 1.5-1.2L21.5 6H5.2" />
                 <polyline points="10.5 10.5 12.5 12.5 16 9" />
               </svg>
-              <span id="drawerSubmitText">Realizar Pedido</span>
+              <span id="drawerSubmitText">Confirmar y enviar pedido</span>
             </button>
+            <small class="order-submit-hint">Al confirmar, registraremos tu pedido y abriremos WhatsApp con los detalles.</small>
           </div>
         </form>
       </div>
     </section>
-  </div>
+  </dialog>
+
+  <dialog class="exit-discount-popup" id="exitDiscountPopup" aria-labelledby="couponTitle">
+    <button type="button" class="exit-discount-close" id="closeExitPopupBtn" aria-label="Salir sin hacer pedido">×</button>
+    <div class="coupon-face">
+      <span>Cupón para tu organizador</span>
+      <h2 id="couponTitle"><small>S/</small> 5 <em>de descuento extra</em></h2>
+      <p>Válido por <strong data-offer-clock role="timer"></strong></p>
+    </div>
+    <div class="coupon-actions">
+      <p>Tu pedido con el cupón <strong id="couponTotal"></strong></p>
+      <button type="button" class="exit-claim-btn" id="claimDiscountBtn" aria-describedby="claimHint">Aplicar descuento y continuar</button>
+      <small id="claimHint">Volverás al formulario. Tu pedido se registra al pulsar «Confirmar y enviar pedido».</small>
+      <button type="button" class="exit-leave-btn" id="confirmCloseBtn">Salir sin hacer pedido</button>
+    </div>
+  </dialog>
 </body>
 </html>

@@ -334,6 +334,37 @@ let pendingOrderId = null;
 let trackedPurchaseId = null;
 let isSubmitting = false;
 
+let landingScrollY = 0;
+const couponKey = 'marubi_organizador_coupon_until';
+const couponDuration = 15 * 60 * 1000;
+function getCouponDeadline() {
+  const deadline = Date.now() + couponDuration;
+  try {
+    const stored = Number(sessionStorage.getItem(couponKey));
+    if (stored > 0 && Number.isFinite(stored)) return stored;
+    sessionStorage.setItem(couponKey, String(deadline));
+  } catch { /* El temporizador sigue activo en esta página. */ }
+  return deadline;
+}
+const couponDeadline = getCouponDeadline();
+const clocks = document.querySelectorAll('[data-offer-clock]');
+function refreshCouponClock() {
+  const seconds = Math.max(0, Math.ceil((couponDeadline - Date.now()) / 1000));
+  const remaining = [Math.floor(seconds / 60), seconds % 60].map(n => String(n).padStart(2, '0')).join(':');
+  clocks.forEach(clock => { clock.textContent = remaining; });
+  if (seconds) return;
+  document.querySelector('#landingTimer').textContent = 'Cupón finalizado';
+  if (exitDiscountPopup.open) {
+    exitDiscountPopup.close();
+    submitError.textContent = 'El cupón venció. Puedes continuar con el precio de la tienda.';
+    submitError.hidden = false;
+    submitError.scrollIntoView({ block: 'nearest' });
+  }
+  window.clearInterval(couponInterval);
+}
+const couponInterval = window.setInterval(refreshCouponClock, 1000);
+refreshCouponClock();
+
 function getFormCustomerData() {
   return {
     name: nombreInput?.value?.trim() || '',
@@ -516,8 +547,10 @@ function openCheckout(initialQty, placement = 'boton') {
   fullLeadTracked = false;
   updatePricingUI();
   submitError.hidden = true;
-  exitDiscountPopup.hidden = true;
-  modalOverlay.hidden = false;
+  landingScrollY = window.scrollY;
+  document.body.style.top = `-${landingScrollY}px`;
+  modalOverlay.showModal();
+  modalOverlay.querySelector('.cod-modal-card').scrollTop = 0;
   modalOverlay.classList.add('active');
   document.body.classList.add('modal-open');
   const active = BUNDLES[selectedQty];
@@ -538,16 +571,22 @@ function openCheckout(initialQty, placement = 'boton') {
 }
 
 function forceCloseCheckout() {
-  exitDiscountPopup.hidden = true;
+  if (exitDiscountPopup.open) exitDiscountPopup.close();
+  modalOverlay.close();
   modalOverlay.classList.remove('active');
-  modalOverlay.hidden = true;
+  document.body.style.top = '';
   document.body.classList.remove('modal-open');
+  window.scrollTo({ top: landingScrollY, behavior: 'instant' });
   pendingOrderId = null;
 }
 
 function applyExitDiscountAndStay() {
+  if (Date.now() >= couponDeadline) {
+    refreshCouponClock();
+    return;
+  }
+  exitDiscountPopup.close();
   exitDiscountAmount = 5;
-  exitDiscountPopup.hidden = true;
   updatePricingUI();
   trackMetaEvent(
     'ExitDiscountClaimed',
@@ -563,23 +602,17 @@ function applyExitDiscountAndStay() {
 
 function handleAttemptClose() {
   if (isSubmitting) return;
-  // Si el aviso de descuento está abierto y le da clic a la X, aplicar el descuento y volver al formulario
-  if (!exitDiscountPopup.hidden) {
-    applyExitDiscountAndStay();
-    return;
-  }
-  // Si aún no se le ofreció el descuento de 5 soles al darle clic a la X, activarlo de inmediato y mostrar el aviso
-  if (!exitDiscountOffered && exitDiscountAmount === 0) {
+  if (!exitDiscountOffered && Date.now() < couponDeadline) {
     exitDiscountOffered = true;
-    exitDiscountAmount = 5;
-    updatePricingUI();
-    exitDiscountPopup.hidden = false;
+    document.querySelector('#couponTotal').textContent = formatSoles(BUNDLES[selectedQty].price - 5);
+    exitDiscountPopup.showModal();
+    claimDiscountBtn.focus();
     trackMetaEvent(
       'ExitDiscountOffered',
       {
         ...product,
         discount: 5,
-        value: getFinalPrice(selectedQty),
+        value: BUNDLES[selectedQty].price - 5,
       },
       { isCustom: true, userData: getFormCustomerData() }
     );
@@ -589,9 +622,14 @@ function handleAttemptClose() {
 }
 
 claimDiscountBtn.addEventListener('click', applyExitDiscountAndStay);
-closeExitPopupBtn?.addEventListener('click', applyExitDiscountAndStay);
-exitDiscountPopup.addEventListener('click', (e) => {
-  if (e.target === exitDiscountPopup) applyExitDiscountAndStay();
+closeExitPopupBtn.addEventListener('click', forceCloseCheckout);
+exitDiscountPopup.addEventListener('cancel', (event) => {
+  event.preventDefault();
+  forceCloseCheckout();
+});
+modalOverlay.addEventListener('cancel', (event) => {
+  event.preventDefault();
+  handleAttemptClose();
 });
 
 confirmCloseBtn.addEventListener('click', () => {
@@ -723,7 +761,7 @@ orderForm.addEventListener('submit', async (e) => {
     submitError.hidden = false;
     isSubmitting = false;
     submitBtn.disabled = false;
-    submitText.textContent = 'Realizar Pedido';
+    submitText.textContent = 'Confirmar y enviar pedido';
     return;
   }
 
@@ -764,7 +802,7 @@ orderForm.addEventListener('submit', async (e) => {
   forceCloseCheckout();
   isSubmitting = false;
   submitBtn.disabled = false;
-  submitText.textContent = 'Realizar Pedido';
+  submitText.textContent = 'Confirmar y enviar pedido';
   orderForm.reset();
   document.querySelector('#deliveryNote').textContent = '';
   ciudadSelect.disabled = true;
@@ -772,10 +810,7 @@ orderForm.addEventListener('submit', async (e) => {
 
 document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape') {
-    if (!modalOverlay.hidden) {
-      handleAttemptClose();
-      return;
-    }
+    if (modalOverlay.open) return;
     if (toggle.getAttribute('aria-expanded') === 'true') {
       toggleMenu(false);
       toggle.focus();
