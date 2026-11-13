@@ -105,6 +105,7 @@
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('set', 'autoConfig', false, '1635217208321987');
     fbq('init', '1635217208321987', window.__marubiUserData);
     fbq('track', 'PageView', {}, { eventID: window.__marubiPageViewId });
     fbq('track', 'ViewContent', {
@@ -332,7 +333,7 @@
           <span>REALIZAR PEDIDO</span>
           <svg class="icon " aria-hidden="true" focusable="false"><use href="#i-arrow"/></svg>
         </button>
-        <p class="offer-shipping">Entregas en Lima y envíos a provincias por Shalom. Confirmamos el costo y las condiciones según tu destino.</p>
+        <p class="offer-shipping">Entregas en Lima y envíos gratis a provincias por Shalom.</p>
       </div>
     </div></section>
 
@@ -343,7 +344,7 @@
         <details><summary>¿Tiene ruedas?<span class="plus" aria-hidden="true"></span></summary><p>Sí, el organizador tiene ocho ruedas para facilitar su desplazamiento.</p></details>
         <details><summary>¿Es difícil de armar?<span class="plus" aria-hidden="true"></span></summary><p>El organizador requiere ensamblaje. Si tienes dudas sobre el armado, puedes consultarnos por WhatsApp.</p></details>
         <details><summary>¿Cuánto peso soporta?<span class="plus" aria-hidden="true"></span></summary><p>El fabricante no especifica la carga máxima. Distribuye las macetas entre las plataformas y evita sobrecargarlas.</p></details>
-        <details><summary>¿Realizan envíos?<span class="plus" aria-hidden="true"></span></summary><p>MARUBI realiza entregas en Lima y envíos a provincias mediante Shalom. El costo y las condiciones se confirman según el destino.</p></details>
+        <details><summary>¿Realizan envíos?<span class="plus" aria-hidden="true"></span></summary><p>MARUBI realiza entregas en Lima y envíos gratis a provincias mediante Shalom.</p></details>
         <details><summary>¿Puedo pagar al recibir?<span class="plus" aria-hidden="true"></span></summary><p>En Lima se ofrece pago contraentrega, sujeto a la cobertura de reparto. Confirma tu distrito por WhatsApp.</p></details></div>
     </section>
   </main>
@@ -532,6 +533,8 @@
               </span>
             </div>
           </div>
+
+          <small class="cod-delivery-note" id="deliveryNote" aria-live="polite"></small>
 
           <p class="field-error" id="submitError" role="alert" hidden></p>
 

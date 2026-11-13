@@ -1,6 +1,12 @@
 const ORDERS_ENDPOINT = import.meta.env.VITE_ORDERS_ENDPOINT
   || 'https://script.google.com/macros/s/AKfycbxvGQpzGvlTKJ07CseX5Zi2R-_uD-0hgj8e23zXFK-WUSX2G87cENbpnvNZj-_PffSC/exec';
 
+export const provincialDeliveryNote = 'Envío gratis por Shalom. El adelanto de S/ 20 se descuenta del total.';
+
+export function usesShalom(department) {
+  return Boolean(department) && department !== 'Lima' && department !== 'Callao';
+}
+
 export const createOrderId = () => `MRB-${crypto.randomUUID()}`;
 
 function checkOrderSaved(orderId) {

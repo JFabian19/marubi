@@ -332,7 +332,7 @@ export function sendKeepalivePixelBeacon(eventName, customData = {}, eventID = '
 }
 
 export function trackMetaEvent(eventName, customData = {}, options = {}) {
-  const { isCustom = false, eventID = '', userData = null, keepalive = false } = options;
+  const { isCustom = false, eventID = '', userData = null } = options;
 
   if (userData) {
     updateMetaUserData(userData);
@@ -348,14 +348,9 @@ export function trackMetaEvent(eventName, customData = {}, options = {}) {
   const fbqLoaded = typeof window !== 'undefined' && typeof window.fbq === 'function';
   const scriptReady = fbqLoaded && typeof window.fbq.callMethod === 'function';
 
-  if (fbqLoaded) {
+  if (scriptReady) {
     window.fbq(isCustom ? 'trackCustom' : 'track', eventName, customData, { eventID: eid });
-  }
-
-  // Only fire the fallback beacon if fbevents.js failed to load / was blocked by an ad-blocker
-  if (!scriptReady && keepalive) {
-    sendKeepalivePixelBeacon(eventName, customData, eid);
-  } else if (!scriptReady) {
+  } else {
     sendKeepalivePixelBeacon(eventName, customData, eid);
   }
 

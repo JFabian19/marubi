@@ -744,3 +744,6 @@ body.modal-open .order-button::before {
 }
 .cod-submit-btn:disabled { opacity: 0.7; cursor: wait; }
 .cod-cart-check-icon { flex-shrink: 0; }
+
+.cod-delivery-note { display: block; color: #555; font-size: 0.78rem; line-height: 1.4; }
+.cod-delivery-note:empty { display: none; }

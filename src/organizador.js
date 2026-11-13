@@ -1,5 +1,5 @@
 import { PERU_LOCATIONS } from './data/peruLocations';
-import { createOrderId, saveOrder } from './lib/orders';
+import { createOrderId, saveOrder, usesShalom, provincialDeliveryNote } from './lib/orders';
 import {
   META_PIXEL_ID,
   ensureFbcAndFbp,
@@ -56,12 +56,11 @@ function initPixel() {
     script.async = true;
     script.src = 'https://connect.facebook.net/en_US/fbevents.js';
     document.head.append(script);
+    fbq('set', 'autoConfig', false, PIXEL_ID);
     fbq('init', PIXEL_ID, userData);
     window.__marubiPageViewId =
       window.__marubiPageViewId || `pv_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
     fbq('track', 'PageView', {}, { eventID: window.__marubiPageViewId });
-  } else {
-    window.fbq('init', PIXEL_ID, userData);
   }
 
   if (!window.__marubiViewContentId) {
@@ -362,6 +361,7 @@ Object.keys(PERU_LOCATIONS).forEach((prov) => {
 
 provinciaSelect.addEventListener('change', () => {
   const prov = provinciaSelect.value;
+  document.querySelector('#deliveryNote').textContent = usesShalom(prov) ? provincialDeliveryNote : '';
   ciudadSelect.innerHTML = '<option value="" disabled selected>Selecciona Ciudad / Distrito</option>';
   if (prov && PERU_LOCATIONS[prov]) {
     const ciudades = Array.from(new Set(Object.values(PERU_LOCATIONS[prov]).flat()));
@@ -562,6 +562,7 @@ function applyExitDiscountAndStay() {
 }
 
 function handleAttemptClose() {
+  if (isSubmitting) return;
   // Si el aviso de descuento está abierto y le da clic a la X, aplicar el descuento y volver al formulario
   if (!exitDiscountPopup.hidden) {
     applyExitDiscountAndStay();
@@ -662,9 +663,9 @@ orderForm.addEventListener('submit', async (e) => {
 
   const orderNumber = pendingOrderId || createOrderId();
   pendingOrderId = orderNumber;
-  const isProvincia = provincia !== 'Lima' && provincia !== 'Callao';
+  const isProvincia = usesShalom(provincia);
   const envioTexto = isProvincia
-    ? 'Envío por Shalom (Provincia)'
+    ? provincialDeliveryNote
     : 'Contraentrega en Lima según cobertura';
 
   const waText =
@@ -698,7 +699,34 @@ orderForm.addEventListener('submit', async (e) => {
   // 2. Asegurar que CompleteRegistration y Lead se envíen con todos los datos del cliente y keepalive
   trackRegistrationAttempt('submit', true);
 
-  // 3. Disparar Purchase y OrderFormSubmitted con keepalive y deduplicación por orderNumber
+  try {
+    await saveOrder({
+      orderId: orderNumber,
+      productId: 'YH1001-1A',
+      productName: product.content_name,
+      offer: offerLabel,
+      quantity: active.quantity,
+      total: finalPrice,
+      name: nombre,
+      whatsapp,
+      department: provincia,
+      province: provincia,
+      district: ciudad,
+      address: direccion,
+      reference: referencia,
+      deliveryMethod: isProvincia ? 'shalom' : 'lima',
+      place: `${ciudad}, ${provincia}`,
+      pageUrl: window.location.href,
+    });
+  } catch {
+    submitError.textContent = 'No pudimos confirmar tu pedido. Vuelve a intentarlo.';
+    submitError.hidden = false;
+    isSubmitting = false;
+    submitBtn.disabled = false;
+    submitText.textContent = 'Realizar Pedido';
+    return;
+  }
+
   if (trackedPurchaseId !== orderNumber) {
     trackedPurchaseId = orderNumber;
     const purchasePayload = {
@@ -729,29 +757,7 @@ orderForm.addEventListener('submit', async (e) => {
     );
   }
 
-  // 4. Guardar en Google Sheets y dar margen (550ms) para que fbevents.js + CAPIG completen antes de redirigir a WhatsApp
-  const pixelFlushDelay = new Promise((resolve) => window.setTimeout(resolve, 550));
-  const saveOrderPromise = saveOrder({
-    orderId: orderNumber,
-    productId: 'YH1001-1A',
-    productName: product.content_name,
-    offer: offerLabel,
-    quantity: active.quantity,
-    total: finalPrice,
-    name: nombre,
-    whatsapp,
-    department: provincia,
-    province: provincia,
-    district: ciudad,
-    address: direccion,
-    reference: referencia,
-    deliveryMethod: isProvincia ? 'shalom' : 'lima',
-    place: `${ciudad}, ${provincia}`,
-    pageUrl: window.location.href,
-  }).catch(() => {});
-
-  await Promise.all([saveOrderPromise, pixelFlushDelay]);
-
+  await new Promise((resolve) => window.setTimeout(resolve, 550));
   const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;
   window.location.href = whatsappUrl;
 
@@ -760,6 +766,7 @@ orderForm.addEventListener('submit', async (e) => {
   submitBtn.disabled = false;
   submitText.textContent = 'Realizar Pedido';
   orderForm.reset();
+  document.querySelector('#deliveryNote').textContent = '';
   ciudadSelect.disabled = true;
 });
 

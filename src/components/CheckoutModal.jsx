@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PERU_LOCATIONS } from '../data/peruLocations';
 import { getProductPage } from '../data/templateData';
-import { createOrderId, saveOrder } from '../lib/orders';
+import { createOrderId, saveOrder, usesShalom, provincialDeliveryNote } from '../lib/orders';
 import { updateMetaUserData, trackMetaEvent } from '../lib/metaPixel';
 
 function formatSoles(amount) {
@@ -137,11 +137,11 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (isOpen && e.key === 'Escape') onClose();
+      if (isOpen && !submitting && e.key === 'Escape') onClose();
     };
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, submitting]);
 
   const activeBundle = bundles.find((b) => b.quantity === selectedQty) || bundles[0];
 
@@ -176,9 +176,9 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
 
     const orderNumber = pendingOrderId.current || createOrderId();
     pendingOrderId.current = orderNumber;
-    const isProvincia = provincia !== 'Lima' && provincia !== 'Callao';
+    const isProvincia = usesShalom(provincia);
     const envioTexto = isProvincia
-      ? 'Envío Gratis (Adelanto solo para provincias de S/. 20)'
+      ? provincialDeliveryNote
       : 'Envío Gratis (Pago al Recibir)';
 
     const waText =
@@ -226,6 +226,33 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       });
     }
 
+    setSubmitting(true);
+
+    try {
+      await saveOrder({
+        orderId: orderNumber,
+        productId: selectedProduct?.id || 'prod-1',
+        productName: productData.title,
+        offer: activeBundle.offerLabel,
+        quantity: activeBundle.quantity,
+        total: activeBundle.price,
+        name: nombre.trim(),
+        whatsapp,
+        department: provincia,
+        province: provincia,
+        district: ciudad,
+        address: direccion.trim(),
+        reference: referencia.trim(),
+        deliveryMethod: isProvincia ? 'shalom' : 'lima',
+        place: `${ciudad}, ${provincia}`,
+        pageUrl: window.location.href,
+      });
+    } catch (error) {
+      setSubmitError('No pudimos registrar tu pedido. Inténtalo otra vez; tus datos siguen aquí.');
+      setSubmitting(false);
+      return;
+    }
+
     trackMetaEvent('Purchase', purchasePayload, {
       eventID: orderNumber,
       userData: customerData,
@@ -245,37 +272,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       }
     );
 
-    setSubmitting(true);
-
-    try {
-      const pixelFlushDelay = new Promise((resolve) => window.setTimeout(resolve, 550));
-      await Promise.all([
-        saveOrder({
-          orderId: orderNumber,
-          productId: selectedProduct?.id || 'prod-1',
-          productName: productData.title,
-          offer: activeBundle.offerLabel,
-          quantity: activeBundle.quantity,
-          total: activeBundle.price,
-          name: nombre.trim(),
-          whatsapp,
-          department: provincia,
-          province: provincia,
-          district: ciudad,
-          address: direccion.trim(),
-          reference: referencia.trim(),
-          deliveryMethod: isProvincia ? 'shalom' : 'lima',
-          place: `${ciudad}, ${provincia}`,
-          pageUrl: window.location.href,
-        }),
-        pixelFlushDelay,
-      ]);
-    } catch (error) {
-      setSubmitError('No pudimos registrar tu pedido. Inténtalo otra vez; tus datos siguen aquí.');
-      setSubmitting(false);
-      return;
-    }
-
+    await new Promise((resolve) => window.setTimeout(resolve, 550));
     const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;
     window.location.href = whatsappUrl;
 
@@ -300,13 +297,14 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       aria-modal="true"
       aria-label="Formulario de pedido"
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (!submitting && e.target === e.currentTarget) onClose();
       }}
     >
       <section className="cod-modal-card" onClick={(e) => e.stopPropagation()}>
         <button
           type="button"
           className="cod-close-btn"
+          disabled={submitting}
           onClick={onClose}
           aria-label="Cerrar formulario"
         >
@@ -326,7 +324,6 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
               </div>
               <div className="cod-shipping-texts">
                 <div className="cod-shipping-main">Envio Gratis</div>
-                <div className="cod-shipping-sub">Adelanto solo para provincias de S/. 20</div>
               </div>
             </div>
             <div className="cod-shipping-price">Gratis</div>
@@ -562,6 +559,8 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
                 </span>
               </div>
             </div>
+
+            <small className="cod-delivery-note" aria-live="polite">{usesShalom(provincia) ? provincialDeliveryNote : ''}</small>
 
             {submitError && (
               <p className="field-error" role="alert">
