@@ -194,11 +194,11 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
                 </button>
                 {openSubmenus.productos && (
                   <ul className="drawer-sublist">
-                    <li><a href="/inicio" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Favoritos de Navidad</a></li>
-                    {BESTSELLERS_PLACEHOLDERS.slice(0, 3).map((product) => (
+                    <li><a href="/inicio" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Productos destacados</a></li>
+                    <li><a href="/producto/organizador-de-plantas-6-niveles">Organizador de plantas de 6 niveles</a></li>
+                    {BESTSELLERS_PLACEHOLDERS.filter((p) => p.id === 'prod-grinch').map((product) => (
                       <li key={product.id}><a href={`/producto/${product.slug}`} onClick={(e) => handleProductNav(e, product)}>{product.title}</a></li>
                     ))}
-                    <li><a href="/producto/organizador-de-plantas-6-niveles">Organizador de plantas de 6 niveles</a></li>
                   </ul>
                 )}
               </li>

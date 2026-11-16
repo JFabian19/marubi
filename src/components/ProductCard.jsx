@@ -2,6 +2,7 @@ import React from 'react';
 
 export default function ProductCard({ product, onOpenProduct }) {
   const handleClick = (e) => {
+    if (product.isStaticPage) return;
     e.preventDefault();
     onOpenProduct(product);
   };
