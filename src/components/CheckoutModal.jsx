@@ -24,6 +24,13 @@ function getBundleOptions(selectedProduct, productData) {
   const old3 = p1 * 3;
   const p3 = offer3?.value || (p1 === 130 ? 350 : Math.round((old3 * 0.88) / 10) * 10);
 
+  if (selectedProduct?.id === 'prod-grinch') {
+    return [
+      { quantity: 1, title: '1 unidad', badgeText: 'Diseño único', badgeType: 'blue', price: 69, oldPrice: 99, offerLabel: '1 unidad (Diseño único)' },
+      { quantity: 2, title: 'Pack de 2 unidades', badgeText: 'Pack navideño', badgeType: 'green', price: 119, oldPrice: 198, offerLabel: 'Pack de 2 unidades (Diseño único)' },
+    ];
+  }
+
   return [
     {
       quantity: 1,
@@ -566,6 +573,15 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
               <p className="field-error" role="alert">
                 {submitError}
               </p>
+            )}
+
+            {selectedProduct?.id === 'prod-grinch' && (
+              <img
+                className="cod-trust-banner"
+                src="/assets/navidad/marubi-confianza.png"
+                alt="MARUBI es un negocio formal que emite boleta. RUC 10608928281."
+                loading="lazy"
+              />
             )}
 
             {/* Botón Amarillo Inclinado */}

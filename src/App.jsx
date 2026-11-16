@@ -26,6 +26,7 @@ export default function App() {
 
   useEffect(() => {
     document.body.classList.toggle('product-view-active', currentView === 'product');
+    document.body.classList.toggle('grinch-page-active', currentView === 'product' && selectedProduct?.id === 'prod-grinch');
     if (currentView === 'product') {
       const prodTitle = getProductPage(selectedProduct?.id).title;
       document.title = `${prodTitle} | MARUBI Perú`;

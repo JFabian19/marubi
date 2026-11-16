@@ -5,7 +5,7 @@
 
 export const TICKER_ITEMS = [
   'PAGO CONTRA ENTREGA EN LIMA',
-  'ENVÍO GRATIS A TODO EL PERÚ POR SHALOM',
+  'ENTREGAS EN LIMA Y CALLAO',
   'PACK NAVIDEÑO DE 15 PIEZAS',
   'OFERTA LIMITADA · MARIPOSA LED DE S/ 170 A S/ 139',
 ];
@@ -28,6 +28,15 @@ export const BESTSELLERS_PLACEHOLDERS = [
     comparePrice: 'S/ 170',
     discountBadge: 'OFERTA LIMITADA',
     image: '/assets/mariposa/mariposa-frente-marmol.webp',
+  },
+  {
+    id: 'prod-grinch',
+    slug: 'patitas-grinch-navidad',
+    title: 'Patitas Grinch para árbol de Navidad · Pack x2',
+    salePrice: 'S/ 119',
+    comparePrice: 'S/ 198',
+    discountBadge: 'PACK NAVIDEÑO',
+    image: '/assets/navidad/patitas-grinch-promo.png',
   },
   {
     id: 'prod-3',
@@ -135,14 +144,14 @@ export const PRODUCT_PAGE_TEMPLATE = {
   ],
   purchasePoints: [
     { bold: '15 piezas', rest: 'para vestir tu mesa navideña' },
-    { bold: 'Envío gratis', rest: 'a todo el Perú a través de Shalom' },
+    { bold: 'Envío gratis', rest: 'en Lima y Callao' },
     { bold: 'Oferta exclusiva', rest: 'S/ 169.90 por el pack completo' },
   ],
   proofStrip: [
     { strong: '15 piezas', span: 'Un pack para celebrar' },
     { strong: 'S/ 169.90', span: 'Precio de oferta exclusiva' },
     { strong: 'S/ 40 menos', span: 'Frente a S/ 209.90' },
-    { strong: 'Envío gratis', span: 'A todo el Perú por Shalom' },
+    { strong: 'Envío gratis', span: 'En Lima y Callao' },
   ],
   expectation: {
     eyebrow: 'UNA MESA PARA COMPARTIR',
@@ -178,15 +187,15 @@ export const PRODUCT_PAGE_TEMPLATE = {
       { dt: 'Pieza especial', dd: '1 plato con forma de árbol' },
       { dt: 'Tazas', dd: '6 redondas con diseño Merry Christmas' },
       { dt: 'Precio de oferta', dd: 'S/ 169.90 por el pack completo' },
-      { dt: 'Envío', dd: 'Gratis a todo el Perú a través de Shalom' },
+      { dt: 'Envío', dd: 'Gratis en Lima y Callao' },
     ],
   },
   faqs: [
     { id: 'faq-1', q: '¿Cuántas piezas trae el pack?', a: 'Son 15 piezas: 6 platos de polipropileno, 2 bowls de cerámica con orejitas, 1 plato en forma de árbol y 6 tazas Merry Christmas.' },
     { id: 'faq-2', q: '¿El precio es por todo el pack?', a: 'Sí. La oferta exclusiva de S/ 169.90 corresponde al pack completo de 15 piezas.' },
-    { id: 'faq-3', q: '¿Cuánto cuesta el envío?', a: 'El envío es gratis a todo el Perú a través de Shalom. Coordinaremos contigo los datos de entrega o recojo al confirmar el pedido.' },
+    { id: 'faq-3', q: '¿Cuánto cuesta el envío?', a: 'El envío es gratis en Lima y Callao. Coordinaremos contigo los datos de entrega o recojo al confirmar el pedido.' },
     { id: 'faq-4', q: '¿Los bowls tienen orejitas?', a: 'Sí. El pack incluye dos bowls de cerámica con orejitas, con diseños navideños rojo y verde.' },
-    { id: 'faq-5', q: '¿Cómo confirmo mi pedido?', a: 'Completa tus datos y continúa por WhatsApp. Nuestro equipo confirmará la disponibilidad y la coordinación del envío por Shalom.' },
+    { id: 'faq-5', q: '¿Cómo confirmo mi pedido?', a: 'Completa tus datos y continúa por WhatsApp. Nuestro equipo confirmará la disponibilidad y la coordinación de la entrega.' },
   ],
 };
 
@@ -219,13 +228,13 @@ export const BUTTERFLY_PRODUCT_PAGE = {
     { bold: 'Luz blanca', rest: 'que dibuja sus alas translúcidas' },
     { bold: 'Música navideña', rest: 'incluida en la mariposa' },
     { bold: '35 cm aprox.', rest: 'según el punto de medición' },
-    { bold: 'Envío gratis', rest: 'a todo el Perú a través de Shalom' },
+    { bold: 'Envío gratis', rest: 'en Lima y Callao' },
   ],
   proofStrip: [
     { strong: 'S/ 170 → S/ 139', span: 'Oferta individual limitada' },
     { strong: 'S/ 340 → S/ 249', span: 'Pack de dos mariposas' },
     { strong: 'S/ 510 → S/ 369', span: 'Pack de tres mariposas' },
-    { strong: 'Envío gratis', span: 'A todo el Perú por Shalom' },
+    { strong: 'Envío gratis', span: 'En Lima y Callao' },
   ],
   expectation: {
     eyebrow: 'UN DETALLE QUE DESTACA',
@@ -263,7 +272,7 @@ export const BUTTERFLY_PRODUCT_PAGE = {
       { dt: 'Precio individual', dd: 'S/ 139' },
       { dt: 'Precio pack x2', dd: 'S/ 249' },
       { dt: 'Precio pack x3', dd: 'S/ 369' },
-      { dt: 'Envío', dd: 'Gratis a todo el Perú a través de Shalom' },
+      { dt: 'Envío', dd: 'Gratis en Lima y Callao' },
     ],
   },
   videos: [
@@ -271,17 +280,104 @@ export const BUTTERFLY_PRODUCT_PAGE = {
     { title: 'Alas iluminadas en movimiento', src: '/assets/mariposa/mariposa-alas-movimiento.mp4', poster: '/assets/mariposa/mariposa-alas-movimiento-poster.webp' },
   ],
   videoIntro: 'Mira cómo luce la mariposa iluminada en el árbol y observa el movimiento de sus alas.',
-  deliveryHeading: 'Tu mariposa viaja por Shalom',
+  deliveryHeading: 'Tu mariposa llega a Lima y Callao',
   faqs: [
     { id: 'faq-1', q: '¿Cuánto cuesta una mariposa?', a: 'Una mariposa cuesta S/ 139.' },
     { id: 'faq-2', q: '¿Cuánto cuesta el pack de dos?', a: 'Dos mariposas cuestan S/ 249 en total. El precio anterior era S/ 340 y ahora ahorras S/ 91.' },
     { id: 'faq-7', q: '¿Cuánto cuesta el pack de tres?', a: 'Tres mariposas cuestan S/ 369 en total. El precio anterior era S/ 510 y ahora ahorras S/ 141.' },
     { id: 'faq-3', q: '¿Qué tamaño tiene?', a: 'La medida referencial es de 35 cm aproximadamente. Puede variar según el punto desde donde se mida la figura.' },
     { id: 'faq-4', q: '¿Cómo se ilumina?', a: 'La pieza fotografiada tiene cable y emite luz blanca. Podemos confirmar contigo los detalles de conexión antes del envío.' },
-    { id: 'faq-5', q: '¿Cómo llega mi pedido?', a: 'El envío es gratis a todo el Perú a través de Shalom. Coordinaremos los datos de entrega o recojo por WhatsApp.' },
+    { id: 'faq-5', q: '¿Cómo llega mi pedido?', a: 'El envío es gratis en Lima y Callao. Coordinaremos los datos de entrega o recojo por WhatsApp.' },
     { id: 'faq-6', q: '¿La mariposa tiene música?', a: 'Sí. Incluye su propia melodía navideña para acompañar la iluminación.' },
   ],
 };
 
+export const GRINCH_PRODUCT_PAGE = {
+  breadcrumbName: 'Patitas Grinch para árbol de Navidad',
+  eyebrow: 'DECORACIÓN NAVIDEÑA · PACK DE 2',
+  title: 'Patitas del Grinch con movimiento',
+  lead: 'Dale un giro divertido a tu árbol con estas patitas verdes y sus botas rojas de Santa. Se mueven para crear una escena navideña llena de humor.',
+  priceCurrent: 'S/ 69',
+  priceRegular: 'S/ 99',
+  priceSave: 'AHORRAS S/ 30',
+  ctaLabel: 'Pedir 1 unidad — S/ 69',
+  promoBanner: 'PACK DE 2 POR S/ 119 · EL DETALLE MÁS GRINCH DE ESTA NAVIDAD',
+  offers: [
+    { id: 'single', label: '1 unidad', price: 'S/ 69', comparePrice: 'S/ 99', value: 69, quantity: 1, detail: 'Ahorras S/ 30' },
+    { id: 'duo', label: 'Pack de 2 unidades', price: 'S/ 119', comparePrice: 'S/ 198', value: 119, quantity: 2, detail: 'Ahorras S/ 79 · S/ 59.50 c/u' },
+  ],
+  gallery: [
+    { src: '/assets/navidad/patitas-grinch-promo.png', label: 'Patitas del Grinch con movimiento en árbol de Navidad, imagen promocional MARUBI' },
+    { src: '/assets/navidad/patitas-grinch-arbol.png', label: 'Patitas Grinch asomándose de un árbol navideño' },
+    { src: '/assets/navidad/patitas-grinch-detalle.png', label: 'Detalle del par de patitas verdes con botas rojas de Santa' },
+  ],
+  purchasePoints: [
+    { bold: 'USB o 3 pilas AA', rest: 'dos maneras de alimentar el movimiento' },
+    { bold: 'Dos patitas decorativas', rest: 'para darle vida al árbol' },
+    { bold: 'Diseño único', rest: 'botas rojas y piernas verdes' },
+    { bold: 'Pack x2 por S/ 119', rest: 'o una unidad por S/ 69' },
+    { bold: 'Envío gratis', rest: 'en Lima y Callao' },
+  ],
+  proofStrip: [
+    { strong: 'USB o pilas', span: 'Úsalo como prefieras' },
+    { strong: 'S/ 69', span: 'Una unidad' },
+    { strong: 'S/ 119', span: 'Pack de dos unidades' },
+    { strong: 'Diseño único', span: 'El Grinch en tu árbol' },
+    { strong: 'Envío gratis', span: 'En Lima y Callao' },
+  ],
+  expectation: {
+    eyebrow: 'UNA NAVIDAD CON HUMOR',
+    heading: 'Parece que alguien quiso robarse la Navidad',
+    intro: 'Las patitas verdes con sus botas de Santa crean la ilusión de que el Grinch quedó atrapado dentro del árbol. Colócalas entre las ramas y convierte tu decoración en el tema de conversación.',
+    image: '/assets/navidad/patitas-grinch-detalle.png',
+    caption: 'El par incluye dos piernas decorativas con botas rojas y puños blancos.',
+    steps: [
+      { num: '01', title: 'Busca el lugar perfecto', text: 'Separa un poco las ramas para que las piernas se vean salir del árbol.' },
+      { num: '02', title: 'Acomoda las patitas', text: 'Distribuye una a cada lado para crear una pose divertida y llena de movimiento.' },
+      { num: '03', title: 'Disfruta las reacciones', text: 'Un toque inesperado para fotos, reuniones y árboles con personalidad.' },
+    ],
+  },
+  features: {
+    eyebrow: 'EL DETALLE MÁS TRAVIESO',
+    heading: 'Un par de patitas que roba miradas',
+    subtitle: 'Un único diseño navideño, listo para asomarse entre las ramas.',
+    items: [
+      { num: '01', title: 'Verde Grinch', text: 'Piernas de color verde intenso que destacan entre las ramas.' },
+      { num: '02', title: 'Botas de Santa', text: 'Botas rojas con puños blancos para completar el look navideño.' },
+      { num: '03', title: 'Pack de dos', text: 'Recibe el par para armar la escena completa en tu árbol.' },
+      { num: '04', title: 'Fácil de colocar', text: 'Acomódalas entre las ramas y ajusta la pose a tu gusto.' },
+    ],
+  },
+  specs: {
+    eyebrow: 'DETALLE DEL PRODUCTO',
+    heading: 'Lo esencial antes de pedir',
+    intro: 'Las imágenes muestran el diseño decorativo del producto. La oferta de dos unidades incluye el mismo diseño.',
+    rows: [
+      { dt: 'Producto', dd: 'Patitas decorativas estilo Grinch' },
+      { dt: 'Alimentación', dd: 'Conexión USB o 3 pilas AA' },
+      { dt: 'Diseño', dd: 'Único: piernas verdes con botas rojas y puños blancos' },
+      { dt: 'Presentación', dd: '1 unidad o pack de 2 unidades' },
+      { dt: 'Precio por unidad', dd: 'S/ 69' },
+      { dt: 'Precio pack x2', dd: 'S/ 119' },
+      { dt: 'Envío', dd: 'Gratis en Lima y Callao' },
+    ],
+  },
+  videos: [
+    { title: 'Patitas Grinch en el árbol · Video 1', src: '/assets/navidad/videos/patitas-grinch-video-1.mp4', poster: '/assets/navidad/patitas-grinch-promo.png' },
+    { title: 'Patitas Grinch en el árbol · Video 2', src: '/assets/navidad/videos/patitas-grinch-video-2.mp4', poster: '/assets/navidad/patitas-grinch-promo.png' },
+  ],
+  videoIntro: 'Imagina al Grinch asomándose entre las ramas con sus botas rojas listas para la travesura.',
+  deliveryHeading: 'Tus patitas Grinch llegan a Lima y Callao',
+  faqs: [
+    { id: 'faq-power', q: '¿Funciona sin pilas?', a: 'Sí. Puedes alimentar el producto mediante su cable USB. También puedes usar 3 pilas AA como alternativa.' },
+    { id: 'faq-1', q: '¿Cuánto cuesta una unidad?', a: 'Una unidad cuesta S/ 69.' },
+    { id: 'faq-2', q: '¿Cuánto cuesta el pack de dos?', a: 'El pack de dos unidades cuesta S/ 119.' },
+    { id: 'faq-3', q: '¿Hay varios diseños?', a: 'Hay un único diseño: piernas verdes con botas rojas y puños blancos.' },
+    { id: 'faq-4', q: '¿Cómo se colocan en el árbol?', a: 'Se acomodan entre las ramas para crear la ilusión de que las patitas salen del árbol.' },
+    { id: 'faq-5', q: '¿Cómo llega mi pedido?', a: 'El envío es gratis en Lima y Callao. Coordinaremos los datos de entrega o recojo por WhatsApp.' },
+  ],
+};
+
 export const getProductPage = (productId) =>
-  productId === 'prod-2' ? BUTTERFLY_PRODUCT_PAGE : PRODUCT_PAGE_TEMPLATE;
+  productId === 'prod-2' ? BUTTERFLY_PRODUCT_PAGE : productId === 'prod-grinch' ? GRINCH_PRODUCT_PAGE : PRODUCT_PAGE_TEMPLATE;
+

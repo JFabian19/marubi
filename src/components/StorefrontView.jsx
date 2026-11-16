@@ -3,7 +3,7 @@ import { BESTSELLERS_PLACEHOLDERS } from '../data/templateData';
 import ProductCard from './ProductCard';
 import WaveDivider from './WaveDivider';
 
-const featuredProducts = BESTSELLERS_PLACEHOLDERS.slice(0, 2);
+const featuredProducts = BESTSELLERS_PLACEHOLDERS.slice(0, 3);
 
 const stories = [
   {
@@ -86,7 +86,7 @@ export default function StorefrontView({ onOpenProduct, onNavigateHome }) {
           <div>
             <p className="eyebrow">COMPRA EN MARUBI</p>
             <h2>Navidad en casa, estés donde estés</h2>
-            <p>Envío gratis a todo el Perú a través de Shalom. Elige tu producto y coordinaremos tu pedido por WhatsApp.</p>
+            <p>Entregas en Lima y Callao. Elige tu producto y coordinaremos tu pedido por WhatsApp.</p>
           </div>
           <a href="/inicio" className="voltra-btn-solid" onClick={(event) => { event.preventDefault(); onNavigateHome('#mas-vendidos'); }}>Ver los favoritos</a>
         </div>
