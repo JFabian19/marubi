@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getProductPage } from '../data/templateData';
+import { trackMetaEvent } from '../lib/metaPixel';
 import WaveDivider from './WaveDivider';
 
 export default function ProductTemplateView({
@@ -23,22 +24,158 @@ export default function ProductTemplateView({
   }, [selectedProduct]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!heroRef.current) return;
-      const rect = heroRef.current.getBoundingClientRect();
-      setShowStickyBar(rect.bottom < window.innerHeight * 0.35);
+    const productPayload = {
+      content_ids: [selectedProduct?.id || 'prod-grinch'],
+      content_name: data.title || selectedProduct?.title || 'Producto MARUBI',
+      content_type: 'product',
+      value:
+        data.offers?.[0]?.value ||
+        Number(data.priceCurrent?.replace(/[^\d.]/g, '')) ||
+        Number(selectedProduct?.salePrice?.replace(/[^\d.]/g, '')) ||
+        0,
+      currency: 'PEN',
     };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    let hasScrolledViewContent = false;
+    let scrollTicking = false;
+    let cachedDocHeight = 1;
+    const scrollMilestones = new Set();
+
+    const updateDocHeight = () => {
+      cachedDocHeight = Math.max(
+        document.documentElement.scrollHeight - window.innerHeight,
+        1
+      );
+    };
+    updateDocHeight();
+    window.addEventListener('resize', updateDocHeight, { passive: true });
+
+    const fireScrolledViewContent = () => {
+      if (hasScrolledViewContent) return;
+      hasScrolledViewContent = true;
+      trackMetaEvent('ViewContent', productPayload);
+      trackMetaEvent('UserScrolled', productPayload, { isCustom: true });
+    };
+
+    const handleScroll = () => {
+      scrollTicking = false;
+      if (heroRef.current) {
+        const rect = heroRef.current.getBoundingClientRect();
+        setShowStickyBar(rect.bottom < window.innerHeight * 0.35);
+      }
+
+      const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+      if (scrollTop > 30) {
+        fireScrolledViewContent();
+        updateDocHeight();
+        const pct = Math.round((scrollTop / cachedDocHeight) * 100);
+        [25, 50, 75, 90].forEach((milestone) => {
+          if (pct >= milestone && !scrollMilestones.has(milestone)) {
+            scrollMilestones.add(milestone);
+            trackMetaEvent(
+              'ScrollDepth',
+              {
+                ...productPayload,
+                depth_percent: milestone,
+                depth: `${milestone}%`,
+              },
+              { isCustom: true }
+            );
+          }
+        });
+      }
+    };
+
+    const onScrollListener = () => {
+      if (!scrollTicking) {
+        scrollTicking = true;
+        window.requestAnimationFrame(handleScroll);
+      }
+    };
+
+    window.addEventListener('scroll', onScrollListener, { passive: true });
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+
+    const sectionMap = [
+      { selector: '.grinch-power-section', name: 'alimentacion_usb_pilas', isInfo: true },
+      { selector: '.grinch-compare-section', name: 'antes_y_despues', isInfo: true },
+      { selector: '.grinch-benefits-section', name: 'beneficios', isInfo: true },
+      { selector: '#detalles-grinch', name: 'detalles_y_medidas', isInfo: true },
+      { selector: '.grinch-spaces-section', name: 'ideas_espacios', isInfo: false },
+      { selector: '#pedido', name: 'seccion_oferta', isInfo: false },
+      { selector: '.expectation-section', name: 'que_esperar', isInfo: true },
+      { selector: '.features-section', name: 'caracteristicas', isInfo: true },
+      { selector: '.product-video-section', name: 'videos_producto', isInfo: true },
+      { selector: '#ficha-tecnica', name: 'ficha_tecnica', isInfo: true },
+      { selector: '.delivery-section', name: 'entrega_lima_callao', isInfo: false },
+      { selector: '#preguntas', name: 'preguntas_frecuentes', isInfo: true },
+    ];
+
+    const visitedSections = new Set();
+    let visitedInfoTracked = false;
+    let observer = null;
+
+    if ('IntersectionObserver' in window) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+            if (scrollTop > 10) {
+              fireScrolledViewContent();
+            }
+            const sectionName = entry.target.dataset.trackSection;
+            const isInfo = entry.target.dataset.trackInfo === 'true';
+            if (sectionName && !visitedSections.has(sectionName)) {
+              visitedSections.add(sectionName);
+              trackMetaEvent(
+                'SectionVisited',
+                {
+                  ...productPayload,
+                  section: sectionName,
+                },
+                { isCustom: true }
+              );
+              if (isInfo && !visitedInfoTracked) {
+                visitedInfoTracked = true;
+                trackMetaEvent(
+                  'VisitedProductInfo',
+                  {
+                    ...productPayload,
+                    first_info_section: sectionName,
+                  },
+                  { isCustom: true }
+                );
+              }
+            }
+          });
+        },
+        { threshold: 0.3 }
+      );
+
+      sectionMap.forEach(({ selector, name, isInfo }) => {
+        const el = document.querySelector(selector);
+        if (el) {
+          el.dataset.trackSection = name;
+          el.dataset.trackInfo = String(isInfo);
+          observer.observe(el);
+        }
+      });
+    }
+
+    return () => {
+      window.removeEventListener('scroll', onScrollListener);
+      window.removeEventListener('resize', updateDocHeight);
+      if (observer) observer.disconnect();
+    };
+  }, [selectedProduct?.id, selectedProduct?.title, selectedProduct?.salePrice, data.title, data.priceCurrent, data.offers]);
 
   const activeOffer = data.offers?.find((offer) => offer.id === selectedOfferId);
   const displayTitle = data.title;
   const displayPrice = activeOffer?.price || data.priceCurrent;
   const displayCompare = data.priceRegular;
   const ctaLabel = activeOffer ? `Pedir ${activeOffer.label.toLowerCase()} — ${activeOffer.price}` : data.ctaLabel;
-  const openCheckout = () => onOpenCheckout(activeOffer || null);
+  const openCheckout = (placement = 'boton_abrir_formulario') => onOpenCheckout(activeOffer || null, placement);
 
   return (
     <>
@@ -133,7 +270,7 @@ export default function ProductTemplateView({
               <button
                 type="button"
                 className="btn-cta btn-cta--attention btn-open-checkout"
-                onClick={openCheckout}
+                onClick={() => openCheckout('hero_abrir_formulario')}
               >
                 {selectedProduct?.id === 'prod-grinch' ? '🛒 ABRIR FORMULARIO DE PEDIDO →' : ctaLabel}
               </button>
@@ -213,7 +350,7 @@ export default function ProductTemplateView({
               <div><p className="eyebrow">DETALLES Y MEDIDAS</p><h2>El par listo para entrar en acción</h2><p>Dos piernas decorativas verdes, cada una con su bota roja y puño blanco. El diseño mide aproximadamente 34 cm.</p><dl className="grinch-detail-facts"><div><dt>Alto aprox.</dt><dd>34 cm</dd></div><div><dt>Incluye</dt><dd>2 patitas decorativas</dd></div><div><dt>Diseño</dt><dd>Único</dd></div><div><dt>Colores</dt><dd>Verde, rojo y blanco</dd></div></dl></div>
             </section>
             <section className="grinch-spaces-section"><div className="container"><p className="eyebrow">IDEAS PARA TU NAVIDAD</p><h2>Un toque divertido en tus espacios</h2><div className="grinch-space-grid"><figure><img src="/assets/navidad/patitas-grinch-despues.png" alt="Patitas Grinch decorando un árbol de Navidad en una sala acogedora" loading="lazy"/><figcaption>El árbol como protagonista</figcaption></figure><figure><img src="/assets/navidad/patitas-grinch-arbol.png" alt="Patitas Grinch rojas y verdes colocadas entre las ramas de un árbol decorado" loading="lazy"/><figcaption>Un detalle para las fotos</figcaption></figure><figure><img src="/assets/navidad/patitas-grinch-detalle.png" alt="Par de patitas Grinch de 34 centímetros, visto de cerca" loading="lazy"/><figcaption>El par completo, listo para colocar</figcaption></figure></div></div></section>
-            <section className="grinch-order-section" id="pedido"><div className="container grinch-order-card"><img src="/assets/navidad/patitas-grinch-despues.png" alt="Árbol navideño con patitas Grinch" loading="lazy"/><div><p className="eyebrow">DECORACIÓN NAVIDEÑA · DISEÑO ÚNICO</p><h2>Invita al Grinch a tu árbol</h2><ul><li>Par de patitas decorativas</li><li>Aproximadamente 34 cm de alto</li><li>Entrega en Lima y Callao</li></ul><div className="grinch-order-price"><span>1 unidad <strong>S/ 69</strong></span><span className="grinch-order-pack">Pack x2 <strong>S/ 119</strong></span></div><button type="button" className="grinch-order-button" onClick={() => onOpenCheckout(data.offers?.find((offer) => offer.id === selectedOfferId) || null)}><span aria-hidden="true">🛒</span> QUIERO MIS PATITAS GRINCH <b aria-hidden="true">→</b></button><small>Completa tus datos y confirma tu pedido por WhatsApp. Pagas al recibir.</small></div></div></section>
+            <section className="grinch-order-section" id="pedido"><div className="container grinch-order-card"><img src="/assets/navidad/patitas-grinch-despues.png" alt="Árbol navideño con patitas Grinch" loading="lazy"/><div><p className="eyebrow">DECORACIÓN NAVIDEÑA · DISEÑO ÚNICO</p><h2>Invita al Grinch a tu árbol</h2><ul><li>Par de patitas decorativas</li><li>Aproximadamente 34 cm de alto</li><li>Entrega en Lima y Callao</li></ul><div className="grinch-order-price"><span>1 unidad <strong>S/ 69</strong></span><span className="grinch-order-pack">Pack x2 <strong>S/ 119</strong></span></div><button type="button" className="grinch-order-button" onClick={() => openCheckout('seccion_pedido')}><span aria-hidden="true">🛒</span> QUIERO MIS PATITAS GRINCH <b aria-hidden="true">→</b></button><small>Completa tus datos y confirma tu pedido por WhatsApp. Pagas al recibir.</small></div></div></section>
           </>
         )}
 
@@ -340,7 +477,7 @@ export default function ProductTemplateView({
             <button
               type="button"
               className="btn-cta btn-cta--attention btn-open-checkout"
-              onClick={openCheckout}
+              onClick={() => openCheckout('seccion_entrega')}
             >
               {ctaLabel}
             </button>
@@ -348,7 +485,7 @@ export default function ProductTemplateView({
         </section>
 
         {/* Preguntas Frecuentes (FAQ) */}
-        <section className="faq-section">
+        <section className="faq-section" id="preguntas">
           <div className="container faq-layout">
             <div className="section-heading left">
               <p className="eyebrow">DUDAS FRECUENTES</p>
@@ -403,7 +540,7 @@ export default function ProductTemplateView({
         <button
           type="button"
           className="sticky-cta-btn btn-cta--attention btn-open-checkout"
-          onClick={openCheckout}
+          onClick={() => openCheckout('barra_movil')}
         >
           Pedir ahora
         </button>

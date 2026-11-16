@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Butterfly from './components/Butterfly';
 import TickerBar from './components/TickerBar';
 import Header from './components/Header';
@@ -7,6 +7,7 @@ import ProductTemplateView from './components/ProductTemplateView';
 import Footer from './components/Footer';
 import CheckoutModal from './components/CheckoutModal';
 import { BESTSELLERS_PLACEHOLDERS, getProductPage } from './data/templateData';
+import { trackMetaEvent, sendKeepalivePixelBeacon } from './lib/metaPixel';
 
 const STOREFRONT_TITLE =
   'Decoración navideña y packs especiales | MARUBI Perú';
@@ -23,6 +24,16 @@ export default function App() {
   const [selectedProduct, setSelectedProduct] = useState(() => productFromLocation() || BESTSELLERS_PLACEHOLDERS[0]);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const initialPageViewHandled = useRef(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      if (typeof window.fbq?.callMethod !== 'function' && window.__marubiPageViewId) {
+        sendKeepalivePixelBeacon('PageView', {}, window.__marubiPageViewId);
+      }
+    }, 1800);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     document.body.classList.toggle('product-view-active', currentView === 'product');
@@ -30,17 +41,14 @@ export default function App() {
     if (currentView === 'product') {
       const prodTitle = getProductPage(selectedProduct?.id).title;
       document.title = `${prodTitle} | MARUBI Perú`;
-      if (typeof window.fbq === 'function') {
-        window.fbq('track', 'ViewContent', {
-          content_ids: [selectedProduct.id],
-          content_name: selectedProduct.title,
-          content_type: 'product',
-          value: Number(selectedProduct.salePrice?.replace(/[^\d.]/g, '')) || 0,
-          currency: 'PEN',
-        });
-      }
     } else {
       document.title = STOREFRONT_TITLE;
+    }
+
+    if (!initialPageViewHandled.current) {
+      initialPageViewHandled.current = true;
+    } else {
+      trackMetaEvent('PageView');
     }
   }, [currentView, selectedProduct]);
 
@@ -102,18 +110,25 @@ export default function App() {
     }
   };
 
-  const handleOpenCheckout = (offer = null) => {
+  const handleOpenCheckout = (offer = null, placement = 'boton_abrir_formulario') => {
     setSelectedOffer(offer);
-    if (typeof window.fbq === 'function') {
-      window.fbq('track', 'InitiateCheckout', {
-        content_ids: [selectedProduct.id],
-        content_name: selectedProduct.title,
-        content_type: 'product',
-        num_items: offer?.quantity || 1,
-        value: offer?.value || Number(selectedProduct.salePrice?.replace(/[^\d.]/g, '')) || 0,
-        currency: 'PEN',
-      });
-    }
+    const prodData = getProductPage(selectedProduct?.id);
+    const activeOffer = offer || prodData.offers?.[0] || null;
+    const value =
+      activeOffer?.value ||
+      Number(prodData.priceCurrent?.replace(/[^\d.]/g, '')) ||
+      Number(selectedProduct?.salePrice?.replace(/[^\d.]/g, '')) ||
+      0;
+    const quantity = activeOffer?.quantity || 1;
+    trackMetaEvent('InitiateCheckout', {
+      content_ids: [selectedProduct.id],
+      content_name: prodData.title || selectedProduct.title,
+      content_type: 'product',
+      num_items: quantity,
+      value,
+      currency: 'PEN',
+      placement,
+    });
     setCheckoutOpen(true);
   };
 

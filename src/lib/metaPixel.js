@@ -348,9 +348,21 @@ export function trackMetaEvent(eventName, customData = {}, options = {}) {
   const fbqLoaded = typeof window !== 'undefined' && typeof window.fbq === 'function';
   const scriptReady = fbqLoaded && typeof window.fbq.callMethod === 'function';
 
-  if (scriptReady) {
+  if (typeof window !== 'undefined') {
+    window.__marubiPixelEvents = window.__marubiPixelEvents || [];
+    window.__marubiPixelEvents.push({
+      eventName,
+      isCustom,
+      customData,
+      eventID: eid,
+      timestamp: Date.now(),
+    });
+  }
+
+  if (fbqLoaded) {
     window.fbq(isCustom ? 'trackCustom' : 'track', eventName, customData, { eventID: eid });
-  } else {
+  }
+  if (!scriptReady) {
     sendKeepalivePixelBeacon(eventName, customData, eid);
   }
 

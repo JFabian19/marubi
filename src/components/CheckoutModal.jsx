@@ -82,7 +82,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const pendingOrderId = useRef(null);
-  const registrationTracked = useRef(false);
+  const trackedPurchaseId = useRef(null);
 
   const provinciasList = Object.keys(PERU_LOCATIONS);
   const ciudadesList =
@@ -104,7 +104,6 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
   useEffect(() => {
     if (!isOpen) {
       pendingOrderId.current = null;
-      registrationTracked.current = false;
       setSubmitError('');
     }
   }, [isOpen, selectedProduct?.id]);
@@ -120,27 +119,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
     if (customerData.name || customerData.whatsapp || customerData.province || customerData.city) {
       updateMetaUserData(customerData);
     }
-    if (registrationTracked.current) return;
-    const hasData =
-      /^9\d{8}$/.test(customerData.whatsapp) ||
-      (customerData.name.length > 1 && Boolean(provincia || ciudad));
-    if (hasData) {
-      registrationTracked.current = true;
-      const currentBundle = bundles.find((b) => b.quantity === selectedQty) || bundles[0];
-      const regPayload = {
-        content_ids: [selectedProduct?.id || 'prod-1'],
-        content_name: productData.title,
-        content_type: 'product',
-        num_items: currentBundle.quantity,
-        value: currentBundle.price,
-        currency: 'PEN',
-        status: true,
-      };
-      trackMetaEvent('CompleteRegistration', regPayload, { userData: customerData });
-      trackMetaEvent('Lead', regPayload, { userData: customerData });
-      trackMetaEvent('IntentoDeRegistro', regPayload, { isCustom: true, userData: customerData });
-    }
-  }, [isOpen, nombre, whatsapp, direccion, referencia, provincia, ciudad, bundles, selectedQty, selectedProduct?.id, productData.title]);
+  }, [isOpen, nombre, whatsapp, provincia, ciudad]);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -172,12 +151,34 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
     if (submitting) return;
     setSubmitError('');
 
-    if (!/^9\d{8}$/.test(whatsapp)) {
+    const cleanNombre = nombre.trim();
+    const cleanWhatsapp = whatsapp.trim();
+    const cleanDireccion = direccion.trim();
+    const cleanReferencia = referencia.trim();
+
+    if (!cleanNombre || cleanNombre.length < 3 || !/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(cleanNombre)) {
+      setSubmitError('Por favor, escribe tu nombre y apellido correctamente.');
+      document.getElementById('drawerNombre')?.focus();
+      return;
+    }
+    if (!/^9\d{8}$/.test(cleanWhatsapp)) {
       setWhatsappError('Escribe 9 dígitos y empieza con 9.');
+      setSubmitError('Revisa tu número de WhatsApp: debe tener 9 dígitos y empezar con 9.');
+      document.getElementById('drawerWhatsapp')?.focus();
+      return;
+    }
+    if (!cleanDireccion || cleanDireccion.length < 5) {
+      setSubmitError('Por favor, escribe tu dirección completa (mínimo 5 caracteres).');
+      document.getElementById('drawerDireccion')?.focus();
+      return;
+    }
+    if (!cleanReferencia || cleanReferencia.length < 3) {
+      setSubmitError('Por favor, escribe una referencia válida para tu dirección.');
+      document.getElementById('drawerReferencia')?.focus();
       return;
     }
     if (!provincia || !ciudad) {
-      alert('Por favor, selecciona Provincia y Ciudad.');
+      setSubmitError('Por favor, selecciona tu Provincia y Ciudad.');
       return;
     }
 
@@ -195,16 +196,16 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       `🔢 *Opción:* ${encodeURIComponent(activeBundle.offerLabel)}%0A` +
       `💰 *Total:* ${encodeURIComponent(formatSoles(activeBundle.price))}%0A` +
       `🚚 *Envío:* ${encodeURIComponent(envioTexto)}%0A%0A` +
-      `👤 *Nombre y Apellidos:* ${encodeURIComponent(nombre.trim())}%0A` +
-      `📱 *Celular con WhatsApp:* ${whatsapp}%0A` +
-      `🏠 *Dirección completa:* ${encodeURIComponent(direccion.trim())}%0A` +
-      `📍 *Referencias:* ${encodeURIComponent(referencia.trim())}%0A` +
+      `👤 *Nombre y Apellidos:* ${encodeURIComponent(cleanNombre)}%0A` +
+      `📱 *Celular con WhatsApp:* ${cleanWhatsapp}%0A` +
+      `🏠 *Dirección completa:* ${encodeURIComponent(cleanDireccion)}%0A` +
+      `📍 *Referencias:* ${encodeURIComponent(cleanReferencia)}%0A` +
       `🗺️ *Ubicación:* ${encodeURIComponent(ciudad)}, ${encodeURIComponent(provincia)}%0A%0A` +
       `Deseo confirmar la entrega de mi pedido. ¡Gracias!`;
 
     const customerData = {
-      name: nombre.trim(),
-      whatsapp,
+      name: cleanNombre,
+      whatsapp: cleanWhatsapp,
       province: provincia,
       city: ciudad,
     };
@@ -219,20 +220,6 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       currency: 'PEN',
     };
 
-    if (!registrationTracked.current) {
-      registrationTracked.current = true;
-      trackMetaEvent('CompleteRegistration', purchasePayload, {
-        eventID: `reg_${orderNumber}`,
-        userData: customerData,
-        keepalive: true,
-      });
-      trackMetaEvent('Lead', purchasePayload, {
-        eventID: `lead_${orderNumber}`,
-        userData: customerData,
-        keepalive: true,
-      });
-    }
-
     setSubmitting(true);
 
     try {
@@ -243,13 +230,13 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
         offer: activeBundle.offerLabel,
         quantity: activeBundle.quantity,
         total: activeBundle.price,
-        name: nombre.trim(),
-        whatsapp,
+        name: cleanNombre,
+        whatsapp: cleanWhatsapp,
         department: provincia,
         province: provincia,
         district: ciudad,
-        address: direccion.trim(),
-        reference: referencia.trim(),
+        address: cleanDireccion,
+        reference: cleanReferencia,
         deliveryMethod: isProvincia ? 'shalom' : 'lima',
         place: `${ciudad}, ${provincia}`,
         pageUrl: window.location.href,
@@ -260,24 +247,14 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
       return;
     }
 
-    trackMetaEvent('Purchase', purchasePayload, {
-      eventID: orderNumber,
-      userData: customerData,
-      keepalive: true,
-    });
-    trackMetaEvent(
-      'OrderFormSubmitted',
-      {
-        ...purchasePayload,
-        order_id: orderNumber,
-      },
-      {
-        isCustom: true,
-        eventID: `form_${orderNumber}`,
+    if (trackedPurchaseId.current !== orderNumber) {
+      trackedPurchaseId.current = orderNumber;
+      trackMetaEvent('Purchase', purchasePayload, {
+        eventID: orderNumber,
         userData: customerData,
         keepalive: true,
-      }
-    );
+      });
+    }
 
     await new Promise((resolve) => window.setTimeout(resolve, 550));
     const whatsappUrl = `https://wa.me/51910247625?text=${waText}`;
@@ -407,7 +384,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
           </div>
 
           {/* 4. Formulario con los mismos iconos y campos */}
-          <form id="drawerOrderForm" className="cod-form" onSubmit={handleSubmit}>
+          <form id="drawerOrderForm" className="cod-form" onSubmit={handleSubmit} noValidate>
             {/* Nombre y Apellidos* */}
             <div className="cod-field">
               <label htmlFor="drawerNombre" className="cod-label">
