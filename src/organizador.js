@@ -1,5 +1,5 @@
 import { PERU_LOCATIONS } from './data/peruLocations';
-import { createOrderId, saveOrder, usesShalom, provincialDeliveryNote } from './lib/orders';
+import { createOrderId, saveOrder, usesShalom, provincialDeliveryNote, PROVINCIAL_SHIPPING_FEE, PROVINCIAL_ADVANCE } from './lib/orders';
 import {
   META_PIXEL_ID,
   ensureFbcAndFbp,
@@ -24,13 +24,13 @@ const BUNDLES = {
     quantity: 1,
     price: 79,
     oldPrice: 129,
-    offerLabel: '1 unidad · Color Blanco (S/ 79 · Antes S/ 129)',
+    offerLabel: '1 unidad (S/ 79 · Antes S/ 129)',
   },
   2: {
     quantity: 2,
     price: 144,
     oldPrice: 258,
-    offerLabel: 'Promo 2x · 2 Unidades Color Blanco (2x S/ 144 · Antes S/ 258)',
+    offerLabel: 'Promo 2x · 2 Unidades (2x S/ 144 · Antes S/ 258)',
   },
 };
 
@@ -188,33 +188,52 @@ function initEngagementTracking() {
 
 const scenes = [
   {
-    file: 'sala',
+    file: 'sala-blanco',
     label: 'Sala junto a la ventana',
     alt: 'Organizador metálico blanco de seis plataformas con plantas, junto a una ventana',
-    srcset: '/assets/organizador-plantas/sala-movil.webp 640w, /assets/organizador-plantas/sala.webp 1122w',
   },
   {
-    file: 'balcon',
+    file: 'balcon-blanco',
     label: 'Balcón pequeño',
     alt: 'Organizador de seis plataformas con macetas en un balcón cubierto',
-    srcset: '/assets/organizador-plantas/balcon-movil.webp 640w, /assets/organizador-plantas/balcon.webp 1024w',
   },
   {
-    file: 'despues',
+    file: 'despues-blanco',
     label: 'Rincón de jardinería interior',
     alt: 'Plantas en el organizador escalonado junto a un cuadro botánico',
-    srcset: '/assets/organizador-plantas/despues-movil.webp 540w, /assets/organizador-plantas/despues.webp 756w',
   },
 ];
+const blackScenes = [
+  { file: 'sala-negro', label: 'Sala junto a la ventana', alt: 'Organizador metálico negro de seis plataformas con plantas, sin ruedas, junto a una ventana' },
+  { file: 'balcon-negro', label: 'Balcón pequeño', alt: 'Organizador negro de seis plataformas con macetas en un balcón, apoyado directamente en el piso' },
+  { file: 'despues-negro', label: 'Rincón de jardinería interior', alt: 'Organizador escalonado negro con plantas, apoyado directamente en el piso' },
+];
+let selectedColor = 'Blanco';
+const productImageSelector = '#hero-photo, #assembly-guide-image, .comparison > img, .benefit-grid img, .measure-photo img, .details-grid img, .spaces-grid img, .offer-grid figure img, .cod-bundle-img';
+
+function syncProductColorImages() {
+  document.querySelectorAll(productImageSelector).forEach((image, position) => {
+    if (image.id === 'assembly-guide-image') {
+      image.src = `/assets/organizador-plantas/armado-${selectedColor === 'Negro' ? 'negro' : 'blanco'}.png`;
+      image.alt = `Guía visual de armado fácil del organizador de plantas en color ${selectedColor.toLowerCase()}; las piezas se ensamblan una sobre otra en pocos pasos`;
+      return;
+    }
+    const name = image.getAttribute('src') || '';
+    const sceneIndex = /balcon/.test(name) ? 1 : /despues/.test(name) ? 2 : /sala/.test(name) ? 0 : position % scenes.length;
+    const scene = (selectedColor === 'Negro' ? blackScenes : scenes)[sceneIndex];
+    image.removeAttribute('srcset');
+    image.src = `/assets/organizador-plantas/${scene.file}.png`;
+    image.alt = scene.alt;
+  });
+}
 
 let currentScene = 0;
 function showScene(step) {
   currentScene = (currentScene + step + scenes.length) % scenes.length;
-  const scene = scenes[currentScene];
+  const scene = (selectedColor === 'Negro' ? blackScenes : scenes)[currentScene];
   const photo = document.querySelector('#hero-photo');
-  if (scene.srcset) photo.srcset = scene.srcset;
-  else photo.removeAttribute('srcset');
-  photo.src = '/assets/organizador-plantas/' + scene.file + '.webp';
+  photo.removeAttribute('srcset');
+  photo.src = '/assets/organizador-plantas/' + scene.file + '.png';
   photo.alt = scene.alt;
   document.querySelector('#gallery-caption').textContent = scene.label;
   document.querySelector('#gallery-position').textContent = (currentScene + 1) + ' / ' + scenes.length;
@@ -311,11 +330,16 @@ const bundleCards = document.querySelectorAll('[data-bundle-qty]');
 const landingOfferCards = document.querySelectorAll('[data-select-offer]');
 const subtotalEl = document.querySelector('#codSubtotal');
 const totalEl = document.querySelector('#codTotal');
+const shippingTotalEl = document.querySelector('#codShippingTotal');
+const shippingMethodEl = document.querySelector('#codShippingMethod');
+const shippingBoxPriceEl = document.querySelector('#codShippingBoxPrice');
 const nombreInput = document.querySelector('#drawerNombre');
 const direccionInput = document.querySelector('#drawerDireccion');
 const referenciaInput = document.querySelector('#drawerReferencia');
 const provinciaSelect = document.querySelector('#drawerProvincia');
 const ciudadSelect = document.querySelector('#drawerCiudad');
+const dniInput = document.querySelector('#drawerDni');
+const dniField = document.querySelector('#dniField');
 const whatsappInput = document.querySelector('#drawerWhatsapp');
 const whatsappGroup = document.querySelector('#whatsappGroup');
 const whatsappError = document.querySelector('#whatsappError');
@@ -393,6 +417,10 @@ Object.keys(PERU_LOCATIONS).forEach((prov) => {
 provinciaSelect.addEventListener('change', () => {
   const prov = provinciaSelect.value;
   document.querySelector('#deliveryNote').textContent = usesShalom(prov) ? provincialDeliveryNote : '';
+  dniField.hidden = !usesShalom(prov);
+  dniInput.required = usesShalom(prov);
+  if (!usesShalom(prov)) dniInput.value = '';
+  updatePricingUI();
   ciudadSelect.innerHTML = '<option value="" disabled selected>Selecciona Ciudad / Distrito</option>';
   if (prov && PERU_LOCATIONS[prov]) {
     const ciudades = Array.from(new Set(Object.values(PERU_LOCATIONS[prov]).flat()));
@@ -435,8 +463,29 @@ function updatePricingUI() {
     codDiscountRow.hidden = true;
     discountAppliedBanner.hidden = true;
   }
-  totalEl.textContent = formatSoles(getFinalPrice(selectedQty));
+  const shippingFee = usesShalom(provinciaSelect.value) ? PROVINCIAL_SHIPPING_FEE : 0;
+  if (shippingTotalEl) shippingTotalEl.textContent = shippingFee ? formatSoles(shippingFee) : 'Gratis';
+  if (shippingMethodEl) shippingMethodEl.textContent = shippingFee ? 'Envío por Shalom' : 'Entrega en Lima';
+  if (shippingBoxPriceEl) shippingBoxPriceEl.textContent = shippingFee ? formatSoles(shippingFee) : 'Gratis';
+  totalEl.textContent = formatSoles(getFinalPrice(selectedQty) + shippingFee);
 }
+
+document.querySelectorAll('.color-selector').forEach((selector) => {
+  selector.querySelectorAll('.color-option').forEach((button) => {
+    button.addEventListener('click', () => {
+      selectedColor = button.textContent.trim().startsWith('Negro') ? 'Negro' : 'Blanco';
+      document.querySelectorAll('.color-selector .color-option').forEach((option) => {
+        const active = option.textContent.trim().startsWith(selectedColor);
+        option.classList.toggle('is-selected', active);
+        option.setAttribute('aria-pressed', String(active));
+      });
+      syncProductColorImages();
+      currentScene = 0;
+      showScene(0);
+    });
+  });
+});
+syncProductColorImages();
 
 function selectBundle(qty) {
   selectedQty = BUNDLES[qty] ? Number(qty) : 1;
@@ -677,6 +726,7 @@ orderForm.addEventListener('submit', async (e) => {
   const referencia = referenciaInput.value.trim();
   const provincia = provinciaSelect.value;
   const ciudad = ciudadSelect.value;
+  const dni = dniInput.value.trim();
 
   if (!/^9\d{8}$/.test(whatsapp)) {
     whatsappGroup.classList.add('is-invalid');
@@ -691,17 +741,22 @@ orderForm.addEventListener('submit', async (e) => {
     submitError.hidden = false;
     return;
   }
+  const isProvincia = usesShalom(provincia);
+  if (isProvincia && !/^\d{8}$/.test(dni)) {
+    dniInput.setCustomValidity('Escribe un DNI válido de 8 dígitos.');
+    dniInput.reportValidity();
+    dniInput.focus();
+    return;
+  }
+  dniInput.setCustomValidity('');
 
   const active = BUNDLES[selectedQty];
-  const finalPrice = getFinalPrice(selectedQty);
-  const offerLabel =
-    exitDiscountAmount > 0
-      ? `${active.offerLabel} + Descuento especial S/ 5`
-      : active.offerLabel;
+  const shippingFee = isProvincia ? PROVINCIAL_SHIPPING_FEE : 0;
+  const finalPrice = getFinalPrice(selectedQty) + shippingFee;
+  const offerLabel = `${active.offerLabel} · Color ${selectedColor}${exitDiscountAmount > 0 ? ' + Descuento especial S/ 5' : ''}`;
 
   const orderNumber = pendingOrderId || createOrderId();
   pendingOrderId = orderNumber;
-  const isProvincia = usesShalom(provincia);
   const envioTexto = isProvincia
     ? provincialDeliveryNote
     : 'Contraentrega en Lima según cobertura';
@@ -710,12 +765,13 @@ orderForm.addEventListener('submit', async (e) => {
     `¡Hola MARUBI! Acabo de realizar mi pedido en la tienda:%0A%0A` +
     `📦 *Pedido:* %23${orderNumber}%0A` +
     `🛍️ *Producto:* ${encodeURIComponent(product.content_name)}%0A` +
-    `🎨 *Color:* Blanco%0A` +
+    `🎨 *Color:* ${encodeURIComponent(selectedColor)}%0A` +
     `🔢 *Opción:* ${encodeURIComponent(offerLabel)}%0A` +
     `💰 *Total:* ${encodeURIComponent(formatSoles(finalPrice))}%0A` +
     `🚚 *Envío:* ${encodeURIComponent(envioTexto)}%0A%0A` +
     `👤 *Nombre y Apellidos:* ${encodeURIComponent(nombre)}%0A` +
     `📱 *Celular con WhatsApp:* ${whatsapp}%0A` +
+    (isProvincia ? `🪪 *DNI:* ${dni}%0A` : '') +
     `🏠 *Dirección completa:* ${encodeURIComponent(direccion)}%0A` +
     `📍 *Referencias:* ${encodeURIComponent(referencia)}%0A` +
     `🗺️ *Ubicación:* ${encodeURIComponent(ciudad)}, ${encodeURIComponent(provincia)}%0A%0A` +
@@ -742,9 +798,13 @@ orderForm.addEventListener('submit', async (e) => {
       orderId: orderNumber,
       productId: 'YH1001-1A',
       productName: product.content_name,
+      color: selectedColor,
       offer: offerLabel,
       quantity: active.quantity,
       total: finalPrice,
+      shippingFee,
+      advance: isProvincia ? PROVINCIAL_ADVANCE : 0,
+      dni: isProvincia ? dni : '',
       name: nombre,
       whatsapp,
       department: provincia,
@@ -806,6 +866,9 @@ orderForm.addEventListener('submit', async (e) => {
   orderForm.reset();
   document.querySelector('#deliveryNote').textContent = '';
   ciudadSelect.disabled = true;
+  dniField.hidden = true;
+  dniInput.required = false;
+  updatePricingUI();
 });
 
 document.addEventListener('keydown', (event) => {
