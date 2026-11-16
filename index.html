@@ -38,25 +38,37 @@
 
   <!-- Precargar el banner solo en la portada; las fichas priorizan su foto de producto. -->
   <script>
-    if (!location.pathname.startsWith('/producto/') && !location.hash.startsWith('#producto/')) {
-      const heroPreload = document.createElement('link');
+    (function() {
+      var p = location.pathname;
+      var h = location.hash;
+      var heroPreload = document.createElement('link');
       heroPreload.rel = 'preload';
       heroPreload.as = 'image';
       heroPreload.type = 'image/webp';
       heroPreload.fetchPriority = 'high';
-      if (matchMedia('(max-width: 640px)').matches) {
-        heroPreload.href = '/assets/hero-mobile-640.webp';
-        heroPreload.imageSrcset = '/assets/hero-mobile-640.webp 640w, /assets/hero-mobile.webp 1024w';
-        heroPreload.imageSizes = '100vw';
-      } else {
-        heroPreload.href = '/assets/hero-desktop.webp';
+      if (p.startsWith('/producto/patitas-grinch-navidad') || h.startsWith('#producto/patitas-grinch-navidad')) {
+        heroPreload.href = '/assets/navidad/patitas-grinch-promo-movil.webp';
+        heroPreload.imageSrcset = '/assets/navidad/patitas-grinch-promo-movil.webp 600w, /assets/navidad/patitas-grinch-promo.webp 960w';
+        heroPreload.imageSizes = '(max-width: 760px) 92vw, 520px';
+        document.head.appendChild(heroPreload);
+      } else if (!p.startsWith('/producto/') && !h.startsWith('#producto/')) {
+        if (matchMedia('(max-width: 640px)').matches) {
+          heroPreload.href = '/assets/hero-mobile-640.webp';
+          heroPreload.imageSrcset = '/assets/hero-mobile-640.webp 640w, /assets/hero-mobile.webp 1024w';
+          heroPreload.imageSizes = '100vw';
+        } else {
+          heroPreload.href = '/assets/hero-desktop.webp';
+        }
+        document.head.appendChild(heroPreload);
       }
-      document.head.appendChild(heroPreload);
-    }
+    })();
   </script>
+  <link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://connect.facebook.net" crossorigin>
+  <link rel="dns-prefetch" href="https://script.google.com">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 
   <!-- Datos Estructurados Schema.org (SEO Local y Tienda Formal en Google) -->
   <script type="application/ld+json">

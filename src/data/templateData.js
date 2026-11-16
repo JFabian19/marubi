@@ -36,7 +36,8 @@ export const BESTSELLERS_PLACEHOLDERS = [
     salePrice: 'S/ 119',
     comparePrice: 'S/ 198',
     discountBadge: 'PACK NAVIDEÑO',
-    image: '/assets/navidad/patitas-grinch-promo.png',
+    image: '/assets/navidad/patitas-grinch-promo-movil.webp',
+    thumb: '/assets/navidad/patitas-grinch-promo-thumb.webp',
   },
   {
     id: 'prod-3',
@@ -307,9 +308,21 @@ export const GRINCH_PRODUCT_PAGE = {
     { id: 'duo', label: 'Pack de 2 unidades', price: 'S/ 119', comparePrice: 'S/ 198', value: 119, quantity: 2, detail: 'Ahorras S/ 79 · S/ 59.50 c/u' },
   ],
   gallery: [
-    { src: '/assets/navidad/patitas-grinch-promo.png', label: 'Patitas del Grinch con movimiento en árbol de Navidad, imagen promocional MARUBI' },
-    { src: '/assets/navidad/patitas-grinch-arbol.png', label: 'Patitas Grinch asomándose de un árbol navideño' },
-    { src: '/assets/navidad/patitas-grinch-detalle.png', label: 'Detalle del par de patitas verdes con botas rojas de Santa' },
+    {
+      src: '/assets/navidad/patitas-grinch-promo.webp',
+      srcSet: '/assets/navidad/patitas-grinch-promo-movil.webp 600w, /assets/navidad/patitas-grinch-promo.webp 960w',
+      label: 'Patitas del Grinch con movimiento en árbol de Navidad, imagen promocional MARUBI',
+    },
+    {
+      src: '/assets/navidad/patitas-grinch-arbol.webp',
+      srcSet: '/assets/navidad/patitas-grinch-arbol-movil.webp 600w, /assets/navidad/patitas-grinch-arbol.webp 960w',
+      label: 'Patitas Grinch asomándose de un árbol navideño',
+    },
+    {
+      src: '/assets/navidad/patitas-grinch-detalle.webp',
+      srcSet: '/assets/navidad/patitas-grinch-detalle-movil.webp 600w, /assets/navidad/patitas-grinch-detalle.webp 960w',
+      label: 'Detalle del par de patitas verdes con botas rojas de Santa',
+    },
   ],
   purchasePoints: [
     { bold: 'USB o 3 pilas AA', rest: 'dos maneras de alimentar el movimiento' },
@@ -329,7 +342,7 @@ export const GRINCH_PRODUCT_PAGE = {
     eyebrow: 'UNA NAVIDAD CON HUMOR',
     heading: 'Parece que alguien quiso robarse la Navidad',
     intro: 'Las patitas verdes con sus botas de Santa crean la ilusión de que el Grinch quedó atrapado dentro del árbol. Colócalas entre las ramas y convierte tu decoración en el tema de conversación.',
-    image: '/assets/navidad/patitas-grinch-detalle.png',
+    image: '/assets/navidad/patitas-grinch-detalle-movil.webp',
     caption: 'El par incluye dos piernas decorativas con botas rojas y puños blancos.',
     steps: [
       { num: '01', title: 'Busca el lugar perfecto', text: 'Separa un poco las ramas para que las piernas se vean salir del árbol.' },
@@ -363,8 +376,8 @@ export const GRINCH_PRODUCT_PAGE = {
     ],
   },
   videos: [
-    { title: 'Patitas Grinch en el árbol · Video 1', src: '/assets/navidad/videos/patitas-grinch-video-1.mp4', poster: '/assets/navidad/patitas-grinch-promo.png' },
-    { title: 'Patitas Grinch en el árbol · Video 2', src: '/assets/navidad/videos/patitas-grinch-video-2.mp4', poster: '/assets/navidad/patitas-grinch-promo.png' },
+    { title: 'Patitas Grinch en el árbol · Video 1', src: '/assets/navidad/videos/patitas-grinch-video-1.mp4', poster: '/assets/navidad/videos/patitas-grinch-video-1-poster.webp' },
+    { title: 'Patitas Grinch en el árbol · Video 2', src: '/assets/navidad/videos/patitas-grinch-video-2.mp4', poster: '/assets/navidad/videos/patitas-grinch-video-2-poster.webp' },
   ],
   videoIntro: 'Imagina al Grinch asomándose entre las ramas con sus botas rojas listas para la travesura.',
   deliveryHeading: 'Tus patitas Grinch llegan a Lima y Callao',

@@ -2152,3 +2152,80 @@ h3 { font-size: 1rem; }
   .grinch-order-button,
   .grinch-page-active .sticky-cta-btn { animation: none; }
 }
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/assets/fonts/inter-latin.woff2') format('woff2');
+}
+
+.grinch-power-section,
+.grinch-compare-section,
+.grinch-benefits-section,
+.grinch-detail-section,
+.grinch-spaces-section,
+.grinch-order-section,
+.expectation-section,
+.features-section,
+.product-video-section,
+.specs-section,
+.delivery-section,
+.faq-section {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+.video-facade-btn {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: #091a2c;
+  cursor: pointer;
+  overflow: hidden;
+}
+.video-facade-poster {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+}
+.video-facade-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(180deg, rgba(9, 26, 44, 0.15) 0%, rgba(9, 26, 44, 0.55) 100%);
+  color: #fff;
+  transition: background 0.2s ease;
+}
+.video-facade-btn:hover .video-facade-play {
+  background: linear-gradient(180deg, rgba(9, 26, 44, 0.25) 0%, rgba(9, 26, 44, 0.68) 100%);
+}
+.video-facade-play-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(23, 107, 57, 0.94);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  font-size: 1.5rem;
+  padding-left: 4px;
+}
+.video-facade-play-label {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.65);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}

@@ -14,6 +14,7 @@ export default function ProductTemplateView({
   const [openFaqId, setOpenFaqId] = useState(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [comparisonSplit, setComparisonSplit] = useState(50);
+  const [playingVideos, setPlayingVideos] = useState({});
   const heroRef = useRef(null);
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export default function ProductTemplateView({
     setSelectedOfferId('single');
     setOpenFaqId(null);
     setComparisonSplit(50);
+    setPlayingVideos({});
   }, [selectedProduct]);
 
   useEffect(() => {
@@ -211,10 +213,14 @@ export default function ProductTemplateView({
                 <img
                   id="mainProductImg"
                   src={data.gallery[activeImageIndex]?.src}
+                  srcSet={data.gallery[activeImageIndex]?.srcSet}
+                  sizes="(max-width: 760px) 92vw, 520px"
                   alt={data.gallery[activeImageIndex]?.label || displayTitle}
                   className="main-gallery-img"
                   fetchPriority="high"
                   decoding="async"
+                  width="600"
+                  height="600"
                 />
                 {selectedProduct?.id === 'prod-grinch' && <div className="grinch-gallery-controls"><span>Patitas del Grinch</span><div><button type="button" aria-label="Imagen anterior" onClick={() => setActiveImageIndex((activeImageIndex - 1 + data.gallery.length) % data.gallery.length)}>‹</button><small>{activeImageIndex + 1} / {data.gallery.length}</small><button type="button" aria-label="Imagen siguiente" onClick={() => setActiveImageIndex((activeImageIndex + 1) % data.gallery.length)}>›</button></div></div>}
               </div>
@@ -291,11 +297,29 @@ export default function ProductTemplateView({
               </div>
               <div className="grinch-power-grid">
                 <article className="grinch-power-card">
-                  <img src="/assets/navidad/patitas-grinch-usb.png" alt="Base de las patitas con cable USB y compartimento para tres pilas AA" loading="lazy" />
+                  <img
+                    src="/assets/navidad/patitas-grinch-usb-movil.webp"
+                    srcSet="/assets/navidad/patitas-grinch-usb-movil.webp 600w, /assets/navidad/patitas-grinch-usb.webp 960w"
+                    sizes="(max-width: 760px) 92vw, 480px"
+                    alt="Base de las patitas con cable USB y compartimento para tres pilas AA"
+                    loading="lazy"
+                    decoding="async"
+                    width="600"
+                    height="600"
+                  />
                   <div><span className="grinch-power-tag">OPCIÓN 1</span><h3>Conexión USB</h3><p>Conecta el cable a una fuente USB para usar el producto sin pilas.</p></div>
                 </article>
                 <article className="grinch-power-card">
-                  <img src="/assets/navidad/patitas-grinch-pilas.png" alt="Compartimento de la base con tres pilas AA colocadas" loading="lazy" />
+                  <img
+                    src="/assets/navidad/patitas-grinch-pilas-movil.webp"
+                    srcSet="/assets/navidad/patitas-grinch-pilas-movil.webp 600w, /assets/navidad/patitas-grinch-pilas.webp 960w"
+                    sizes="(max-width: 760px) 92vw, 480px"
+                    alt="Compartimento de la base con tres pilas AA colocadas"
+                    loading="lazy"
+                    decoding="async"
+                    width="600"
+                    height="600"
+                  />
                   <div><span className="grinch-power-tag">OPCIÓN 2</span><h3>3 pilas AA</h3><p>Úsalo con pilas cuando quieras colocarlo en un lugar sin conexión USB cercana.</p></div>
                 </article>
               </div>
@@ -326,8 +350,28 @@ export default function ProductTemplateView({
                   <span className="grinch-drag-hint">↔ Desliza para comparar</span>
                 </div>
                 <figure className="grinch-comparison" style={{ '--split': `${comparisonSplit}%` }}>
-                  <img src="/assets/navidad/patitas-grinch-despues.png" alt="Árbol navideño decorado con las patitas verdes y botas rojas asomándose entre sus ramas" loading="lazy" />
-                  <div className="grinch-before-layer"><img src="/assets/navidad/patitas-grinch-antes.png" alt="El mismo árbol navideño antes de colocar las patitas Grinch" loading="lazy" /></div>
+                  <img
+                    src="/assets/navidad/patitas-grinch-despues-movil.webp"
+                    srcSet="/assets/navidad/patitas-grinch-despues-movil.webp 600w, /assets/navidad/patitas-grinch-despues.webp 960w"
+                    sizes="(max-width: 760px) 92vw, 520px"
+                    alt="Árbol navideño decorado con las patitas verdes y botas rojas asomándose entre sus ramas"
+                    loading="lazy"
+                    decoding="async"
+                    width="600"
+                    height="750"
+                  />
+                  <div className="grinch-before-layer">
+                    <img
+                      src="/assets/navidad/patitas-grinch-antes-movil.webp"
+                      srcSet="/assets/navidad/patitas-grinch-antes-movil.webp 600w, /assets/navidad/patitas-grinch-antes.webp 960w"
+                      sizes="(max-width: 760px) 92vw, 520px"
+                      alt="El mismo árbol navideño antes de colocar las patitas Grinch"
+                      loading="lazy"
+                      decoding="async"
+                      width="600"
+                      height="750"
+                    />
+                  </div>
                   <span className="grinch-compare-tag before">Antes</span><span className="grinch-compare-tag after">Después</span>
                   <span className="grinch-compare-divider" aria-hidden="true"><i>↔</i></span>
                   <input type="range" min="0" max="100" value={comparisonSplit} aria-label="Comparar el árbol antes y después de colocar las patitas Grinch" onChange={(event) => setComparisonSplit(Number(event.target.value))} />
@@ -346,11 +390,22 @@ export default function ProductTemplateView({
               </div>
             </section>
             <section className="container grinch-detail-section" id="detalles-grinch">
-              <figure><img src="/assets/navidad/patitas-grinch-detalle.png" alt="Detalle del producto: par de patitas decorativas verdes con botas rojas, de 34 centímetros" loading="lazy" /></figure>
+              <figure>
+                <img
+                  src="/assets/navidad/patitas-grinch-detalle-movil.webp"
+                  srcSet="/assets/navidad/patitas-grinch-detalle-movil.webp 600w, /assets/navidad/patitas-grinch-detalle.webp 960w"
+                  sizes="(max-width: 760px) 92vw, 520px"
+                  alt="Detalle del producto: par de patitas decorativas verdes con botas rojas, de 34 centímetros"
+                  loading="lazy"
+                  decoding="async"
+                  width="600"
+                  height="600"
+                />
+              </figure>
               <div><p className="eyebrow">DETALLES Y MEDIDAS</p><h2>El par listo para entrar en acción</h2><p>Dos piernas decorativas verdes, cada una con su bota roja y puño blanco. El diseño mide aproximadamente 34 cm.</p><dl className="grinch-detail-facts"><div><dt>Alto aprox.</dt><dd>34 cm</dd></div><div><dt>Incluye</dt><dd>2 patitas decorativas</dd></div><div><dt>Diseño</dt><dd>Único</dd></div><div><dt>Colores</dt><dd>Verde, rojo y blanco</dd></div></dl></div>
             </section>
-            <section className="grinch-spaces-section"><div className="container"><p className="eyebrow">IDEAS PARA TU NAVIDAD</p><h2>Un toque divertido en tus espacios</h2><div className="grinch-space-grid"><figure><img src="/assets/navidad/patitas-grinch-despues.png" alt="Patitas Grinch decorando un árbol de Navidad en una sala acogedora" loading="lazy"/><figcaption>El árbol como protagonista</figcaption></figure><figure><img src="/assets/navidad/patitas-grinch-arbol.png" alt="Patitas Grinch rojas y verdes colocadas entre las ramas de un árbol decorado" loading="lazy"/><figcaption>Un detalle para las fotos</figcaption></figure><figure><img src="/assets/navidad/patitas-grinch-detalle.png" alt="Par de patitas Grinch de 34 centímetros, visto de cerca" loading="lazy"/><figcaption>El par completo, listo para colocar</figcaption></figure></div></div></section>
-            <section className="grinch-order-section" id="pedido"><div className="container grinch-order-card"><img src="/assets/navidad/patitas-grinch-despues.png" alt="Árbol navideño con patitas Grinch" loading="lazy"/><div><p className="eyebrow">DECORACIÓN NAVIDEÑA · DISEÑO ÚNICO</p><h2>Invita al Grinch a tu árbol</h2><ul><li>Par de patitas decorativas</li><li>Aproximadamente 34 cm de alto</li><li>Entrega en Lima y Callao</li></ul><div className="grinch-order-price"><span>1 unidad <strong>S/ 69</strong></span><span className="grinch-order-pack">Pack x2 <strong>S/ 119</strong></span></div><button type="button" className="grinch-order-button" onClick={() => openCheckout('seccion_pedido')}><span aria-hidden="true">🛒</span> QUIERO MIS PATITAS GRINCH <b aria-hidden="true">→</b></button><small>Completa tus datos y confirma tu pedido por WhatsApp. Pagas al recibir.</small></div></div></section>
+            <section className="grinch-spaces-section"><div className="container"><p className="eyebrow">IDEAS PARA TU NAVIDAD</p><h2>Un toque divertido en tus espacios</h2><div className="grinch-space-grid"><figure><img src="/assets/navidad/patitas-grinch-despues-movil.webp" srcSet="/assets/navidad/patitas-grinch-despues-movil.webp 600w, /assets/navidad/patitas-grinch-despues.webp 960w" sizes="(max-width: 760px) 92vw, 360px" alt="Patitas Grinch decorando un árbol de Navidad en una sala acogedora" loading="lazy" decoding="async" width="600" height="750"/><figcaption>El árbol como protagonista</figcaption></figure><figure><img src="/assets/navidad/patitas-grinch-arbol-movil.webp" srcSet="/assets/navidad/patitas-grinch-arbol-movil.webp 600w, /assets/navidad/patitas-grinch-arbol.webp 960w" sizes="(max-width: 760px) 92vw, 360px" alt="Patitas Grinch rojas y verdes colocadas entre las ramas de un árbol decorado" loading="lazy" decoding="async" width="600" height="750"/><figcaption>Un detalle para las fotos</figcaption></figure><figure><img src="/assets/navidad/patitas-grinch-detalle-movil.webp" srcSet="/assets/navidad/patitas-grinch-detalle-movil.webp 600w, /assets/navidad/patitas-grinch-detalle.webp 960w" sizes="(max-width: 760px) 92vw, 360px" alt="Par de patitas Grinch de 34 centímetros, visto de cerca" loading="lazy" decoding="async" width="600" height="600"/><figcaption>El par completo, listo para colocar</figcaption></figure></div></div></section>
+            <section className="grinch-order-section" id="pedido"><div className="container grinch-order-card"><img src="/assets/navidad/patitas-grinch-despues-movil.webp" srcSet="/assets/navidad/patitas-grinch-despues-movil.webp 600w, /assets/navidad/patitas-grinch-despues.webp 960w" sizes="(max-width: 760px) 92vw, 440px" alt="Árbol navideño con patitas Grinch" loading="lazy" decoding="async" width="600" height="750"/><div><p className="eyebrow">DECORACIÓN NAVIDEÑA · DISEÑO ÚNICO</p><h2>Invita al Grinch a tu árbol</h2><ul><li>Par de patitas decorativas</li><li>Aproximadamente 34 cm de alto</li><li>Entrega en Lima y Callao</li></ul><div className="grinch-order-price"><span>1 unidad <strong>S/ 69</strong></span><span className="grinch-order-pack">Pack x2 <strong>S/ 119</strong></span></div><button type="button" className="grinch-order-button" onClick={() => openCheckout('seccion_pedido')}><span aria-hidden="true">🛒</span> QUIERO MIS PATITAS GRINCH <b aria-hidden="true">→</b></button><small>Completa tus datos y confirma tu pedido por WhatsApp. Pagas al recibir.</small></div></div></section>
           </>
         )}
 
@@ -409,15 +464,51 @@ export default function ProductTemplateView({
             </div>
             {data.videos ? (
               <div className="product-video-grid product-video-grid--media">
-                {data.videos.map((video) => (
-                  <figure className="product-video-card" key={video.src}>
-                    <video controls muted playsInline preload="none" poster={video.poster} width="540" height="960" aria-label={video.title}>
-                      <source src={video.src} type="video/mp4" />
-                      Tu navegador no puede reproducir este video.
-                    </video>
-                    <figcaption>{video.title}</figcaption>
-                  </figure>
-                ))}
+                {data.videos.map((video) => {
+                  const isPlaying = Boolean(playingVideos[video.src]);
+                  return (
+                    <figure className="product-video-card" key={video.src}>
+                      {isPlaying ? (
+                        <video
+                          src={video.src}
+                          controls
+                          autoPlay
+                          muted
+                          playsInline
+                          preload="metadata"
+                          poster={video.poster}
+                          width="480"
+                          height="854"
+                          aria-label={video.title}
+                        >
+                          Tu navegador no puede reproducir este video.
+                        </video>
+                      ) : (
+                        <button
+                          type="button"
+                          className="video-facade-btn"
+                          onClick={() => setPlayingVideos((prev) => ({ ...prev, [video.src]: true }))}
+                          aria-label={`Reproducir ${video.title}`}
+                        >
+                          <img
+                            src={video.poster}
+                            alt={video.title}
+                            loading="lazy"
+                            decoding="async"
+                            width="480"
+                            height="854"
+                            className="video-facade-poster"
+                          />
+                          <span className="video-facade-play" aria-hidden="true">
+                            <span className="video-facade-play-icon">▶</span>
+                            <span className="video-facade-play-label">Toca para ver video</span>
+                          </span>
+                        </button>
+                      )}
+                      <figcaption>{video.title}</figcaption>
+                    </figure>
+                  );
+                })}
               </div>
             ) : (
               <div className="product-video-grid">

@@ -65,6 +65,7 @@ function getBundleOptions(selectedProduct, productData) {
 export default function CheckoutModal({ isOpen, onClose, selectedProduct, selectedOffer }) {
   const productData = getProductPage(selectedProduct?.id);
   const productThumb =
+    selectedProduct?.thumb ||
     selectedProduct?.image ||
     productData?.gallery?.[0]?.src ||
     '/assets/mariposa/mariposa-frente-marmol.webp';
@@ -555,9 +556,12 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
             {selectedProduct?.id === 'prod-grinch' && (
               <img
                 className="cod-trust-banner"
-                src="/assets/navidad/marubi-confianza.png"
+                src="/assets/navidad/marubi-confianza.webp"
                 alt="MARUBI es un negocio formal que emite boleta. RUC 10608928281."
                 loading="lazy"
+                decoding="async"
+                width="800"
+                height="154"
               />
             )}
 
