@@ -1,0 +1,819 @@
+/* ==========================================================================
+   PÁGINA: /gracias-por-tu-compra (Minimalist Post-Purchase Experience)
+   ========================================================================== */
+
+.ty-page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(242, 95, 58, 0.06) 0%, transparent 45%),
+    radial-gradient(circle at 82% 20%, rgba(11, 43, 82, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 90%, rgba(19, 122, 75, 0.05) 0%, transparent 48%),
+    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(20px, 4vw, 44px) 16px clamp(36px, 6vw, 60px);
+  color: #13243a;
+  font-family: var(--body, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.ty-shell {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+/* Top Brand Pill */
+.ty-brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 16px 7px 9px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(11, 43, 82, 0.08);
+  border-radius: 999px;
+  text-decoration: none;
+  color: #0b2b52;
+  font-family: var(--heading, 'Poppins', sans-serif);
+  font-weight: 800;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  box-shadow: 0 4px 16px rgba(11, 43, 82, 0.04);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  animation: ty-fade-down 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ty-brand-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(11, 43, 82, 0.08);
+}
+
+.ty-brand-pill img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* Main Card */
+.ty-card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 28px;
+  border: 1px solid rgba(11, 43, 82, 0.07);
+  box-shadow:
+    0 24px 60px -12px rgba(11, 43, 82, 0.08),
+    0 4px 16px -2px rgba(11, 43, 82, 0.03);
+  padding: clamp(28px, 5vw, 40px) clamp(20px, 5vw, 34px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  animation: ty-card-rise 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+}
+
+.ty-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #0b2b52 0%, #f25f3a 50%, #137a4b 100%);
+}
+
+/* Minimalist Animated Emblem */
+.ty-anim-stage {
+  position: relative;
+  width: 124px;
+  height: 124px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ty-pulse-ring {
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(19, 122, 75, 0.14) 0%, rgba(19, 122, 75, 0) 70%);
+  animation: ty-ring-breathe 3.2s ease-in-out infinite;
+}
+
+.ty-pulse-ring--outer {
+  inset: 2px;
+  border: 1.5px dashed rgba(11, 43, 82, 0.12);
+  background: transparent;
+  animation: ty-spin-slow 26s linear infinite;
+}
+
+.ty-emblem-circle {
+  position: relative;
+  z-index: 2;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #0b2b52 0%, #163f6b 100%);
+  box-shadow:
+    0 14px 30px rgba(11, 43, 82, 0.22),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ty-emblem-pop 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) 0.15s both;
+}
+
+.ty-emblem-svg {
+  width: 42px;
+  height: 42px;
+  overflow: visible;
+}
+
+.ty-bag-path {
+  stroke-dasharray: 120;
+  stroke-dashoffset: 120;
+  animation: ty-draw-stroke 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
+}
+
+.ty-check-badge {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #16a34a 0%, #137a4b 100%);
+  border: 3px solid #ffffff;
+  box-shadow: 0 6px 14px rgba(19, 122, 75, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: ty-badge-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.65s both;
+}
+
+.ty-check-path {
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  animation: ty-draw-stroke 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.85s forwards;
+}
+
+/* Minimalist Floating Confetti Dots & Stars */
+.ty-particle {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+}
+
+.ty-particle--1 {
+  top: 8px;
+  left: 18px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f25f3a;
+  animation: ty-float-p1 3.6s ease-in-out 0.5s infinite;
+}
+
+.ty-particle--2 {
+  top: 16px;
+  right: 12px;
+  width: 10px;
+  height: 10px;
+  color: #f59e0b;
+  animation: ty-float-p2 4s ease-in-out 0.65s infinite;
+}
+
+.ty-particle--3 {
+  bottom: 14px;
+  left: 10px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: ty-float-p3 3.8s ease-in-out 0.8s infinite;
+}
+
+.ty-particle--4 {
+  top: 52px;
+  left: 2px;
+  width: 9px;
+  height: 9px;
+  color: #0b2b52;
+  animation: ty-float-p2 4.2s ease-in-out 0.9s infinite;
+}
+
+.ty-particle--5 {
+  top: 48px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f59e0b;
+  animation: ty-float-p1 3.5s ease-in-out 0.7s infinite;
+}
+
+/* Header Texts */
+.ty-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px;
+  border-radius: 999px;
+  background: #edf7f2;
+  color: #137a4b;
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  animation: ty-fade-up 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+}
+
+.ty-title {
+  font-family: var(--heading, 'Poppins', sans-serif);
+  font-size: clamp(1.65rem, 5vw, 2.15rem);
+  font-weight: 800;
+  color: #0b2b52;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  margin-bottom: 10px;
+  animation: ty-fade-up 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both;
+}
+
+.ty-subtitle {
+  color: #526071;
+  font-size: 0.96rem;
+  line-height: 1.55;
+  max-width: 420px;
+  margin-bottom: 24px;
+  animation: ty-fade-up 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.38s both;
+}
+
+/* 10% Discount VIP Client Banner */
+.ty-reward-box {
+  width: 100%;
+  background: linear-gradient(135deg, #0b2b52 0%, #143a66 100%);
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 22px 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 14px 32px rgba(11, 43, 82, 0.16);
+  margin-bottom: 26px;
+  animation: ty-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+}
+
+.ty-reward-box::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 55%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.09),
+    transparent
+  );
+  transform: rotate(25deg);
+  animation: ty-shimmer 5.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.ty-reward-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(242, 95, 58, 0.22);
+  border: 1px solid rgba(242, 95, 58, 0.48);
+  color: #ffd7cc;
+  font-size: 0.71rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 4px 11px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+.ty-reward-headline {
+  font-family: var(--heading, 'Poppins', sans-serif);
+  font-size: clamp(1.35rem, 4.5vw, 1.65rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.ty-reward-headline span {
+  color: #ff9b7e;
+}
+
+.ty-reward-desc {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 390px;
+  margin: 0 auto 16px;
+}
+
+.ty-reward-coupon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px dashed rgba(255, 255, 255, 0.32);
+  border-radius: 13px;
+  padding: 9px 11px 9px 15px;
+}
+
+.ty-coupon-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.ty-coupon-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+.ty-coupon-code {
+  font-family: var(--heading, 'Poppins', sans-serif);
+  font-size: 0.98rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #ffffff;
+}
+
+.ty-coupon-btn {
+  background: #ffffff;
+  color: #0b2b52;
+  border: none;
+  border-radius: 9px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: transform 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+
+.ty-coupon-btn:hover {
+  background: #f1f5f9;
+  transform: scale(1.02);
+}
+
+.ty-coupon-btn.is-copied {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+/* Social Follow & Review Section */
+.ty-social-section {
+  width: 100%;
+  margin-bottom: 22px;
+  animation: ty-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.54s both;
+}
+
+.ty-section-heading {
+  font-family: var(--heading, 'Poppins', sans-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0b2b52;
+  margin-bottom: 4px;
+}
+
+.ty-section-sub {
+  font-size: 0.85rem;
+  color: #5e6b7a;
+  margin-bottom: 14px;
+}
+
+.ty-social-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.ty-social-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 15px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  text-decoration: none;
+  color: #13243a;
+  transition:
+    transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    background 0.22s ease;
+}
+
+.ty-social-cta:hover {
+  transform: translateY(-2px);
+  background: #ffffff;
+  box-shadow: 0 10px 24px rgba(11, 43, 82, 0.08);
+}
+
+.ty-social-cta--instagram:hover {
+  border-color: rgba(225, 48, 108, 0.38);
+}
+
+.ty-social-cta--tiktok:hover {
+  border-color: rgba(1, 1, 1, 0.32);
+}
+
+.ty-social-cta--facebook:hover {
+  border-color: rgba(24, 119, 242, 0.4);
+}
+
+.ty-social-left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+  text-align: left;
+}
+
+.ty-social-logo {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.ty-social-logo svg {
+  width: 44px;
+  height: 44px;
+  display: block;
+}
+
+.ty-social-texts {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.ty-social-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ty-social-name {
+  font-family: var(--heading, 'Poppins', sans-serif);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0b2b52;
+}
+
+.ty-social-handle {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.ty-social-prompt {
+  font-size: 0.79rem;
+  color: #475569;
+  margin-top: 1px;
+}
+
+.ty-social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 13px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.ty-social-cta--instagram .ty-social-pill {
+  background: rgba(225, 48, 108, 0.1);
+  color: #c13584;
+}
+
+.ty-social-cta--instagram:hover .ty-social-pill {
+  background: linear-gradient(135deg, #f58529 0%, #dd2a7b 55%, #8134af 100%);
+  color: #ffffff;
+}
+
+.ty-social-cta--tiktok .ty-social-pill {
+  background: rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+}
+
+.ty-social-cta--tiktok:hover .ty-social-pill {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.ty-social-cta--facebook .ty-social-pill {
+  background: rgba(24, 119, 242, 0.1);
+  color: #1877f2;
+}
+
+.ty-social-cta--facebook:hover .ty-social-pill {
+  background: #1877f2;
+  color: #ffffff;
+}
+
+/* WhatsApp Novedades CTA */
+.ty-whatsapp-cta {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
+  color: #ffffff;
+  text-decoration: none;
+  box-shadow: 0 12px 26px rgba(22, 163, 74, 0.24);
+  margin-bottom: 14px;
+  text-align: left;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s ease;
+  animation: ty-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.62s both;
+}
+
+.ty-whatsapp-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(22, 163, 74, 0.32);
+}
+
+.ty-whatsapp-left {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.ty-whatsapp-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ty-whatsapp-icon svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.ty-whatsapp-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.ty-whatsapp-title {
+  font-family: var(--heading, 'Poppins', sans-serif);
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.ty-whatsapp-sub {
+  font-size: 0.79rem;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.35;
+  margin-top: 2px;
+}
+
+.ty-whatsapp-arrow {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.ty-whatsapp-cta:hover .ty-whatsapp-arrow {
+  transform: translateX(3px);
+}
+
+/* Ver Tienda Button */
+.ty-store-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 14px 22px;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #0b2b52;
+  border: 1.5px solid rgba(11, 43, 82, 0.16);
+  font-family: var(--heading, 'Poppins', sans-serif);
+  font-size: 0.94rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  animation: ty-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both;
+}
+
+.ty-store-btn:hover {
+  background: #0b2b52;
+  color: #ffffff;
+  border-color: #0b2b52;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(11, 43, 82, 0.12);
+}
+
+/* Minimal Footer Note */
+.ty-foot-note {
+  font-size: 0.76rem;
+  color: #64748b;
+  text-align: center;
+  animation: ty-fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.76s both;
+}
+
+/* Keyframe Animations */
+@keyframes ty-fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ty-card-rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes ty-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ty-emblem-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(-8deg);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.06) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes ty-badge-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes ty-draw-stroke {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ty-ring-breathe {
+  0%, 100% {
+    transform: scale(0.96);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+  }
+}
+
+@keyframes ty-spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ty-float-p1 {
+  0%, 100% {
+    opacity: 0.35;
+    transform: translate(0, 0) scale(0.85);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate(-5px, -8px) scale(1.15);
+  }
+}
+
+@keyframes ty-float-p2 {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translate(0, 0) rotate(0deg) scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(5px, -7px) rotate(22deg) scale(1.15);
+  }
+}
+
+@keyframes ty-float-p3 {
+  0%, 100% {
+    opacity: 0.35;
+    transform: translate(0, 0) scale(0.9);
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate(-6px, 6px) scale(1.2);
+  }
+}
+
+@keyframes ty-shimmer {
+  0%, 60% {
+    transform: translateX(-120%) rotate(25deg);
+  }
+  100% {
+    transform: translateX(380%) rotate(25deg);
+  }
+}
+
+@media (max-width: 480px) {
+  .ty-social-cta {
+    padding: 11px 12px;
+  }
+  .ty-social-pill {
+    padding: 7px 11px;
+    font-size: 0.74rem;
+  }
+  .ty-reward-coupon {
+    flex-direction: row;
+  }
+}

@@ -51,7 +51,7 @@
         heroPreload.imageSrcset = '/assets/navidad/patitas-grinch-promo-movil.webp 600w, /assets/navidad/patitas-grinch-promo.webp 960w';
         heroPreload.imageSizes = '(max-width: 760px) 92vw, 520px';
         document.head.appendChild(heroPreload);
-      } else if (!p.startsWith('/producto/') && !h.startsWith('#producto/')) {
+      } else if (!p.startsWith('/producto/') && !h.startsWith('#producto/') && !p.startsWith('/gracias-por-tu-compra') && !h.startsWith('#gracias-por-tu-compra')) {
         if (matchMedia('(max-width: 640px)').matches) {
           heroPreload.href = '/assets/hero-mobile-640.webp';
           heroPreload.imageSrcset = '/assets/hero-mobile-640.webp 640w, /assets/hero-mobile.webp 1024w';

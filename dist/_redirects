@@ -1,5 +1,7 @@
 /inicio /index.html 200
 /home /index.html 200
+/gracias-por-tu-compra /gracias-por-tu-compra/index.html 200
+/gracias-por-tu-compra/ /gracias-por-tu-compra/index.html 200
 /producto/organizador-de-plantas-6-niveles /producto/organizador-de-plantas-6-niveles/index.html 200
 /producto/organizador-de-plantas-6-niveles/ /producto/organizador-de-plantas-6-niveles/index.html 200
 /producto/* /index.html 200

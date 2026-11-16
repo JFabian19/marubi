@@ -6,11 +6,22 @@ import StorefrontView from './components/StorefrontView';
 import ProductTemplateView from './components/ProductTemplateView';
 import Footer from './components/Footer';
 import CheckoutModal from './components/CheckoutModal';
+import ThankYouView from './components/ThankYouView';
 import { BESTSELLERS_PLACEHOLDERS, getProductPage } from './data/templateData';
 import { trackMetaEvent, sendKeepalivePixelBeacon } from './lib/metaPixel';
 
 const STOREFRONT_TITLE =
   'Decoración navideña y packs especiales | MARUBI Perú';
+const THANKYOU_TITLE =
+  '¡Gracias por tu compra! | MARUBI Perú';
+
+const isThankYouFromLocation = () => {
+  const cleanPath = window.location.pathname.replace(/\/$/, '');
+  return (
+    cleanPath === '/gracias-por-tu-compra' ||
+    window.location.hash === '#gracias-por-tu-compra'
+  );
+};
 
 const productFromLocation = () => BESTSELLERS_PLACEHOLDERS.find(
   (product) => window.location.pathname.replace(/\/$/, '') === `/producto/${product.slug}`
@@ -18,9 +29,10 @@ const productFromLocation = () => BESTSELLERS_PLACEHOLDERS.find(
 );
 
 export default function App() {
-  const [currentView, setCurrentView] = useState(() =>
-    productFromLocation() ? 'product' : 'storefront'
-  );
+  const [currentView, setCurrentView] = useState(() => {
+    if (isThankYouFromLocation()) return 'thankyou';
+    return productFromLocation() ? 'product' : 'storefront';
+  });
   const [selectedProduct, setSelectedProduct] = useState(() => productFromLocation() || BESTSELLERS_PLACEHOLDERS[0]);
   const [selectedOffer, setSelectedOffer] = useState(null);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
@@ -38,7 +50,9 @@ export default function App() {
   useEffect(() => {
     document.body.classList.toggle('product-view-active', currentView === 'product');
     document.body.classList.toggle('grinch-page-active', currentView === 'product' && selectedProduct?.id === 'prod-grinch');
-    if (currentView === 'product') {
+    if (currentView === 'thankyou') {
+      document.title = THANKYOU_TITLE;
+    } else if (currentView === 'product') {
       const prodTitle = getProductPage(selectedProduct?.id).title;
       document.title = `${prodTitle} | MARUBI Perú`;
     } else {
@@ -53,7 +67,9 @@ export default function App() {
   }, [currentView, selectedProduct]);
 
   useEffect(() => {
-    if (window.location.hash.startsWith('#producto/')) {
+    if (window.location.hash === '#gracias-por-tu-compra') {
+      window.history.replaceState(null, '', '/gracias-por-tu-compra');
+    } else if (window.location.hash.startsWith('#producto/')) {
       const legacyProduct = productFromLocation();
       if (legacyProduct) {
         window.history.replaceState(null, '', `/producto/${legacyProduct.slug}`);
@@ -66,6 +82,10 @@ export default function App() {
       }
     }
     const handlePopState = () => {
+      if (isThankYouFromLocation()) {
+        setCurrentView('thankyou');
+        return;
+      }
       const product = productFromLocation();
       if (product) {
         setSelectedProduct(product);
@@ -131,6 +151,10 @@ export default function App() {
     });
     setCheckoutOpen(true);
   };
+
+  if (currentView === 'thankyou') {
+    return <ThankYouView onNavigateHome={handleNavigateHome} />;
+  }
 
   if (currentView === 'product' && selectedProduct?.id === 'prod-2') return <Butterfly />;
 
