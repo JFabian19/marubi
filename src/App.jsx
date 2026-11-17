@@ -18,7 +18,9 @@ const THANKYOU_TITLE =
 const isThankYouFromLocation = () => {
   const cleanPath = window.location.pathname.replace(/\/$/, '');
   return (
+    cleanPath === '/graciasportucompra' ||
     cleanPath === '/gracias-por-tu-compra' ||
+    window.location.hash === '#graciasportucompra' ||
     window.location.hash === '#gracias-por-tu-compra'
   );
 };
@@ -67,8 +69,13 @@ export default function App() {
   }, [currentView, selectedProduct]);
 
   useEffect(() => {
-    if (window.location.hash === '#gracias-por-tu-compra') {
-      window.history.replaceState(null, '', '/gracias-por-tu-compra');
+    const cleanPath = window.location.pathname.replace(/\/$/, '');
+    if (
+      cleanPath === '/gracias-por-tu-compra' ||
+      window.location.hash === '#graciasportucompra' ||
+      window.location.hash === '#gracias-por-tu-compra'
+    ) {
+      window.history.replaceState(null, '', '/graciasportucompra');
     } else if (window.location.hash.startsWith('#producto/')) {
       const legacyProduct = productFromLocation();
       if (legacyProduct) {
