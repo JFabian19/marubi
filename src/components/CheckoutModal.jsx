@@ -26,8 +26,28 @@ function getBundleOptions(selectedProduct, productData) {
 
   if (selectedProduct?.id === 'prod-grinch') {
     return [
-      { quantity: 1, title: '1 unidad', badgeText: 'Diseño único', badgeType: 'blue', price: 69, oldPrice: 99, offerLabel: '1 unidad (Diseño único)' },
-      { quantity: 2, title: 'Pack de 2 unidades', badgeText: 'Pack navideño', badgeType: 'green', price: 119, oldPrice: 198, offerLabel: 'Pack de 2 unidades (Diseño único)' },
+      {
+        quantity: 1,
+        title: '1 unidad',
+        badgeText: 'Ahorras S/ 30',
+        badgeType: 'blue',
+        price: 69,
+        oldPrice: 99,
+        oldPriceLabel: 'Antes S/ 99.00',
+        offerLabel: '1 unidad (Diseño único)',
+      },
+      {
+        quantity: 2,
+        title: '2 Unidades (2x S/ 119)',
+        topTag: '🔥 MÁS ELEGIDO · PROMO 2X',
+        featured: true,
+        badgeText: 'S/ 59.50 c/u · Ahorras S/ 79',
+        badgeType: 'green',
+        price: 119,
+        oldPrice: 198,
+        oldPriceLabel: 'Antes S/ 198.00',
+        offerLabel: 'Pack de 2 unidades (Diseño único)',
+      },
     ];
   }
 
@@ -321,7 +341,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
               return (
                 <div
                   key={b.quantity}
-                  className={`cod-bundle-card ${isSelected ? 'selected' : ''}`}
+                  className={`cod-bundle-card ${b.featured ? 'cod-bundle-card--featured' : ''} ${isSelected ? 'selected' : ''}`}
                   onClick={() => setSelectedQty(b.quantity)}
                   role="button"
                   tabIndex={0}
@@ -332,6 +352,7 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
                     }
                   }}
                 >
+                  {b.topTag && <span className="cod-bundle-top-tag">{b.topTag}</span>}
                   <div className="cod-bundle-left">
                     <img
                       src={productThumb}
@@ -358,7 +379,9 @@ export default function CheckoutModal({ isOpen, onClose, selectedProduct, select
                   </div>
                   <div className="cod-bundle-right">
                     {b.oldPrice && (
-                      <span className="cod-bundle-old-price">{formatSoles(b.oldPrice)}</span>
+                      <span className="cod-bundle-old-price">
+                        {b.oldPriceLabel || formatSoles(b.oldPrice)}
+                      </span>
                     )}
                     <span className="cod-bundle-price">{formatSoles(b.price)}</span>
                   </div>
