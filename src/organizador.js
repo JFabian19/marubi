@@ -187,56 +187,42 @@ function initEngagementTracking() {
 }
 
 const scenes = [
-  {
-    file: 'sala-blanco',
-    label: 'Sala junto a la ventana',
-    alt: 'Organizador metálico blanco de seis plataformas con plantas, junto a una ventana',
-  },
-  {
-    file: 'balcon-blanco',
-    label: 'Balcón pequeño',
-    alt: 'Organizador de seis plataformas con macetas en un balcón cubierto',
-  },
-  {
-    file: 'despues-blanco',
-    label: 'Rincón de jardinería interior',
-    alt: 'Plantas en el organizador escalonado junto a un cuadro botánico',
-  },
-];
-const blackScenes = [
-  { file: 'sala-negro', label: 'Sala junto a la ventana', alt: 'Organizador metálico negro de seis plataformas con plantas, sin ruedas, junto a una ventana' },
-  { file: 'balcon-negro', label: 'Balcón pequeño', alt: 'Organizador negro de seis plataformas con macetas en un balcón, apoyado directamente en el piso' },
-  { file: 'despues-negro', label: 'Rincón de jardinería interior', alt: 'Organizador escalonado negro con plantas, apoyado directamente en el piso' },
+  { file: 'sala', label: 'Sala junto a la ventana' },
+  { file: 'balcon', label: 'Balcón cubierto' },
+  { file: 'despues', label: 'Rincón de jardinería interior' },
 ];
 let selectedColor = 'Blanco';
-const productImageSelector = '#hero-photo, #assembly-guide-image, .comparison > img, .benefit-grid img, .measure-photo img, .details-grid img, .spaces-grid img, .offer-grid figure img, .cod-bundle-img';
+let currentScene = 0;
+const imageRoot = '/assets/organizador-plantas/';
+
+function setProductImage(image, asset) {
+  const color = selectedColor.toLowerCase();
+  const base = `${imageRoot}${asset}-${color}`;
+  if (image.classList.contains('cod-bundle-img')) {
+    image.src = `${imageRoot}sala-${color}-thumb.webp`;
+  } else {
+    // Keep both responsive candidates when switching color or gallery slide.
+    image.srcset = `${base}-movil.webp 720w, ${base}-desktop.webp 1280w`;
+    image.src = `${base}-desktop.webp`;
+  }
+  image.alt = `${image.dataset.description || 'Organizador de seis plataformas'} · Color ${color}`;
+}
 
 function syncProductColorImages() {
-  document.querySelectorAll(productImageSelector).forEach((image, position) => {
-    if (image.id === 'assembly-guide-image') {
-      image.src = `/assets/organizador-plantas/armado-${selectedColor === 'Negro' ? 'negro' : 'blanco'}.png`;
-      image.alt = `Guía visual de armado fácil del organizador de plantas en color ${selectedColor.toLowerCase()}; las piezas se ensamblan una sobre otra en pocos pasos`;
-      return;
-    }
-    const name = image.getAttribute('src') || '';
-    const sceneIndex = /balcon/.test(name) ? 1 : /despues/.test(name) ? 2 : /sala/.test(name) ? 0 : position % scenes.length;
-    const scene = (selectedColor === 'Negro' ? blackScenes : scenes)[sceneIndex];
-    image.removeAttribute('srcset');
-    image.src = `/assets/organizador-plantas/${scene.file}.png`;
-    image.alt = scene.alt;
+  document.querySelectorAll('[data-product-image]').forEach(image => {
+    setProductImage(image, image.dataset.productImage);
   });
 }
 
-let currentScene = 0;
 function showScene(step) {
   currentScene = (currentScene + step + scenes.length) % scenes.length;
-  const scene = (selectedColor === 'Negro' ? blackScenes : scenes)[currentScene];
+  const scene = scenes[currentScene];
   const photo = document.querySelector('#hero-photo');
-  photo.removeAttribute('srcset');
-  photo.src = '/assets/organizador-plantas/' + scene.file + '.png';
-  photo.alt = scene.alt;
+  photo.dataset.productImage = scene.file;
+  photo.dataset.description = `Organizador completo, sin ruedas: ${scene.label}`;
+  setProductImage(photo, scene.file);
   document.querySelector('#gallery-caption').textContent = scene.label;
-  document.querySelector('#gallery-position').textContent = (currentScene + 1) + ' / ' + scenes.length;
+  document.querySelector('#gallery-position').textContent = `${currentScene + 1} / ${scenes.length}`;
 }
 document.querySelector('#gallery-prev').addEventListener('click', () => showScene(-1));
 document.querySelector('#gallery-next').addEventListener('click', () => showScene(1));
@@ -268,25 +254,18 @@ heroGallery?.addEventListener(
   { passive: true }
 );
 
-// Precargar en segundo plano las demás fotos de la galería cuando la red esté libre
-window.addEventListener(
-  'load',
-  () => {
-    const idle = window.requestIdleCallback || ((cb) => setTimeout(cb, 1200));
-    idle(() => {
-      const isMobile = window.matchMedia('(max-width: 740px)').matches;
-      const toPreload = isMobile
-        ? ['/assets/organizador-plantas/balcon-movil.webp', '/assets/organizador-plantas/despues-movil.webp']
-        : ['/assets/organizador-plantas/balcon.webp', '/assets/organizador-plantas/despues.webp'];
-      toPreload.forEach((src) => {
-        const img = new Image();
-        img.decoding = 'async';
-        img.src = src;
-      });
+// Preload only the selected color at the appropriate viewport size.
+window.addEventListener('load', () => {
+  const idle = window.requestIdleCallback || (cb => setTimeout(cb, 1200));
+  idle(() => {
+    if (navigator.connection?.saveData) return;
+    const suffix = window.matchMedia('(max-width: 740px)').matches ? 'movil' : 'desktop';
+    scenes.slice(1).forEach(scene => {
+      const image = new Image();
+      image.src = `${imageRoot}${scene.file}-${selectedColor.toLowerCase()}-${suffix}.webp`;
     });
-  },
-  { once: true }
-);
+  });
+}, { once: true });
 
 const range = document.querySelector('#compare-range');
 const comparisonEl = document.querySelector('#comparison');

@@ -1,0 +1,6 @@
+Generation: built-in image_gen (two calls).
+White prompt: Spanish ecommerce infographic using sala-blanco.png as exact product reference. Square composition, entire empty six-platform organizer, no wheels. Headline: ¿Cabe en tu rincón? Subtitle: Mide tu espacio antes de elegir. Dimension arrows: 84.5 cm de largo, 77 cm de alto, 28.5 cm de fondo. Callouts: 6 plataformas, Acero al carbono, Sin ruedas. Footer: Color blanco · MARUBI. Large legible navy and green type, pale neutral studio background. Preserve product structure, no invented load or certification claims.
+Black prompt: Edit white infographic using sala-negro.png as color reference. Change only organizer finish to black and footer to Color negro · MARUBI. Preserve composition, geometry, dimensions, arrows and other text.
+Source PNGs: assets/organizador-source/ficha-{blanco,negro}.png
+Web delivery: public/assets/organizador-plantas/ficha-{blanco,negro}-{movil,desktop}.webp
+Exports: 720px mobile and 1280px desktop, full frame without cropping, WebP quality 82.
