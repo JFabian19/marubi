@@ -17,6 +17,18 @@ const featuredProducts = [
     isStaticPage: true,
   },
   ...(grinchProduct ? [grinchProduct] : []),
+  {
+    id: 'prod-organizador-5',
+    slug: 'organizador-5-niveles',
+    title: 'Organizador multifuncional con ruedas · 5 niveles',
+    salePrice: 'S/ 99',
+    comparePrice: '',
+    discountBadge: 'NUEVO · CON RUEDAS',
+    image: '/assets/organizador-5/hero-480.webp',
+    srcSet: '/assets/organizador-5/hero-480.webp 480w, /assets/organizador-5/hero-720.webp 720w',
+    sizes: '(max-width: 480px) 90vw, 350px',
+    isStaticPage: true,
+  },
 ];
 
 export default function StorefrontView({ onOpenProduct }) {

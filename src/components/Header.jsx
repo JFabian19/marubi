@@ -196,6 +196,7 @@ export default function Header({ onNavigateHome, onOpenProduct }) {
                   <ul className="drawer-sublist">
                     <li><a href="/inicio" onClick={(e) => handleHomeNav(e, '#mas-vendidos')}>Productos destacados</a></li>
                     <li><a href="/producto/organizador-de-plantas-6-niveles">Organizador de plantas de 6 niveles</a></li>
+                    <li><a href="/producto/organizador-5-niveles">Organizador de 5 niveles con ruedas</a></li>
                     {BESTSELLERS_PLACEHOLDERS.filter((p) => p.id === 'prod-grinch').map((product) => (
                       <li key={product.id}><a href={`/producto/${product.slug}`} onClick={(e) => handleProductNav(e, product)}>{product.title}</a></li>
                     ))}

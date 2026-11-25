@@ -12,7 +12,14 @@ export default function ProductCard({ product, onOpenProduct }) {
       <a href={`/producto/${product.slug}`} className="voltra-card-link" onClick={handleClick}>
         <div className="voltra-card-media">
           {product.image ? (
-            <img src={product.image} alt={product.title} loading="lazy" />
+            <img
+              src={product.image}
+              srcSet={product.srcSet}
+              sizes={product.sizes}
+              alt={product.title}
+              loading="lazy"
+              decoding="async"
+            />
           ) : (
             <div className="voltra-card-placeholder">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
