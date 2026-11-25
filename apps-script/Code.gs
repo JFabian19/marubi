@@ -44,6 +44,23 @@ function doPost(e) {
       throw new Error('Total o cantidad inválidos');
     }
 
+    let deliveryText = newDelivery
+      ? (order.deliveryMethod === 'shalom' ? 'Recojo Shalom: ' : 'Entrega Lima: ') + safeText_(order.place, 200)
+      : 'Gratis por Shalom';
+    if (order.productId === 'MRB-ORG-5N') {
+      const provincial = order.department !== 'Lima' && order.department !== 'Callao';
+      const fee = provincial ? 10 : 0;
+      if (!order.department || !order.district || !order.address || !order.reference ||
+          order.deliveryMethod !== (provincial ? 'shalom' : 'lima') ||
+          ![1, 2].includes(quantity) || Number(order.shippingFee) !== fee ||
+          Number(order.advance) !== (provincial ? 40 : 0) || total !== quantity * 99 + fee ||
+          (provincial && !/^\d{8}$/.test(order.dni || ''))) {
+        throw new Error('Datos de entrega o importe incorrectos');
+      }
+      deliveryText += ' · Envío S/ ' + fee;
+      if (provincial) deliveryText += ' · Adelanto S/ 40 · DNI ' + order.dni;
+    }
+
     const lock = LockService.getScriptLock();
     lock.waitLock(10000);
     try {
@@ -57,7 +74,7 @@ function doPost(e) {
           safeText_(order.department || '', 100), safeText_(order.province || '', 100),
           safeText_(order.district || order.place || '', 100), safeText_(order.address, 300),
           safeText_(order.reference || '', 250),
-          newDelivery ? (order.deliveryMethod === 'shalom' ? 'Recojo Shalom: ' : 'Entrega Lima: ') + safeText_(order.place, 200) : 'Gratis por Shalom', safeText_(order.pageUrl || '', 500),
+          deliveryText, safeText_(order.pageUrl || '', 500),
         ]);
         SpreadsheetApp.flush();
       }

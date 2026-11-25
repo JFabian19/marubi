@@ -1,0 +1,102 @@
+<form id="drawerOrderForm" class="cod-form">
+          <div class="cod-field">
+            <label for="drawerNombre" class="cod-label">Nombre y Apellidos<span class="cod-req">*</span></label>
+            <div class="cod-input-group">
+              <div class="cod-input-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="9.5" stroke="#111111" stroke-width="1.8" />
+                  <circle cx="12" cy="9.5" r="3" fill="#111111" />
+                  <path d="M6.8 18.2C7.9 15.8 9.8 14.5 12 14.5C14.2 14.5 16.1 15.8 17.2 18.2" stroke="#111111" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+              </div>
+              <input type="text" id="drawerNombre" placeholder="Nombre completo" required autocomplete="name">
+            </div>
+          </div>
+
+          <div class="cod-field">
+            <label for="drawerWhatsapp" class="cod-label">Celular con WhatsApp<span class="cod-req">*</span></label>
+            <div class="cod-input-group" id="whatsappGroup">
+              <div class="cod-input-icon" aria-hidden="true">
+                <img src="/assets/whatsapp-icon.png" alt="" width="22" height="22" class="cod-wa-png" loading="lazy" decoding="async">
+              </div>
+              <input type="tel" id="drawerWhatsapp" placeholder="Celular con WhatsApp (9 dígitos)" minlength="9" maxlength="9" pattern="9[0-9]{8}" inputmode="numeric" required autocomplete="tel">
+            </div>
+            <p class="field-error" id="whatsappError" role="alert" hidden></p>
+          </div>
+
+          <div class="cod-field">
+            <label for="drawerDireccion" class="cod-label">Dirección completa<span class="cod-req">*</span></label>
+            <div class="cod-input-group">
+              <div class="cod-input-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C7.86 2 4.5 5.36 4.5 9.5C4.5 14.88 12 22 12 22C12 22 19.5 14.88 19.5 9.5C19.5 5.36 16.14 2 12 2ZM12 12.25C10.48 12.25 9.25 11.02 9.25 9.5C9.25 7.98 10.48 6.75 12 6.75C13.52 6.75 14.75 7.98 14.75 9.5C14.75 11.02 13.52 12.25 12 12.25Z" fill="#111111" />
+                </svg>
+              </div>
+              <input type="text" id="drawerDireccion" placeholder="Ej: Av. Arequipa 123, Dpto 402" required autocomplete="street-address">
+            </div>
+          </div>
+
+          <div class="cod-field">
+            <label for="drawerReferencia" class="cod-label">Referencias de la dirección<span class="cod-req">*</span></label>
+            <div class="cod-input-group">
+              <div class="cod-input-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C7.86 2 4.5 5.36 4.5 9.5C4.5 14.88 12 22 12 22C12 22 19.5 14.88 19.5 9.5C19.5 5.36 16.14 2 12 2ZM12 12.25C10.48 12.25 9.25 11.02 9.25 9.5C9.25 7.98 10.48 6.75 12 6.75C13.52 6.75 14.75 7.98 14.75 9.5C14.75 11.02 13.52 12.25 12 12.25Z" fill="#111111" />
+                </svg>
+              </div>
+              <input type="text" id="drawerReferencia" placeholder="Ej: Frente al parque, portón blanco" required>
+            </div>
+          </div>
+
+          <div class="cod-field">
+            <label for="drawerProvincia" class="cod-label">Provincia / Departamento<span class="cod-req">*</span></label>
+            <div class="cod-select-wrap">
+              <select id="drawerProvincia" required>
+                <option value="" disabled selected>Selecciona Provincia</option>
+              </select>
+              <span class="cod-select-chevron" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="cod-field">
+            <label for="drawerCiudad" class="cod-label">Ciudad / Distrito<span class="cod-req">*</span></label>
+            <div class="cod-select-wrap">
+              <select id="drawerCiudad" required disabled>
+                <option value="" disabled selected>Selecciona Ciudad / Distrito</option>
+              </select>
+              <span class="cod-select-chevron" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <div class="cod-field" id="dniField" hidden>
+            <label for="drawerDni" class="cod-label">DNI<span class="cod-req">*</span></label>
+            <div class="cod-input-group">
+              <input type="text" id="drawerDni" placeholder="DNI de 8 dígitos" minlength="8" maxlength="8" pattern="[0-9]{8}" inputmode="numeric" autocomplete="off">
+            </div>
+          </div>
+
+          <small class="cod-delivery-note" id="deliveryNote" aria-live="polite"></small>
+
+          <p class="field-error" id="submitError" role="alert" hidden></p>
+
+          <div class="cod-submit-wrap">
+            <button type="submit" class="cod-submit-btn" id="drawerSubmitBtn">
+              <svg class="cod-cart-check-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="9" cy="20" r="1.5" />
+                <circle cx="18" cy="20" r="1.5" />
+                <path d="M2 3h2.5l2.2 12.2a1.5 1.5 0 0 0 1.5 1.3h10.2a1.5 1.5 0 0 0 1.5-1.2L21.5 6H5.2" />
+                <polyline points="10.5 10.5 12.5 12.5 16 9" />
+              </svg>
+              <span id="drawerSubmitText">Confirmar y enviar pedido</span>
+            </button>
+            <small class="order-submit-hint">Al confirmar, registraremos tu pedido y abriremos WhatsApp con los detalles.</small>
+          </div>
+        </form>
