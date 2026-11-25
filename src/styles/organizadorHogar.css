@@ -47,6 +47,7 @@ h3 { font-size: 1.05rem; letter-spacing: -.028em; }
 .delivery { font-size: .74rem; color: #475561; gap: 7px; margin-top: 10px; }
 .delivery .icon { width: 17px; }
 .block, .editorial, .closing { padding-block: clamp(40px, 6vw, 82px); }
+main > section:not(.product) { content-visibility: auto; contain-intrinsic-size: auto 600px; }
 .editorial, .closing { display: grid; gap: 22px; align-items: center; }
 .compare-section { grid-template-columns: 1fr; }
 .comparison { width: 100%; max-height: none; aspect-ratio: 1; }

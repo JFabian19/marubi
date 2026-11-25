@@ -15,7 +15,18 @@ function formatSoles(amount) {
   return `S/. ${Number(amount || 0).toFixed(2)}`;
 }
 
-export function initPixel(product) {
+const DEFAULT_SECTION_MAP = [
+  { selector: '.compare-section', name: 'antes_y_despues', isInfo: true },
+  { selector: '.benefits', name: 'beneficios', isInfo: true },
+  { selector: '#medidas', name: 'medidas_y_materiales', isInfo: true },
+  { selector: '#detalles', name: 'detalles_del_producto', isInfo: true },
+  { selector: '.spaces', name: 'ideas_espacios', isInfo: false },
+  { selector: '#pedido', name: 'seccion_oferta', isInfo: false },
+  { selector: '#preguntas', name: 'preguntas_frecuentes', isInfo: true },
+];
+
+export function initPixel(product, options = {}) {
+  const { viewContentOnScroll = false } = options;
   ensureFbcAndFbp();
   const userData = getStoredUserData();
   const alreadyLoaded = typeof window.fbq === 'function';
@@ -40,7 +51,7 @@ export function initPixel(product) {
     fbq('track', 'PageView', {}, { eventID: window.__marubiPageViewId });
   }
 
-  if (!window.__marubiViewContentId) {
+  if (!viewContentOnScroll && !window.__marubiViewContentId) {
     window.__marubiViewContentId = `vc_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
     window.fbq('track', 'ViewContent', product, { eventID: window.__marubiViewContentId });
   }
@@ -48,18 +59,35 @@ export function initPixel(product) {
   // Fallback si un navegador in-app o bloqueador impide cargar fbevents.js
   window.setTimeout(() => {
     if (typeof window.fbq?.callMethod !== 'function') {
-      sendKeepalivePixelBeacon('PageView', {}, window.__marubiPageViewId);
-      sendKeepalivePixelBeacon('ViewContent', product, window.__marubiViewContentId);
+      if (window.__marubiPageViewId) {
+        sendKeepalivePixelBeacon('PageView', {}, window.__marubiPageViewId);
+      }
+      if (!viewContentOnScroll && window.__marubiViewContentId) {
+        sendKeepalivePixelBeacon('ViewContent', product, window.__marubiViewContentId);
+      }
     }
   }, 1800);
 }
 
 // Tracking de Scroll y Visita a Secciones de Información
-export function initEngagementTracking(product) {
+export function initEngagementTracking(product, options = {}) {
+  const {
+    viewContentOnScroll = false,
+    sectionMap = DEFAULT_SECTION_MAP,
+    useTrackMetaEvent = false,
+  } = options;
   let hasScrolled = false;
   let scrollTicking = false;
   let cachedDocHeight = 1;
   const scrollMilestones = new Set();
+
+  function emitEvent(name, payload, isCustom = true) {
+    if (useTrackMetaEvent) {
+      trackMetaEvent(name, payload, { isCustom });
+    } else {
+      window.fbq?.(isCustom ? 'trackCustom' : 'track', name, payload);
+    }
+  }
 
   function updateDocHeight() {
     cachedDocHeight = Math.max(
@@ -71,24 +99,38 @@ export function initEngagementTracking(product) {
   window.addEventListener('resize', updateDocHeight, { passive: true });
   window.addEventListener('load', updateDocHeight, { once: true });
 
+  function fireScrolledEngagement() {
+    if (hasScrolled) return;
+    hasScrolled = true;
+    if (viewContentOnScroll) {
+      trackMetaEvent('ViewContent', { ...product });
+    }
+    emitEvent('UserScrolled', { ...product }, true);
+  }
+
   function checkScrollDepth() {
     scrollTicking = false;
     const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
-    if (scrollTop > 40 && !hasScrolled) {
-      hasScrolled = true;
-      window.fbq?.('trackCustom', 'UserScrolled', { ...product });
+    const scrollThreshold = viewContentOnScroll ? 30 : 40;
+    if (scrollTop > scrollThreshold) {
+      fireScrolledEngagement();
+      updateDocHeight();
+      const pct = Math.round((scrollTop / cachedDocHeight) * 100);
+      [25, 50, 75, 90].forEach((milestone) => {
+        if (pct >= milestone && !scrollMilestones.has(milestone)) {
+          scrollMilestones.add(milestone);
+          emitEvent(
+            'ScrollDepth',
+            {
+              ...product,
+              depth_percent: milestone,
+              depth: `${milestone}%`,
+            },
+            true
+          );
+        }
+      });
     }
-    const pct = Math.round((scrollTop / cachedDocHeight) * 100);
-    [25, 50, 75, 90].forEach((milestone) => {
-      if (pct >= milestone && !scrollMilestones.has(milestone)) {
-        scrollMilestones.add(milestone);
-        window.fbq?.('trackCustom', 'ScrollDepth', {
-          ...product,
-          depth_percent: milestone,
-          depth: `${milestone}%`,
-        });
-      }
-    });
   }
 
   window.addEventListener(
@@ -101,17 +143,9 @@ export function initEngagementTracking(product) {
     },
     { passive: true }
   );
-
-  // Detectar si visitó las secciones de información del producto
-  const sectionMap = [
-    { selector: '.compare-section', name: 'antes_y_despues', isInfo: true },
-    { selector: '.benefits', name: 'beneficios', isInfo: true },
-    { selector: '#medidas', name: 'medidas_y_materiales', isInfo: true },
-    { selector: '#detalles', name: 'detalles_del_producto', isInfo: true },
-    { selector: '.spaces', name: 'ideas_espacios', isInfo: false },
-    { selector: '#pedido', name: 'seccion_oferta', isInfo: false },
-    { selector: '#preguntas', name: 'preguntas_frecuentes', isInfo: true },
-  ];
+  if (viewContentOnScroll) {
+    checkScrollDepth();
+  }
 
   const visitedSections = new Set();
   let visitedInfoTracked = false;
@@ -121,25 +155,39 @@ export function initEngagementTracking(product) {
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
+          if (viewContentOnScroll) {
+            const scrollTop = window.scrollY || document.documentElement.scrollTop || 0;
+            if (scrollTop > 10) {
+              fireScrolledEngagement();
+            }
+          }
           const sectionName = entry.target.dataset.trackSection;
           const isInfo = entry.target.dataset.trackInfo === 'true';
           if (sectionName && !visitedSections.has(sectionName)) {
             visitedSections.add(sectionName);
-            window.fbq?.('trackCustom', 'SectionVisited', {
-              ...product,
-              section: sectionName,
-            });
+            emitEvent(
+              'SectionVisited',
+              {
+                ...product,
+                section: sectionName,
+              },
+              true
+            );
             if (isInfo && !visitedInfoTracked) {
               visitedInfoTracked = true;
-              window.fbq?.('trackCustom', 'VisitedProductInfo', {
-                ...product,
-                first_info_section: sectionName,
-              });
+              emitEvent(
+                'VisitedProductInfo',
+                {
+                  ...product,
+                  first_info_section: sectionName,
+                },
+                true
+              );
             }
           }
         });
       },
-      { threshold: 0.35 }
+      { threshold: viewContentOnScroll ? 0.3 : 0.35 }
     );
 
     sectionMap.forEach(({ selector, name, isInfo }) => {
@@ -157,13 +205,14 @@ export function initEngagementTracking(product) {
     detail.addEventListener('toggle', () => {
       if (detail.open) {
         const question = detail.querySelector('summary')?.textContent?.trim() || '';
-        window.fbq?.('trackCustom', 'FAQOpened', { ...product, question });
+        emitEvent('FAQOpened', { ...product, question }, true);
       }
     });
   });
 }
 
-export function initComparison(product) {
+export function initComparison(product, options = {}) {
+  const { useTrackMetaEvent = false } = options;
   const range = document.querySelector('#compare-range');
   const comparisonEl = document.querySelector('#comparison');
   let compareTracked = false;
@@ -177,12 +226,24 @@ export function initComparison(product) {
     });
     if (!compareTracked) {
       compareTracked = true;
-      window.fbq?.('trackCustom', 'BeforeAfterCompared', { ...product });
+      if (useTrackMetaEvent) {
+        trackMetaEvent('BeforeAfterCompared', { ...product }, { isCustom: true });
+      } else {
+        window.fbq?.('trackCustom', 'BeforeAfterCompared', { ...product });
+      }
     }
   });
 }
 
-export function initOrganizerCheckout({ product, bundles: BUNDLES, getColor, limaFee }) {
+export function initOrganizerCheckout({
+  product,
+  bundles: BUNDLES,
+  getColor,
+  limaFee,
+  trackRegistrationAttempts = true,
+  trackOrderFormSubmitted = true,
+  strictValidation = false,
+}) {
   const modalOverlay = document.querySelector('#checkoutDrawerOverlay');
   const closeBtn = document.querySelector('#closeCheckoutBtn');
   const exitDiscountPopup = document.querySelector('#exitDiscountPopup');
@@ -378,6 +439,7 @@ export function initOrganizerCheckout({ product, bundles: BUNDLES, getColor, lim
 
   function trackRegistrationAttempt(sourceField, forceFullSync = false) {
     const customerData = syncFormUserData();
+    if (!trackRegistrationAttempts) return;
     const active = BUNDLES[selectedQty];
     const finalPrice = getFinalPrice(selectedQty);
     const sessId = ensureCheckoutSessionId();
@@ -592,23 +654,58 @@ export function initOrganizerCheckout({ product, bundles: BUNDLES, getColor, lim
     const ciudad = ciudadSelect.value;
     const dni = dniInput.value.trim();
 
-    if (!/^9\d{8}$/.test(whatsapp)) {
-      whatsappGroup.classList.add('is-invalid');
-      whatsappError.textContent = 'Escribe 9 dígitos y empieza con 9.';
-      whatsappError.hidden = false;
-      whatsappInput.focus();
-      return;
-    }
+    if (strictValidation) {
+      if (!nombre || nombre.length < 3 || !/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(nombre)) {
+        submitError.textContent = 'Por favor, escribe tu nombre y apellido correctamente.';
+        submitError.hidden = false;
+        nombreInput.focus();
+        return;
+      }
+      if (!/^9\d{8}$/.test(whatsapp)) {
+        whatsappGroup.classList.add('is-invalid');
+        whatsappError.textContent = 'Escribe 9 dígitos y empieza con 9.';
+        whatsappError.hidden = false;
+        submitError.textContent = 'Revisa tu número de WhatsApp: debe tener 9 dígitos y empezar con 9.';
+        submitError.hidden = false;
+        whatsappInput.focus();
+        return;
+      }
+      if (!direccion || direccion.length < 5) {
+        submitError.textContent = 'Por favor, escribe tu dirección completa (mínimo 5 caracteres).';
+        submitError.hidden = false;
+        direccionInput.focus();
+        return;
+      }
+      if (!referencia || referencia.length < 3) {
+        submitError.textContent = 'Por favor, escribe una referencia válida para tu dirección.';
+        submitError.hidden = false;
+        referenciaInput.focus();
+        return;
+      }
+      if (!provincia || !ciudad) {
+        submitError.textContent = 'Por favor, selecciona tu Provincia y Ciudad.';
+        submitError.hidden = false;
+        return;
+      }
+    } else {
+      if (!/^9\d{8}$/.test(whatsapp)) {
+        whatsappGroup.classList.add('is-invalid');
+        whatsappError.textContent = 'Escribe 9 dígitos y empieza con 9.';
+        whatsappError.hidden = false;
+        whatsappInput.focus();
+        return;
+      }
 
-    if (!provincia || !ciudad) {
-      submitError.textContent = 'Por favor, selecciona Provincia y Ciudad.';
-      submitError.hidden = false;
-      return;
-    }
-    if (!nombre || !direccion || !referencia) {
-      submitError.textContent = 'Completa tu nombre, dirección y referencia.';
-      submitError.hidden = false;
-      return;
+      if (!provincia || !ciudad) {
+        submitError.textContent = 'Por favor, selecciona Provincia y Ciudad.';
+        submitError.hidden = false;
+        return;
+      }
+      if (!nombre || !direccion || !referencia) {
+        submitError.textContent = 'Completa tu nombre, dirección y referencia.';
+        submitError.hidden = false;
+        return;
+      }
     }
     const isProvincia = usesShalom(provincia);
     if (isProvincia && !/^\d{8}$/.test(dni)) {
@@ -710,19 +807,21 @@ export function initOrganizerCheckout({ product, bundles: BUNDLES, getColor, lim
         userData: customerData,
         keepalive: true,
       });
-      trackMetaEvent(
-        'OrderFormSubmitted',
-        {
-          ...purchasePayload,
-          order_id: orderNumber,
-        },
-        {
-          isCustom: true,
-          eventID: `form_${orderNumber}`,
-          userData: customerData,
-          keepalive: true,
-        }
-      );
+      if (trackOrderFormSubmitted) {
+        trackMetaEvent(
+          'OrderFormSubmitted',
+          {
+            ...purchasePayload,
+            order_id: orderNumber,
+          },
+          {
+            isCustom: true,
+            eventID: `form_${orderNumber}`,
+            userData: customerData,
+            keepalive: true,
+          }
+        );
+      }
     }
 
     await new Promise((resolve) => window.setTimeout(resolve, 550));
