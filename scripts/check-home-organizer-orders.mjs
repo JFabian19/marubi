@@ -4,19 +4,46 @@ import vm from 'node:vm';
 
 // Exercise the existing Apps Script entry points entirely in memory.
 const rows = [];
+const rowColors = new Map();
+const validations = new Map();
 const sheet = {
   getLastRow: () => rows.length + 1,
   appendRow: row => rows.push(row),
-  getRange() {
+  getRange(row, col) {
     return {
       createTextFinder(id) {
-        return { matchEntireCell: () => ({ findNext: () => rows.find(row => row[1] === id) ?? null }) };
+        return { matchEntireCell: () => ({ findNext: () => rows.find(r => r[1] === id) ?? null }) };
+      },
+      setBackground(color) {
+        rowColors.set(row, color);
+      },
+      setHorizontalAlignment() {},
+      setDataValidation(rule) {
+        validations.set(`${row}:${col}`, rule);
       },
     };
   },
 };
 const context = vm.createContext({
-  SpreadsheetApp: { getActiveSpreadsheet: () => ({ getSheets: () => [sheet] }), flush() {} },
+  SpreadsheetApp: {
+    getActiveSpreadsheet: () => ({ getSheets: () => [sheet] }),
+    flush() {},
+    newDataValidation: () => {
+      const state = {};
+      return {
+        requireValueInList(values, showDropdown) {
+          state.values = values;
+          state.showDropdown = showDropdown;
+          return this;
+        },
+        setAllowInvalid(allow) {
+          state.allowInvalid = allow;
+          return this;
+        },
+        build: () => state,
+      };
+    },
+  },
   LockService: { getScriptLock: () => ({ waitLock() {}, releaseLock() {} }) },
   ContentService: { createTextOutput: value => value },
   console: { error() {} },
@@ -47,11 +74,15 @@ for (const department of ['Lima', 'Callao', 'Arequipa']) {
     assert.equal(post(order), 'ok');
     assert.equal(rows.length, previous + 1);
     const row = rows.at(-1);
+    const rowNumber = rows.length + 1;
     assert.equal(row[3], base.productId);
     assert.equal(row[6], quantity);
     assert.equal(row[7], order.total);
     assert(row[15].includes('Envío S/ ' + shippingFee));
     assert.equal(row[16], base.pageUrl);
+    assert.equal(row[17], 'No confirmado');
+    assert.deepEqual(Array.from(validations.get(`${rowNumber}:18`)?.values || []), ['Confirmado', 'No confirmado']);
   }
 }
-console.log('PASS: 6 combinaciones de zona y cantidad, importes, DNI y reintentos en Sheets simulado.');
+assert.equal(new Set(rowColors.values()).size, 6, 'Each of the 6 test orders should have a distinct row color');
+console.log('PASS: 6 combinaciones de zona y cantidad, importes, DNI, colores distintos por pedido y seguimiento de entrega.');

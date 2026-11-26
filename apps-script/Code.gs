@@ -1,10 +1,22 @@
 /** @OnlyCurrentDoc */
-// Proyecto vinculado a "Pedidos MARUBI". Desplegar como aplicación web.
+// Proyecto vinculado a "Registro de Ventas y Pedidos - MARUBI Perú"
+// Spreadsheet ID: 1pRE3rVxLk4KxdDFz4jfAwETVm6XikmuL6lCq2InD1PM
+// Desplegar como aplicación web.
 const HEADERS = [
   'Fecha y hora', 'N.º de pedido', 'Estado', 'Producto ID', 'Producto',
   'Oferta', 'Cantidad', 'Total (PEN)', 'Nombre y apellido', 'WhatsApp',
   'Departamento', 'Provincia', 'Distrito', 'Dirección', 'Referencia',
-  'Envío', 'Página de origen',
+  'Envío', 'Página de origen', 'Seguimiento de entrega',
+];
+
+const DELIVERY_STATUS_OPTIONS = ['Confirmado', 'No confirmado'];
+const DEFAULT_DELIVERY_STATUS = 'No confirmado';
+
+// Paleta de 12 tonos pastel distintos para diferenciar visualmente cada pedido.
+const ORDER_ROW_COLORS = [
+  '#E0F2FE', '#FEF3C7', '#EDE9FE', '#DCFCE7',
+  '#FFE4E6', '#FFEDD5', '#CCFBF1', '#E0E7FF',
+  '#ECFCCB', '#FCE7F3', '#CFFAFE', '#FEF9C3',
 ];
 
 function ordersSheet_() {
@@ -24,6 +36,27 @@ function findOrder_(sheet, orderId) {
   if (lastRow < 2) return false;
   return sheet.getRange(2, 2, lastRow - 1, 1)
     .createTextFinder(orderId).matchEntireCell(true).findNext() !== null;
+}
+
+function styleOrderRow_(sheet, rowNumber) {
+  if (rowNumber < 2) return;
+  const color = ORDER_ROW_COLORS[(rowNumber - 2) % ORDER_ROW_COLORS.length];
+  const leftRange = sheet.getRange(rowNumber, 1, 1, 2);
+  const bodyRange = sheet.getRange(rowNumber, 4, 1, 14);
+  if (leftRange && typeof leftRange.setBackground === 'function') leftRange.setBackground(color);
+  if (bodyRange && typeof bodyRange.setBackground === 'function') bodyRange.setBackground(color);
+
+  const deliveryCell = sheet.getRange(rowNumber, 18, 1, 1);
+  if (deliveryCell && typeof deliveryCell.setHorizontalAlignment === 'function') {
+    deliveryCell.setHorizontalAlignment('center');
+  }
+  if (deliveryCell && typeof deliveryCell.setDataValidation === 'function' && typeof SpreadsheetApp.newDataValidation === 'function') {
+    const rule = SpreadsheetApp.newDataValidation()
+      .requireValueInList(DELIVERY_STATUS_OPTIONS, true)
+      .setAllowInvalid(false)
+      .build();
+    deliveryCell.setDataValidation(rule);
+  }
 }
 
 function doPost(e) {
@@ -76,7 +109,9 @@ function doPost(e) {
           safeText_(order.district || order.place || '', 100), safeText_(order.address, 300),
           safeText_(order.reference || '', 250),
           deliveryText, safeText_(order.pageUrl || '', 500),
+          DEFAULT_DELIVERY_STATUS,
         ]);
+        styleOrderRow_(sheet, sheet.getLastRow());
         SpreadsheetApp.flush();
       }
     } finally {
