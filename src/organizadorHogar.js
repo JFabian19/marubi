@@ -10,8 +10,8 @@ const product = {
 };
 
 const bundles = {
-  1: { quantity: 1, price: 99, offerLabel: '1 unidad' },
-  2: { quantity: 2, price: 180, offerLabel: 'Promoción 2 unidades · ahorras S/ 18' },
+  1: { quantity: 1, price: 99, offerLabel: 'Oferta 1 unidad · ahorras S/ 30' },
+  2: { quantity: 2, price: 180, offerLabel: 'Promoción 2 unidades · ahorras S/ 78' },
 };
 
 const sectionMap = [
@@ -35,9 +35,9 @@ initOrganizerCheckout({
   strictValidation: true,
 });
 initComparison(product, { useTrackMetaEvent: true });
-initPixel(product, { viewContentOnScroll: true });
+initPixel(product);
 initEngagementTracking(product, {
-  viewContentOnScroll: true,
+  viewContentOnScroll: false,
   sectionMap,
   useTrackMetaEvent: true,
 });

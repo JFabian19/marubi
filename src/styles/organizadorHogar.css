@@ -34,10 +34,12 @@ h3 { font-size: 1.05rem; letter-spacing: -.028em; }
 .spec-strip span { gap: 6px; font-size: .76rem; font-weight: 600; }
 .spec-strip .icon { width: 17px; height: 17px; }
 .swatch { width: 12px; height: 12px; border-radius: 50%; background: #262a2c; }
-.offer-line { gap: 10px; margin: 0 0 12px; }
+.offer-line { gap: 12px; margin: 0 0 12px; flex-wrap:wrap; }
+.offer-price { display:flex; align-items:baseline; gap:10px; }
+.offer-price del, .sticky-price del { color:#74818b; font-size:.96rem; font-weight:650; text-decoration-thickness:2px; }
 .offer-line strong { font-size: 2.4rem; line-height: 1.1; letter-spacing: -.055em; }
 .offer-line small { font-size: .61em; }
-.offer-line span { color: var(--muted); font-size: .82rem; }
+.offer-line .offer-save { color:#a2320b; background:#ffe8db; border-radius:5px; padding:6px 8px; font-size:.72rem; font-weight:750; }
 .buy { justify-content: center; gap: 10px; border: 0; background: #ff6938; color: #15273a; border-radius: 9px; padding: 13px 20px; min-height: 48px; font-weight: 750; width: 100%; }
 .buy:hover { background: #ff8054; }
 .buy .icon { width: 18px; height: 18px; }
@@ -86,6 +88,8 @@ footer .top { flex-wrap: wrap; padding-block: 20px; font-size: .84rem; }
 footer .top div { display:flex; gap: 15px; }
 .sticky-order { position: fixed; z-index: 12; bottom: 0; left: 0; right: 0; justify-content: space-between; gap: 14px; padding: 8px max(18px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)); background: #fff; border-top: 1px solid var(--edge); }
 .sticky-order strong { font-size: 1.37rem; }
+.sticky-price { display:flex; flex-direction:column; line-height:1.05; }
+.sticky-price del { font-size:.73rem; }
 .sticky-order .buy { width: auto; min-height: 44px; padding: 8px 16px; }
 body { padding-bottom: calc(65px + env(safe-area-inset-bottom)); }
 body.modal-open .sticky-order { display:none; }
