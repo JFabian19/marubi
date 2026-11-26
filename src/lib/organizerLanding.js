@@ -240,6 +240,7 @@ export function initOrganizerCheckout({
   bundles: BUNDLES,
   getColor,
   limaFee,
+  provincialFee = PROVINCIAL_SHIPPING_FEE,
   trackRegistrationAttempts = true,
   trackOrderFormSubmitted = true,
   strictValidation = false,
@@ -266,6 +267,12 @@ export function initOrganizerCheckout({
   const referenciaInput = document.querySelector('#drawerReferencia');
   const provinciaSelect = document.querySelector('#drawerProvincia');
   const ciudadSelect = document.querySelector('#drawerCiudad');
+  const departmentSelect = document.querySelector('#drawerDepartment');
+  const departmentField = document.querySelector('#departmentField');
+  const provincialCityInput = document.querySelector('#drawerProvincialCity');
+  const provincialCityField = document.querySelector('#provincialCityField');
+  const deliveryChoices = document.querySelectorAll('[data-delivery-choice]');
+  const isHomeOrganizer = product.content_ids[0] === 'MRB-ORG-5N';
   const dniInput = document.querySelector('#drawerDni');
   const dniField = document.querySelector('#dniField');
   const whatsappInput = document.querySelector('#drawerWhatsapp');
@@ -325,8 +332,8 @@ export function initOrganizerCheckout({
     return {
       name: nombreInput?.value?.trim() || '',
       whatsapp: whatsappInput?.value?.trim() || '',
-      province: provinciaSelect?.value || '',
-      city: ciudadSelect?.value || '',
+      province: selectedDepartment(),
+      city: selectedCity(),
     };
   }
 
@@ -345,13 +352,51 @@ export function initOrganizerCheckout({
     opt.textContent = prov;
     provinciaSelect.appendChild(opt);
   });
+  if (isHomeOrganizer) {
+    const option = document.createElement('option');
+    option.value = 'Provincia';
+    option.textContent = 'Otra provincia';
+    provinciaSelect.appendChild(option);
+  }
+
+  function selectedDepartment() {
+    return isHomeOrganizer && provinciaSelect.value === 'Provincia'
+      ? departmentSelect.value : provinciaSelect.value;
+  }
+
+  function selectedCity() {
+    return isHomeOrganizer && provinciaSelect.value === 'Provincia'
+      ? provincialCityInput.value.trim() : ciudadSelect.value;
+  }
+
+  deliveryChoices.forEach(button => button.addEventListener('click', () => {
+    if (button.dataset.deliveryChoice === 'province') {
+      provinciaSelect.value = 'Provincia';
+    } else {
+      provinciaSelect.value = 'Lima';
+    }
+    provinciaSelect.dispatchEvent(new Event('change', { bubbles: true }));
+  }));
 
   provinciaSelect.addEventListener('change', () => {
     const prov = provinciaSelect.value;
-    document.querySelector('#deliveryNote').textContent = usesShalom(prov) ? provincialDeliveryNote : '';
+    const provincial = isHomeOrganizer && prov === 'Provincia';
+    if (departmentField) departmentField.hidden = !provincial;
+    if (provincialCityField) provincialCityField.hidden = !provincial;
+    if (departmentSelect) departmentSelect.required = provincial;
+    if (provincialCityInput) provincialCityInput.required = provincial;
+    ciudadSelect.closest('.cod-field').hidden = provincial;
+    ciudadSelect.required = !provincial;
     dniField.hidden = !usesShalom(prov);
     dniInput.required = usesShalom(prov);
     if (!usesShalom(prov)) dniInput.value = '';
+    document.querySelector('#deliveryNote').textContent = provincial
+      ? `Envío por Shalom: S/ ${provincialFee}. Adelanto de S/ 40 que se descuenta del total.`
+      : (!isHomeOrganizer && usesShalom(prov) ? provincialDeliveryNote : '');
+    deliveryChoices.forEach(button => {
+      button.classList.toggle('selected', button.dataset.deliveryChoice === (provincial ? 'province' : 'lima'));
+      button.setAttribute('aria-pressed', String(button.dataset.deliveryChoice === (provincial ? 'province' : 'lima')));
+    });
     updatePricingUI();
     ciudadSelect.innerHTML = '<option value="" disabled selected>Selecciona Ciudad / Distrito</option>';
     if (prov && PERU_LOCATIONS[prov]) {
@@ -367,6 +412,7 @@ export function initOrganizerCheckout({
       ciudadSelect.disabled = true;
     }
   });
+  departmentSelect?.addEventListener('change', updatePricingUI);
 
   function getFinalPrice(qty) {
     const base = BUNDLES[qty]?.price ?? BUNDLES[1].price;
@@ -396,7 +442,7 @@ export function initOrganizerCheckout({
       if (codDiscountRow) codDiscountRow.hidden = true;
       if (discountAppliedBanner) discountAppliedBanner.hidden = true;
     }
-    const shippingFee = usesShalom(provinciaSelect.value) ? PROVINCIAL_SHIPPING_FEE : limaFee;
+    const shippingFee = usesShalom(provinciaSelect.value) ? provincialFee : limaFee;
     if (!provinciaSelect.value && totalEl.hasAttribute('data-requires-location')) {
       shippingTotalEl.textContent = 'Selecciona tu ubicación';
       totalEl.textContent = 'Por calcular';
@@ -650,8 +696,8 @@ export function initOrganizerCheckout({
     const whatsapp = whatsappInput.value.trim();
     const direccion = direccionInput.value.trim();
     const referencia = referenciaInput.value.trim();
-    const provincia = provinciaSelect.value;
-    const ciudad = ciudadSelect.value;
+    const provincia = selectedDepartment();
+    const ciudad = selectedCity();
     const dni = dniInput.value.trim();
 
     if (strictValidation) {
@@ -717,7 +763,7 @@ export function initOrganizerCheckout({
     dniInput.setCustomValidity('');
 
     const active = BUNDLES[selectedQty];
-    const shippingFee = isProvincia ? PROVINCIAL_SHIPPING_FEE : limaFee;
+    const shippingFee = isProvincia ? provincialFee : limaFee;
     const finalPrice = getFinalPrice(selectedQty) + shippingFee;
     const selectedColor = getColor();
     const offerLabel = `${active.offerLabel} · Color ${selectedColor}${exitDiscountAmount > 0 ? ' + Descuento especial S/ 5' : ''}`;

@@ -49,11 +49,12 @@ function doPost(e) {
       : 'Gratis por Shalom';
     if (order.productId === 'MRB-ORG-5N') {
       const provincial = order.department !== 'Lima' && order.department !== 'Callao';
-      const fee = provincial ? 10 : 0;
+      const fee = provincial ? 20 : 0;
+      const merchandiseTotal = quantity === 2 ? 180 : 99;
       if (!order.department || !order.district || !order.address || !order.reference ||
           order.deliveryMethod !== (provincial ? 'shalom' : 'lima') ||
           ![1, 2].includes(quantity) || Number(order.shippingFee) !== fee ||
-          Number(order.advance) !== (provincial ? 40 : 0) || total !== quantity * 99 + fee ||
+          Number(order.advance) !== (provincial ? 40 : 0) || total !== merchandiseTotal + fee ||
           (provincial && !/^\d{8}$/.test(order.dni || ''))) {
         throw new Error('Datos de entrega o importe incorrectos');
       }

@@ -9,11 +9,10 @@ const product = {
   value: 99,
 };
 
-const bundles = Object.fromEntries([1, 2].map(quantity => [quantity, {
-  quantity,
-  price: product.value * quantity,
-  offerLabel: quantity === 1 ? '1 unidad' : '2 unidades',
-}]));
+const bundles = {
+  1: { quantity: 1, price: 99, offerLabel: '1 unidad' },
+  2: { quantity: 2, price: 180, offerLabel: 'Promoción 2 unidades · ahorras S/ 18' },
+};
 
 const sectionMap = [
   { selector: '.compare-section', name: 'antes_y_despues', isInfo: true },
@@ -30,6 +29,7 @@ initOrganizerCheckout({
   bundles,
   getColor: () => 'Negro',
   limaFee: 0,
+  provincialFee: 20,
   trackRegistrationAttempts: false,
   trackOrderFormSubmitted: false,
   strictValidation: true,
@@ -61,7 +61,7 @@ const scenes = [
     desktopPreload: path + 'hero.webp',
     label: 'En la cocina',
     alt: 'Organizador negro de cinco niveles con ruedas en una cocina',
-    fit: 'cover',
+    fit: 'contain',
   },
   {
     src: path + 'aislado-480.webp',

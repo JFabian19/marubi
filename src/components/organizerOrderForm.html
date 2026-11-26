@@ -76,6 +76,22 @@
             </div>
           </div>
 
+          <div class="cod-field" id="departmentField" hidden>
+            <label class="cod-label" for="drawerDepartment">¿En qué departamento estás?<span class="cod-req">*</span></label>
+            <select id="drawerDepartment"><option value="">Selecciona tu departamento</option>
+              <option>Amazonas</option><option>Áncash</option><option>Apurímac</option><option>Arequipa</option>
+              <option>Ayacucho</option><option>Cajamarca</option><option>Cusco</option><option>Huancavelica</option>
+              <option>Huánuco</option><option>Ica</option><option>Junín</option><option>La Libertad</option>
+              <option>Lambayeque</option><option>Loreto</option><option>Madre de Dios</option><option>Moquegua</option>
+              <option>Pasco</option><option>Piura</option><option>Puno</option><option>San Martín</option>
+              <option>Tacna</option><option>Tumbes</option><option>Ucayali</option>
+            </select>
+          </div>
+          <div class="cod-field" id="provincialCityField" hidden>
+            <label class="cod-label" for="drawerProvincialCity">Ciudad o distrito de destino<span class="cod-req">*</span></label>
+            <input id="drawerProvincialCity" type="text" autocomplete="address-level2" placeholder="Ej: Arequipa, Trujillo…">
+          </div>
+
           <div class="cod-field" id="dniField" hidden>
             <label for="drawerDni" class="cod-label">DNI<span class="cod-req">*</span></label>
             <div class="cod-input-group">

@@ -33,11 +33,11 @@ const base = {
 for (const department of ['Lima', 'Callao', 'Arequipa']) {
   for (const quantity of [1, 2]) {
     const provincial = department === 'Arequipa';
-    const shippingFee = provincial ? 10 : 0;
+    const shippingFee = provincial ? 20 : 0;
     const order = {
       ...base, department, quantity, shippingFee, orderId: 'MRB-' + crypto.randomUUID(),
       province: department, district: department, place: department,
-      total: quantity * 99 + shippingFee, advance: provincial ? 40 : 0,
+      total: (quantity === 2 ? 180 : 99) + shippingFee, advance: provincial ? 40 : 0,
       deliveryMethod: provincial ? 'shalom' : 'lima', dni: provincial ? '00000000' : '',
     };
     const previous = rows.length;
