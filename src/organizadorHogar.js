@@ -69,7 +69,7 @@ const scenes = [
     mobilePreload: path + 'aislado-480.webp',
     desktopPreload: path + 'aislado.webp',
     label: 'Vista completa',
-    alt: 'Dos repisas planas y tres canastas sobre ruedas',
+    alt: 'Organizador metálico con cinco canastas giratorias y ruedas',
     fit: 'contain',
   },
   {
