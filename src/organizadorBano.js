@@ -19,7 +19,9 @@ initOrganizerCheckout({
   getColor: () => 'Negro',
   limaFee: 0,
   provincialFee: 0,
-  provincialNote: 'Envío gratis por Shalom. Adelanto de S/40 que se descuenta del total.',
+  provincialAdvance: 20,
+  provincialNote: 'Envío gratis por Shalom. Adelanto de S/20 y el resto lo pagas cuando llegue a agencia.',
+  requireProvincialAcceptance: true,
   strictValidation: true,
 });
 

@@ -665,6 +665,76 @@ body.modal-open .bath-marquee-track {
   margin-top: 10px;
 }
 
+/* 1-Click Provincial Advance Acceptance Button */
+.cod-accept-btn {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  padding: 13px 14px;
+  border-radius: 10px;
+  border: 2px solid #0b2b52;
+  background: #f4f8fd;
+  color: #0b2b52;
+  font-size: 13.5px;
+  font-weight: 650;
+  line-height: 1.4;
+  transition: background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, transform 0.12s ease;
+}
+
+.cod-accept-btn:hover {
+  background: #eaf2fc;
+}
+
+.cod-accept-btn:active {
+  transform: scale(0.99);
+}
+
+.cod-accept-check {
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border-radius: 6px;
+  border: 2px solid #0b2b52;
+  background: #ffffff;
+  color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.cod-accept-btn.is-accepted {
+  background: #ecfdf5;
+  border-color: #059669;
+  color: #065f46;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.18);
+}
+
+.cod-accept-btn.is-accepted .cod-accept-check {
+  background: #059669;
+  border-color: #059669;
+  color: #ffffff;
+  transform: scale(1.06);
+}
+
+.cod-accept-btn.is-invalid {
+  border-color: #d92d20;
+  background: #fef2f2;
+  color: #991b1b;
+  box-shadow: 0 0 0 2px rgba(217, 45, 32, 0.16);
+}
+
+.cod-accept-btn.is-invalid .cod-accept-check {
+  border-color: #d92d20;
+}
+
+.cod-accept-text {
+  flex: 1;
+}
+
 .bath-page .cod-submit-btn {
   background: linear-gradient(135deg, #ff7e47 0%, #f25f3a 50%, #e0441f 100%);
   color: #ffffff;

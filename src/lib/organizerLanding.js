@@ -241,7 +241,9 @@ export function initOrganizerCheckout({
   getColor,
   limaFee,
   provincialFee = PROVINCIAL_SHIPPING_FEE,
+  provincialAdvance = PROVINCIAL_ADVANCE,
   provincialNote = provincialDeliveryNote,
+  requireProvincialAcceptance = false,
   trackRegistrationAttempts = true,
   trackOrderFormSubmitted = true,
   strictValidation = false,
@@ -277,6 +279,9 @@ export function initOrganizerCheckout({
   const supportsOtherProvince = Boolean(departmentField && provincialCityField);
   const dniInput = document.querySelector('#drawerDni');
   const dniField = document.querySelector('#dniField');
+  const provincialAcceptField = document.querySelector('#provincialAcceptField');
+  const provincialAcceptBtn = document.querySelector('#provincialAcceptBtn');
+  const provincialAcceptError = document.querySelector('#provincialAcceptError');
   const whatsappInput = document.querySelector('#drawerWhatsapp');
   const whatsappGroup = document.querySelector('#whatsappGroup');
   const whatsappError = document.querySelector('#whatsappError');
@@ -286,6 +291,7 @@ export function initOrganizerCheckout({
   const submitError = document.querySelector('#submitError');
 
   let selectedQty = 1;
+  let provincialAccepted = false;
   let exitDiscountAmount = 0; // S/ 5 de descuento al darle clic a la X
   let exitDiscountOffered = false;
   let registrationAttemptTracked = false;
@@ -392,6 +398,16 @@ export function initOrganizerCheckout({
     dniField.hidden = !usesShalom(prov);
     dniInput.required = usesShalom(prov);
     if (!usesShalom(prov)) dniInput.value = '';
+    if (provincialAcceptField) {
+      const showAccept = requireProvincialAcceptance && usesShalom(prov);
+      provincialAcceptField.hidden = !showAccept;
+      if (!showAccept) {
+        provincialAccepted = false;
+        provincialAcceptBtn?.classList.remove('is-accepted', 'is-invalid');
+        provincialAcceptBtn?.setAttribute('aria-pressed', 'false');
+        if (provincialAcceptError) provincialAcceptError.hidden = true;
+      }
+    }
     document.querySelector('#deliveryNote').textContent = provincial
       ? (isHomeOrganizer
         ? `Envío por Shalom: S/ ${provincialFee}. Adelanto de S/ 40 que se descuenta del total.`
@@ -691,6 +707,16 @@ export function initOrganizerCheckout({
 
   dniInput.addEventListener('input', () => dniInput.setCustomValidity(''));
 
+  provincialAcceptBtn?.addEventListener('click', () => {
+    provincialAccepted = !provincialAccepted;
+    provincialAcceptBtn.classList.toggle('is-accepted', provincialAccepted);
+    provincialAcceptBtn.classList.remove('is-invalid');
+    provincialAcceptBtn.setAttribute('aria-pressed', String(provincialAccepted));
+    if (provincialAccepted && provincialAcceptError) {
+      provincialAcceptError.hidden = true;
+    }
+  });
+
   orderForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -765,6 +791,16 @@ export function initOrganizerCheckout({
       return;
     }
     dniInput.setCustomValidity('');
+    if (isProvincia && requireProvincialAcceptance && !provincialAccepted) {
+      provincialAcceptBtn?.classList.add('is-invalid');
+      if (provincialAcceptError) {
+        provincialAcceptError.textContent = `Confirma con un clic el adelanto de S/ ${provincialAdvance} para envíos a provincia.`;
+        provincialAcceptError.hidden = false;
+      }
+      provincialAcceptBtn?.scrollIntoView({ block: 'nearest' });
+      provincialAcceptBtn?.focus();
+      return;
+    }
 
     const active = BUNDLES[selectedQty];
     const shippingFee = isProvincia ? provincialFee : limaFee;
@@ -820,7 +856,7 @@ export function initOrganizerCheckout({
         quantity: active.quantity,
         total: finalPrice,
         shippingFee,
-        advance: isProvincia ? PROVINCIAL_ADVANCE : 0,
+        advance: isProvincia ? provincialAdvance : 0,
         dni: isProvincia ? dni : '',
         name: nombre,
         whatsapp,

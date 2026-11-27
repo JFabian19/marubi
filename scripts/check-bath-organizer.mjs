@@ -106,6 +106,7 @@ for (const quantity of [1, 2]) {
     assert.equal(get('#provincialCityField').hidden, selection !== 'Provincia');
     assert.equal(ciudadField.hidden, selection === 'Provincia');
     assert.equal(get('#dniField').hidden, selection !== 'Provincia');
+    assert.equal(get('#provincialAcceptField').hidden, selection !== 'Provincia');
 
     assert.equal(get('#codTotal').textContent, quantity === 1 ? 'S/. 69.00' : 'S/. 104.00');
     assert.equal(get('#codShippingTotal').textContent, 'Gratis');
@@ -129,9 +130,19 @@ for (const quantity of [1, 2]) {
       get(s).value = v;
     }
 
+    if (selection === 'Provincia') {
+      // Must block submission until the 1-click S/20 acceptance button is clicked.
+      await get('#drawerOrderForm').listeners.submit({ preventDefault() {} });
+      assert.equal(orders.length, 0);
+      assert.equal(get('#provincialAcceptError').hidden, false);
+      get('#provincialAcceptBtn').listeners.click();
+      assert.equal(get('#provincialAcceptError').hidden, true);
+    }
+
     await get('#drawerOrderForm').listeners.submit({ preventDefault() {} });
     assert.equal(orders.length, 1);
     assert.equal(orders[0].shippingFee, 0);
+    assert.equal(orders[0].advance, selection === 'Provincia' ? 20 : 0);
     assert.equal(orders[0].total, quantity === 1 ? 69 : 104);
     assert.equal(orders[0].productId, 'MRB-BANO-METAL');
     assert.equal(orders[0].department, selection === 'Provincia' ? 'Arequipa' : 'Lima');

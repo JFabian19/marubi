@@ -103,9 +103,9 @@
     window.__marubiPixelEvents = [{ eventName: 'PageView', isCustom: false, customData: {}, eventID: window.__marubiPageViewId, timestamp: Date.now() }];
   </script>
   <!-- End Meta Pixel Code -->
-  <script type="module" crossorigin src="/assets/organizadorHogar-BuKUDMrJ.js"></script>
+  <script type="module" crossorigin src="/assets/organizadorHogar-pp-vNZVU.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/metaPixel-D4-KFWi7.js">
-  <link rel="modulepreload" crossorigin href="/assets/organizerLanding-BW0Jahjc.js">
+  <link rel="modulepreload" crossorigin href="/assets/organizerLanding-BbQCO7y1.js">
   <link rel="stylesheet" crossorigin href="/assets/organizerLanding-CKdZxaUy.css">
   <link rel="stylesheet" crossorigin href="/assets/organizadorHogar-B9uvu9RE.css">
 </head>
@@ -279,6 +279,18 @@
             <div class="cod-input-group">
               <input type="text" id="drawerDni" placeholder="DNI de 8 dígitos" minlength="8" maxlength="8" pattern="[0-9]{8}" inputmode="numeric" autocomplete="off">
             </div>
+          </div>
+
+          <div class="cod-field" id="provincialAcceptField" hidden>
+            <button type="button" class="cod-accept-btn" id="provincialAcceptBtn" aria-pressed="false">
+              <span class="cod-accept-check" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <span class="cod-accept-text">Acepto que al hacer el pedido tendré que hacer un adelanto de 20 soles y el resto lo pago cuando llegue a agencia</span>
+            </button>
+            <p class="field-error" id="provincialAcceptError" role="alert" hidden></p>
           </div>
 
           <small class="cod-delivery-note" id="deliveryNote" aria-live="polite"></small>
