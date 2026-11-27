@@ -15,11 +15,12 @@ const bundles = {
 };
 
 const sectionMap = [
+  { selector: '#video', name: 'video_del_producto', isInfo: true },
   { selector: '.compare-section', name: 'antes_y_despues', isInfo: true },
   { selector: '#detalles', name: 'detalles_del_producto', isInfo: true },
-  { selector: '#ambientes', name: 'ideas_espacios', isInfo: true },
   { selector: '#medidas', name: 'medidas_y_materiales', isInfo: true },
-  { selector: '.trust', name: 'compra_con_marubi', isInfo: true },
+  { selector: '#ambientes', name: 'ideas_espacios', isInfo: true },
+  { selector: '.trust', name: 'promo_doble', isInfo: false },
   { selector: '#preguntas', name: 'preguntas_frecuentes', isInfo: true },
   { selector: '#pedido', name: 'seccion_oferta', isInfo: false },
 ];
@@ -30,10 +31,12 @@ initOrganizerCheckout({
   getColor: () => 'Negro',
   limaFee: 0,
   provincialFee: 20,
+  provincialAdvance: 40,
   trackRegistrationAttempts: false,
   trackOrderFormSubmitted: false,
   strictValidation: true,
 });
+
 initComparison(product, { useTrackMetaEvent: true });
 initPixel(product);
 initEngagementTracking(product, {
@@ -42,7 +45,7 @@ initEngagementTracking(product, {
   useTrackMetaEvent: true,
 });
 
-document.querySelectorAll('a[href^="https://wa.me"]').forEach(link => {
+document.querySelectorAll('a[href^="https://wa.me"]').forEach((link) => {
   link.addEventListener('click', () => {
     trackMetaEvent('Contact', {
       ...product,
@@ -52,80 +55,40 @@ document.querySelectorAll('a[href^="https://wa.me"]').forEach(link => {
   });
 });
 
-const path = '/assets/organizador-5/';
-const scenes = [
-  {
-    src: path + 'hero-720.webp',
-    srcset: `${path}hero-480.webp 480w, ${path}hero-720.webp 720w, ${path}hero.webp 960w`,
-    mobilePreload: path + 'hero-720.webp',
-    desktopPreload: path + 'hero.webp',
-    label: 'En la cocina',
-    alt: 'Organizador negro de cinco niveles con ruedas en una cocina',
-    fit: 'contain',
-  },
-  {
-    src: path + 'aislado-480.webp',
-    srcset: `${path}aislado-480.webp 480w, ${path}aislado.webp 720w`,
-    mobilePreload: path + 'aislado-480.webp',
-    desktopPreload: path + 'aislado.webp',
-    label: 'Vista completa',
-    alt: 'Organizador metálico con cinco canastas giratorias y ruedas',
-    fit: 'contain',
-  },
-  {
-    src: path + 'detalle-480.webp',
-    srcset: `${path}detalle-480.webp 480w, ${path}detalle.webp 840w`,
-    mobilePreload: path + 'detalle-480.webp',
-    desktopPreload: path + 'detalle.webp',
-    label: 'Detalle del organizador',
-    alt: 'Detalle de la estructura del organizador negro',
-    fit: 'cover',
-  },
-];
+// Instant pre-decoded Shopify gallery switcher
+const slides = new Map();
+document.querySelectorAll('[data-slide]').forEach((img) => {
+  slides.set(img.dataset.slide, img);
+});
 
-let current = 0;
-const photo = document.querySelector('#main-scene');
-function showScene(step) {
-  current = (current + step + scenes.length) % scenes.length;
-  const scene = scenes[current];
-  photo.srcset = scene.srcset;
-  photo.src = scene.src;
-  photo.alt = scene.alt;
-  photo.style.objectFit = scene.fit;
-  document.querySelector('#scene-caption').textContent = scene.label;
-  document.querySelector('#scene-count').textContent = (current + 1) + ' / ' + scenes.length;
-}
-document.querySelector('#previous-scene').addEventListener('click', () => showScene(-1));
-document.querySelector('#next-scene').addEventListener('click', () => showScene(1));
+const thumbButtons = Array.from(document.querySelectorAll('[data-scene]'));
 
-// Soporte táctil (swipe) para la galería en móviles
-const galleryEl = document.querySelector('.gallery');
-let touchStartX = 0;
-let touchStartY = 0;
-galleryEl?.addEventListener('touchstart', (e) => {
-  if (e.touches.length === 1) {
-    touchStartX = e.touches[0].clientX;
-    touchStartY = e.touches[0].clientY;
-  }
-}, { passive: true });
-galleryEl?.addEventListener('touchend', (e) => {
-  if (!e.changedTouches.length) return;
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  const dy = e.changedTouches[0].clientY - touchStartY;
-  if (Math.abs(dx) > 42 && Math.abs(dx) > Math.abs(dy) * 1.4) {
-    showScene(dx < 0 ? 1 : -1);
-  }
-}, { passive: true });
-
-// Precarga diferida de las otras vistas de galería según tamaño de pantalla
-window.addEventListener('load', () => {
-  const idle = window.requestIdleCallback || (cb => setTimeout(cb, 1200));
-  idle(() => {
-    if (navigator.connection?.saveData) return;
-    const isMobile = window.matchMedia('(max-width: 760px)').matches;
-    scenes.slice(1).forEach(scene => {
-      const image = new Image();
-      image.src = isMobile ? scene.mobilePreload : scene.desktopPreload;
-    });
+function warmDecodeSlides() {
+  slides.forEach((img) => {
+    if (!img.complete) return;
+    img.decode?.().catch(() => {});
   });
-}, { once: true });
+}
+
+if (typeof window !== 'undefined') {
+  window.addEventListener?.('load', warmDecodeSlides, { once: true });
+}
+
+function showScene(scene) {
+  if (!slides.has(scene)) return;
+  slides.forEach((img, key) => {
+    img.classList.toggle('is-active', key === scene);
+    img.setAttribute('aria-hidden', String(key !== scene));
+  });
+  thumbButtons.forEach((item) => {
+    item.setAttribute('aria-pressed', String(item.dataset.scene === scene));
+  });
+}
+
+thumbButtons.forEach((button) => {
+  const scene = button.dataset.scene;
+  button.addEventListener('pointerdown', () => {
+    slides.get(scene)?.decode?.().catch(() => {});
+  }, { passive: true });
+  button.addEventListener('click', () => showScene(scene));
+});
