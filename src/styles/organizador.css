@@ -567,6 +567,7 @@ body.modal-open { position: fixed; width: 100%; }
 .cod-summary-row.cod-summary-total strong { font-size: 19px; font-weight: 850; color: #111111; }
 .cod-form { display: flex; flex-direction: column; gap: 14px; }
 .cod-field { display: flex; flex-direction: column; gap: 6px; }
+.cod-field[hidden] { display: none !important; }
 .cod-label { font-size: 14.5px; font-weight: 700; color: #111111; line-height: 1.2; }
 .cod-req { color: #dc2626; margin-left: 2px; font-weight: 700; }
 .cod-input-group {

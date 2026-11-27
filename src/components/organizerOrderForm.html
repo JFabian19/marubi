@@ -78,18 +78,33 @@
 
           <div class="cod-field" id="departmentField" hidden>
             <label class="cod-label" for="drawerDepartment">¿En qué departamento estás?<span class="cod-req">*</span></label>
-            <select id="drawerDepartment"><option value="">Selecciona tu departamento</option>
-              <option>Amazonas</option><option>Áncash</option><option>Apurímac</option><option>Arequipa</option>
-              <option>Ayacucho</option><option>Cajamarca</option><option>Cusco</option><option>Huancavelica</option>
-              <option>Huánuco</option><option>Ica</option><option>Junín</option><option>La Libertad</option>
-              <option>Lambayeque</option><option>Loreto</option><option>Madre de Dios</option><option>Moquegua</option>
-              <option>Pasco</option><option>Piura</option><option>Puno</option><option>San Martín</option>
-              <option>Tacna</option><option>Tumbes</option><option>Ucayali</option>
-            </select>
+            <div class="cod-select-wrap">
+              <select id="drawerDepartment">
+                <option value="" disabled selected>Selecciona tu departamento</option>
+                <option>Amazonas</option><option>Áncash</option><option>Apurímac</option><option>Arequipa</option>
+                <option>Ayacucho</option><option>Cajamarca</option><option>Cusco</option><option>Huancavelica</option>
+                <option>Huánuco</option><option>Ica</option><option>Junín</option><option>La Libertad</option>
+                <option>Lambayeque</option><option>Loreto</option><option>Madre de Dios</option><option>Moquegua</option>
+                <option>Pasco</option><option>Piura</option><option>Puno</option><option>San Martín</option>
+                <option>Tacna</option><option>Tumbes</option><option>Ucayali</option>
+              </select>
+              <span class="cod-select-chevron" aria-hidden="true">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#111111" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </span>
+            </div>
           </div>
           <div class="cod-field" id="provincialCityField" hidden>
             <label class="cod-label" for="drawerProvincialCity">Ciudad o distrito de destino<span class="cod-req">*</span></label>
-            <input id="drawerProvincialCity" type="text" autocomplete="address-level2" placeholder="Ej: Arequipa, Trujillo…">
+            <div class="cod-input-group">
+              <div class="cod-input-icon" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 2C7.86 2 4.5 5.36 4.5 9.5C4.5 14.88 12 22 12 22C12 22 19.5 14.88 19.5 9.5C19.5 5.36 16.14 2 12 2ZM12 12.25C10.48 12.25 9.25 11.02 9.25 9.5C9.25 7.98 10.48 6.75 12 6.75C13.52 6.75 14.75 7.98 14.75 9.5C14.75 11.02 13.52 12.25 12 12.25Z" fill="#111111" />
+                </svg>
+              </div>
+              <input id="drawerProvincialCity" type="text" autocomplete="address-level2" placeholder="Ej: Arequipa, Trujillo…">
+            </div>
           </div>
 
           <div class="cod-field" id="dniField" hidden>

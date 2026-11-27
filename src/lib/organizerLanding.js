@@ -274,6 +274,7 @@ export function initOrganizerCheckout({
   const provincialCityField = document.querySelector('#provincialCityField');
   const deliveryChoices = document.querySelectorAll('[data-delivery-choice]');
   const isHomeOrganizer = product.content_ids[0] === 'MRB-ORG-5N';
+  const supportsOtherProvince = Boolean(departmentField && provincialCityField);
   const dniInput = document.querySelector('#drawerDni');
   const dniField = document.querySelector('#dniField');
   const whatsappInput = document.querySelector('#drawerWhatsapp');
@@ -353,7 +354,7 @@ export function initOrganizerCheckout({
     opt.textContent = prov;
     provinciaSelect.appendChild(opt);
   });
-  if (isHomeOrganizer) {
+  if (supportsOtherProvince) {
     const option = document.createElement('option');
     option.value = 'Provincia';
     option.textContent = 'Otra provincia';
@@ -361,12 +362,12 @@ export function initOrganizerCheckout({
   }
 
   function selectedDepartment() {
-    return isHomeOrganizer && provinciaSelect.value === 'Provincia'
+    return supportsOtherProvince && provinciaSelect.value === 'Provincia'
       ? departmentSelect.value : provinciaSelect.value;
   }
 
   function selectedCity() {
-    return isHomeOrganizer && provinciaSelect.value === 'Provincia'
+    return supportsOtherProvince && provinciaSelect.value === 'Provincia'
       ? provincialCityInput.value.trim() : ciudadSelect.value;
   }
 
@@ -381,7 +382,7 @@ export function initOrganizerCheckout({
 
   provinciaSelect.addEventListener('change', () => {
     const prov = provinciaSelect.value;
-    const provincial = isHomeOrganizer && prov === 'Provincia';
+    const provincial = supportsOtherProvince && prov === 'Provincia';
     if (departmentField) departmentField.hidden = !provincial;
     if (provincialCityField) provincialCityField.hidden = !provincial;
     if (departmentSelect) departmentSelect.required = provincial;
@@ -392,8 +393,10 @@ export function initOrganizerCheckout({
     dniInput.required = usesShalom(prov);
     if (!usesShalom(prov)) dniInput.value = '';
     document.querySelector('#deliveryNote').textContent = provincial
-      ? `Envío por Shalom: S/ ${provincialFee}. Adelanto de S/ 40 que se descuenta del total.`
-      : (!isHomeOrganizer && usesShalom(prov) ? provincialNote : '');
+      ? (isHomeOrganizer
+        ? `Envío por Shalom: S/ ${provincialFee}. Adelanto de S/ 40 que se descuenta del total.`
+        : provincialNote)
+      : (usesShalom(prov) ? provincialNote : '');
     deliveryChoices.forEach(button => {
       button.classList.toggle('selected', button.dataset.deliveryChoice === (provincial ? 'province' : 'lima'));
       button.setAttribute('aria-pressed', String(button.dataset.deliveryChoice === (provincial ? 'province' : 'lima')));
@@ -538,7 +541,7 @@ export function initOrganizerCheckout({
     }
   }
 
-  ['#drawerNombre', '#drawerWhatsapp', '#drawerDireccion', '#drawerReferencia', '#drawerProvincia', '#drawerCiudad'].forEach((sel) => {
+  ['#drawerNombre', '#drawerWhatsapp', '#drawerDireccion', '#drawerReferencia', '#drawerProvincia', '#drawerCiudad', '#drawerDepartment', '#drawerProvincialCity'].forEach((sel) => {
     const input = document.querySelector(sel);
     if (!input) return;
     input.addEventListener('input', () => {

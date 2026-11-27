@@ -1,0 +1,8 @@
+Imágenes creadas con ImageGen integrado, usando la imagen adjunta como referencia.
+Contenido confirmado: 2 repisas esquineras, 2 jaboneras, 1 portacepillos, 4 adhesivos por kit.
+
+Prompt ambiente: fotografía ecommerce cuadrada de un baño elegante, paredes cálidas claras en esquina de 90 grados; conservar el mismo producto de metal negro, exactamente dos repisas esquineras con bandas planas y bases ranuradas, dos jaboneras y un portacepillos; productos de baño sin marcas para demostrar el uso; iluminación natural; sin textos ni piezas extra.
+Prompt kit: fotografía ecommerce cuadrada sobre fondo blanco cálido; reproducir el producto de referencia; exactamente dos repisas esquineras negras, dos jaboneras, un portacepillos y cuatro adhesivos transparentes; piezas vacías y separadas, sombras suaves; sin textos, envases ni accesorios adicionales.
+
+Archivos optimizados: ambiente-640.webp, ambiente-1200.webp, kit-640.webp, kit-1200.webp.
+Referencia original optimizada: referencia-640.webp, referencia-1200.webp.
