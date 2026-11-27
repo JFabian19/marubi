@@ -4,13 +4,14 @@ import react from '@vitejs/plugin-react';
 
 const plantPage = '/producto/organizador-de-plantas-6-niveles';
 const homeOrganizerPage = '/producto/organizador-5-niveles';
+const bathOrganizerPage = '/producto/organizador-para-bano-de-metal';
 const thankYouPage = '/graciasportucompra';
 
 // Match the clean product and thank-you URLs served by Cloudflare Pages rewrites in local previews.
 function servePlantPage(server) {
   server.middlewares.use((req, _res, next) => {
     const url = new URL(req.url, 'http://localhost');
-    const productPage = [plantPage, homeOrganizerPage].find(path => url.pathname === path || url.pathname === path + '/');
+    const productPage = [plantPage, homeOrganizerPage, bathOrganizerPage].find(path => url.pathname === path || url.pathname === path + '/');
     if (productPage) {
       req.url = productPage + '/index.html' + url.search;
     } else if (
@@ -43,6 +44,7 @@ export default defineConfig({
         index: 'index.html',
         organizador: 'producto/organizador-de-plantas-6-niveles/index.html',
         organizadorHogar: 'producto/organizador-5-niveles/index.html',
+        organizadorBano: 'producto/organizador-para-bano-de-metal/index.html',
         gracias: 'graciasportucompra/index.html',
       },
     },

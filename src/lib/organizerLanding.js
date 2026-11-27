@@ -241,6 +241,7 @@ export function initOrganizerCheckout({
   getColor,
   limaFee,
   provincialFee = PROVINCIAL_SHIPPING_FEE,
+  provincialNote = provincialDeliveryNote,
   trackRegistrationAttempts = true,
   trackOrderFormSubmitted = true,
   strictValidation = false,
@@ -392,7 +393,7 @@ export function initOrganizerCheckout({
     if (!usesShalom(prov)) dniInput.value = '';
     document.querySelector('#deliveryNote').textContent = provincial
       ? `Envío por Shalom: S/ ${provincialFee}. Adelanto de S/ 40 que se descuenta del total.`
-      : (!isHomeOrganizer && usesShalom(prov) ? provincialDeliveryNote : '');
+      : (!isHomeOrganizer && usesShalom(prov) ? provincialNote : '');
     deliveryChoices.forEach(button => {
       button.classList.toggle('selected', button.dataset.deliveryChoice === (provincial ? 'province' : 'lima'));
       button.setAttribute('aria-pressed', String(button.dataset.deliveryChoice === (provincial ? 'province' : 'lima')));
@@ -449,7 +450,7 @@ export function initOrganizerCheckout({
       return;
     }
     if (shippingTotalEl) shippingTotalEl.textContent = shippingFee ? formatSoles(shippingFee) : 'Gratis';
-    if (shippingMethodEl) shippingMethodEl.textContent = shippingFee ? 'Envío por Shalom' : 'Entrega en Lima';
+    if (shippingMethodEl) shippingMethodEl.textContent = usesShalom(provinciaSelect.value) ? 'Envío por Shalom' : 'Entrega en Lima';
     if (shippingBoxPriceEl) shippingBoxPriceEl.textContent = shippingFee ? formatSoles(shippingFee) : 'Gratis';
     totalEl.textContent = formatSoles(getFinalPrice(selectedQty) + shippingFee);
   }
@@ -771,7 +772,7 @@ export function initOrganizerCheckout({
     const orderNumber = pendingOrderId || createOrderId();
     pendingOrderId = orderNumber;
     const envioTexto = isProvincia
-      ? provincialDeliveryNote
+      ? provincialNote
       : `Entrega en ${provincia} según cobertura · Envío ${formatSoles(shippingFee)}`;
 
     const waText =
