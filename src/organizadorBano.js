@@ -25,8 +25,19 @@ initOrganizerCheckout({
   strictValidation: true,
 });
 
+const sectionMap = [
+  { selector: '#detalles', name: 'beneficios', isInfo: true },
+  { selector: '#incluye', name: 'que_incluye', isInfo: true },
+  { selector: '.bath-duo', name: 'promo_doble', isInfo: false },
+  { selector: '#preguntas', name: 'preguntas_frecuentes', isInfo: true },
+];
+
 initPixel(product);
-initEngagementTracking(product);
+initEngagementTracking(product, {
+  viewContentOnScroll: false,
+  sectionMap,
+  useTrackMetaEvent: true,
+});
 
 const slides = new Map();
 document.querySelectorAll('[data-slide]').forEach((img) => {

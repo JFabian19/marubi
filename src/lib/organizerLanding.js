@@ -31,9 +31,9 @@ export function initPixel(product, options = {}) {
   const userData = getStoredUserData();
   const alreadyLoaded = typeof window.fbq === 'function';
   if (!alreadyLoaded) {
-    const fbq = function (...args) {
-      if (fbq.callMethod) fbq.callMethod(...args);
-      else fbq.queue.push(args);
+    const fbq = function () {
+      if (fbq.callMethod) fbq.callMethod.apply(fbq, arguments);
+      else fbq.queue.push(arguments);
     };
     fbq.push = fbq;
     fbq.loaded = true;
